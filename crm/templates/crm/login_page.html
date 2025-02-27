@@ -1,0 +1,55 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+
+{% block title %}
+Вход
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+
+<div class="login_page_wrapper d-flex flex-column min-vh-100 justify-content-center">
+
+    <div class="container d-flex flex-row justify-content-center mb-3">
+        <h4>Система обработки заказов VER-G</h4>
+    </div>
+
+    <div class="container d-flex flex-row justify-content-center">
+        <button data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-success w-25">Войти</button>
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form id="loginForm" action="{% url 'crm:ajax_login' %}" method="post">
+              {% csrf_token %}
+              <input class="form-control" type="text" name="Username" id="loginInput" placeholder="логин" required>
+              <input class="form-control mt-2" type="password" name="Password" id="passwordInput" placeholder="пароль" required>
+              <input class="form-check-input mt-2" type="checkbox" id="showPass">
+                <label class="form-check-label mt-1" for="showPass" id="checkLabelForShowPass">
+                    Показать пароль
+                </label>
+              <div style="color: red" class="login-error-place mt-1"></div>
+              <button type="submit" class="btn btn-primary mt-3 w-100">Войти</button>
+          </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'crm/js/login_page.js' %}"></script>
+{% endblock %}
