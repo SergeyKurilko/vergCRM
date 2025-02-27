@@ -15,7 +15,6 @@ def check_access_rights(user: User):
     return user.is_staff
 
 
-
 def main(request):
     if check_access_rights(request.user):
         return redirect(reverse("crm:dashboard"))
