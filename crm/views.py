@@ -1,12 +1,8 @@
-
-
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.views import View
-from django.contrib.auth import authenticate, login
-from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
@@ -24,8 +20,9 @@ def main(request):
 
 class CrmLoginView(View):
     def get(self, request):
+        # Если пользователь уже в системе, то перенаправляем в dashboard
         if check_access_rights(request.user):
-            return redirect(reverse("crm:dashboard"))
+            return main(request)
         return render(request, "crm/login_page.html")
 
     def post(self, request):
@@ -63,6 +60,11 @@ class DashboardView(View):
 def test(request):
     st = request.user.is_staff
     return HttpResponse(f"user.is_staff: {st}")
+
+
+def user_logout_view(request):
+    logout(request)
+    return redirect(reverse("crm:login_page"))
 
 
 
