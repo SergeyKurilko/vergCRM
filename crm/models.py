@@ -50,11 +50,11 @@ class Client(models.Model):
 
 class ServiceRequest(models.Model):
     STATUS_CHOICES = [
-        ('new', 'Новая'),
+        ('new', 'Новая'), # TODO: убрать этот статус
         ('in_progress', 'В работе'),
         ('completed', 'Завершена'),
         ('canceled', 'Отменена'),
-        ('archive', 'В архиве'),
+        ('archive', 'В архиве'), # TODO: убрать этот статус
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE,
@@ -69,7 +69,7 @@ class ServiceRequest(models.Model):
                                 on_delete=models.SET_NULL,
                                 related_name="service_requests",
                                 null=True, blank=True)
-    status = models.CharField(choices=STATUS_CHOICES, default='new', max_length=15)
+    status = models.CharField(choices=STATUS_CHOICES, default='in_progress', max_length=15)
     created_at = models.DateTimeField(auto_now_add=True,
                                       verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True,
@@ -81,6 +81,7 @@ class ServiceRequest(models.Model):
     class Meta:
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
+        ordering = ["-updated_at"]
 
 
 class ImageForServiceRequest(models.Model):

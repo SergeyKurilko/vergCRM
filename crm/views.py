@@ -111,16 +111,38 @@ class ServiceRequestsListView(View):
             manager=request.user
         ).annotate(expected_profit=F('total_price') - F('cost_price'))
 
+        # Проверяем фильтр status
+        allowed_statuses = {"in_progress", "completed", "canceled", "all"}
+        status =  request.GET.get("status")
+        humanized_status_title = None
+        if status and status != 'all' and status in allowed_statuses:
+            service_requests = service_requests.filter(status=status)
+            humanized_status_title = dict(ServiceRequest.STATUS_CHOICES).get(status)
+
+
+        # Получаем количество service_requests
+        service_requests_quantity = service_requests.count()
+
+
         # Пагинация
         paginator = Paginator(service_requests, 10)
         page_number = request.GET.get('page')
-        page_obj = paginator.page(page_number)
+        page_obj = paginator.get_page(page_number)
 
         context = {
-            "service_requests": page_obj
+            "service_requests": page_obj,
+            "current_status": status,
+            "service_requests_quantity": service_requests_quantity,
+            "humanized_status_title": humanized_status_title
         }
 
         return render(request, "crm/service_requests_list.html", context)
+
+
+@method_decorator(staff_required, name='dispatch')
+class ServiceRequestCreateView(View):
+    def get(self, request):
+        return render(request, "crm/add_service_request.html")
 
 
 
