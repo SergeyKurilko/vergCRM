@@ -70,6 +70,10 @@ class ServiceRequest(models.Model):
                                 related_name="service_requests",
                                 null=True, blank=True)
     status = models.CharField(choices=STATUS_CHOICES, default='new', max_length=15)
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name="Дата и время изменения")
 
     def __str__(self):
         return f"Сделка №{self.pk} для клиента {self.client.name}."

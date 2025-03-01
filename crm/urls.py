@@ -1,15 +1,15 @@
 from django.urls import path
-from crm.views import main, CrmLoginView, DashboardView, test, user_logout_view
+from crm.views import CrmLoginView, DashboardView, test, user_logout_view, ServiceRequestsListView
 
 app_name = "crm"
 
 
 urlpatterns = [
-    path("", main, name="main"),
-    path("login/", CrmLoginView.as_view(), name="login_page"),
-    path("logout/", user_logout_view, name="logout"),
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    path("test/", test, name="test")
+    path("", DashboardView.as_view(), name="dashboard"),
+    path("login", CrmLoginView.as_view(), name="login_page"),
+    path("logout", user_logout_view, name="logout"),
+    path("my-service-requests", ServiceRequestsListView.as_view(), name="service_requests_list"),
+    path("test", test, name="test")
 ]
 
 ajax_urlpatterns = [

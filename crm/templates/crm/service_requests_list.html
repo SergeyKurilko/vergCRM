@@ -1,0 +1,69 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}Мои заявки{% endblock %}
+
+
+{% block content %}
+
+<div class="container-md container-fluid service-requests-list-container mt-5">
+    <table class="table rounded-table">
+        <thead>
+          <tr>
+            <th scope="col">№</th>
+            <th scope="col">Услуга</th>
+            <th scope="col">Клиент</th>
+            <th scope="col">Прибыль</th>
+            <th scope="col">Последнее действие</th>
+            <th scope="col">Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for service_request in service_requests %}
+          <tr class="request-service-tr-link">
+            <td scope="row"><a title="открыть заявку" class="service_request-detail-link" href="">{{ service_request.id }}</a></td>
+            <td><a title="открыть заявку" class="service_request-detail-link" href="">{{ service_request.service_name }}</a></td>
+            <td>{{ service_request.client.name }}</td>
+            <td>
+                {% if service_request.expected_profit > 0%}{{service_request.expected_profit }}{% else %}неизвестно{% endif %}
+            </td>
+            <td>{{ service_request.updated_at }}</td>
+            <td>{{ service_request.get_status_display }}</td>
+            <td><a title="открыть заявку" class="service_request-detail-link" href="">
+                открыть &nbsp;
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder2-open" viewBox="0 0 16 16">
+                    <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7z"/>
+                </svg>
+            </a></td>
+          </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container-md container-fluid paginator-container">
+    {% if service_requests.paginator.num_pages > 1 %}
+    <div id="pagination" class="my-3 d-flex justify-content-center d-md-block">
+        {% for p in service_requests.paginator.page_range %}
+        {% if service_requests.number == p %}
+        <a class="paginator-link-active me-1" href="?page={{ p }}">{{ p }}</a>
+        {% else %}
+        <a class="paginator-link me-1" href="?page={{ p }}">{{ p }}</a>
+        {% endif %}
+        {% endfor %}
+        {% if service_requests.has_next %}
+            <a class="paginator-next-button" href="?page={{ service_requests.next_page_number }}">
+                Далее
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'crm/js/service-request-list.js' %}"></script>
+{% endblock %}

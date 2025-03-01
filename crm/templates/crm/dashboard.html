@@ -15,10 +15,10 @@
     <div class="container-md container-fluid requests-tasks-place">
         <div class="d-flex flex-row">
             <div class="my_requests">
-                <a class="btn btn-success">Мои заявки</a>
+                <a href="{% url 'crm:service_requests_list' %}?page=1" class="verg-button-1" type="button">Мои заявки</a>
             </div>
             <div class="my_tasks ms-3">
-                <a type="button" class="btn btn-primary position-relative">
+                <a type="button" class="verg-button-1 position-relative">
                     Мои задачи
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         5
@@ -32,7 +32,29 @@
     <hr class="hr" />
 
     <div class="container-md container-fluid short-stat-table">
-        Тут табличка
+        <table class="table table-striped rounded-table">
+            <tbody>
+                <tr>
+                    <td>Всего активных заявок</td>
+                    <td>{{ active_requests_count }}</td>
+                </tr>
+                <tr>
+                    <td>Ожидаемая прибыль</td>
+                    <td>{{ total_expected_profit }} р.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="hr" />
+
+    <div class="container-md container-fluid">
+        <a href="" class="verg-button-1" type="button">
+            Новая заявка &nbsp;
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg>
+        </a>
     </div>
 
 </div>

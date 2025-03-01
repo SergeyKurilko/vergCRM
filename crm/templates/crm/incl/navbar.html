@@ -10,7 +10,8 @@
           <a class="nav-link active" aria-current="page" href="#">Клиенты</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Заявки</a>
+          <a class="nav-link active {% if request.resolver_match.url_name == 'service_requests_list' %}is-active-nav-link{% endif %}"
+             aria-current="page" href="{% url 'crm:service_requests_list' %}?page=1">Заявки</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Задачи</a>
@@ -21,6 +22,7 @@
         <button class="btn btn-outline-success" type="submit">Поиск</button>
       </form>
       <a href="{% url 'crm:logout' %}" class="btn btn-outline-secondary ms-2" type="submit">Выход</a>
+      <button class="rounded-table" id="theme-toggle">Переключить тему</button>
     </div>
   </div>
 </nav>

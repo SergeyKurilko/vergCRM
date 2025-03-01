@@ -1,3 +1,28 @@
+:root {
+    --bg-color: #f5f5f5;
+    --text-color: #3c4145;
+    --accent-color: #ffd333;
+    --contrast-color: #3d464d;
+    --gray-color: #ccc;
+    --red-color: #ee6e73;
+    --light-grey-color: #eee;
+    --green-accent-color: #1BBC2E;
+    --orange-accent-color: #FFA600;
+    --ver-g-orange-color: #9EA80B;
+    --ver-g-min-color: #38C4DD;
+    --ver-g-white-text: #F5F5F5;
+    --ver-g-green-buttons: #81c784;
+
+    --ver-g-table-background: #F5F5F5;
+    --ver-g-table-separator: black;
+    --ver-g-text-color: #3c4145;
+}
+
+[data-theme="dark"] {
+    --ver-g-table-background: #3c4145;
+    --ver-g-text-color: #F5F5F5;
+}
+
 .main_wrapper {
     min-height: 100vh;
     background: linear-gradient(0deg, rgba(135,236,82,1) 3%, rgba(143,216,251,1) 99%);
@@ -9,4 +34,118 @@
     top: 0;
     width: 100%;
     z-index: 1000;
+    background-color: var(--ver-g-table-background) !important;
+    color: var(--ver-g-text-color) !important;
 }
+
+.nav-link, .navbar-brand {
+    color: var(--ver-g-text-color) !important;
+}
+
+
+
+td, th {
+    background-color: var(--ver-g-table-background) !important;
+    color: var(--ver-g-text-color) !important;
+}
+
+
+.rounded-table {
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: var(--ver-g-table-background);
+    color: var(--ver-g-text-color)
+}
+
+.verg-button-1 {
+    padding: 8px;
+    background-color: var(--contrast-color);
+    color: var(--ver-g-white-text);
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+    position: relative;
+}
+
+.verg-button-1:hover {
+    background-color: var(--orange-accent-color);
+    color: var(--contrast-color);
+}
+
+.nav-link, .navbar-brand {
+    transition: 0.3s;
+}
+
+.nav-link:hover, .navbar-brand:hover {
+    color: var(--orange-accent-color) !important;
+    font-weight: 500;
+    
+}
+
+.is-active-nav-link {
+    color: var(--orange-accent-color) !important;
+    font-weight: 600;
+}
+
+
+/* ========================== Paginator Section Rules ================================ */
+
+.paginator-link {
+    border-radius: 5px;
+    transition: all 0.3s;
+    background-color: var(--contrast-color);
+    text-align: center;
+    text-decoration: none;
+    color: var(--ver-g-white-text);
+    padding: 8px 16px;
+}
+
+.paginator-link:hover {
+    background-color: var(--orange-accent-color);
+    color: var(--contrast-color);
+}
+
+.paginator-link-active {
+    background-color: var(--orange-accent-color);
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--contrast-color);
+    padding: 8px 16px;
+}
+
+.paginator-next-button {
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: var(--text-color);
+}
+
+.paginator-next-button:hover {
+    background-color: var(--contrast-color);
+    color: var(--ver-g-white-text);
+}
+
+
+/* ========================== /Paginator Section Rules ================================ */
+
+
+/* ========================== Service Requests List Section Rules ================================ */
+
+.service_request-detail-link {
+    text-decoration: none;
+    color: var(--ver-g-text-color);
+    transition: all 0.3s;
+}
+
+.service_request-detail-link:hover {
+    color: var(--orange-accent-color) !important;
+}
+
+
+
+
+/* ========================== /Service Requests List Section Rules ================================ */
