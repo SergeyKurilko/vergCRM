@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 from crm.utils import service_request_image_path
 from django.contrib.auth.models import User
 
@@ -60,12 +62,16 @@ class ServiceRequest(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE,
                                verbose_name="Клиент")
     address = models.TextField(verbose_name="Адрес", blank=True)
-    service_name = models.CharField(max_length=155,
-                                    verbose_name="Название услуги")
+    # service_name = models.CharField(max_length=155,
+    #                                 verbose_name="Название услуги")
     description = models.TextField(verbose_name="Подробное описание заявки")
     cost_price = models.IntegerField(verbose_name="Общая себестоимость", blank=True, null=True)
     total_price = models.PositiveIntegerField(verbose_name="Общая стоимость", blank=True, null=True)
     manager = models.ForeignKey(to=User,
+                                on_delete=models.SET_NULL,
+                                related_name="service_requests",
+                                null=True, blank=True)
+    service = models.ForeignKey(to="Service",
                                 on_delete=models.SET_NULL,
                                 related_name="service_requests",
                                 null=True, blank=True)
@@ -78,10 +84,25 @@ class ServiceRequest(models.Model):
     def __str__(self):
         return f"Сделка №{self.pk} для клиента {self.client.name}."
 
+    def get_absolute_url(self):
+        return reverse("crm:service_request_detail", args=[self.pk])
+
     class Meta:
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
         ordering = ["-updated_at"]
+
+
+class Service(models.Model):
+    title = models.CharField(max_length=350, verbose_name="Услуга")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Услуга"
+        verbose_name_plural = "Услуги"
+
 
 
 class ImageForServiceRequest(models.Model):

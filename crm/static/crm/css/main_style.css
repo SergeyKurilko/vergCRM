@@ -90,6 +90,34 @@ td, th {
 }
 
 
+.form-select:focus, input:focus, textarea:focus {
+    border-color: grey !important;
+    box-shadow: none !important;
+}
+
+.form-select:active, input:active, textarea:active {
+    box-shadow: none !important;
+    border: 1px solid grey;
+}
+
+select option:hover {
+    background-color: var(--orange-accent-color) !important; /* Цвет фона при наведении */
+    color: 
+    red !important; /* Цвет текста при наведении */
+}
+
+#backendMessageToast {
+    position: fixed;  /* Фиксированное позиционирование */
+    top: 57px;        /* Отступ сверху */
+    right: 20px;      /* Отступ справа */
+    z-index: 1050;    /* Убедитесь, что toast поверх других элементов */
+    min-width: 250px; /* Минимальная ширина */
+    background-color: var(--ver-g-table-background);
+    color: var(--ver-g-text-color);
+    border-radius: 5px; /* Скругление углов */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
 /* ========================== Paginator Section Rules ================================ */
 
 .paginator-link {
@@ -146,7 +174,19 @@ td, th {
     color: var(--orange-accent-color) !important;
 }
 
-
-
-
 /* ========================== /Service Requests List Section Rules ================================ */
+
+
+/* ========================== Add Service Requests Section Rules ================================ */
+
+.add-new-request-card {
+    background-color: var(--ver-g-table-background);
+    color: var(--ver-g-text-color)
+}
+
+.service-select {
+    background-color: var(--ver-g-table-background);
+    color: var(--ver-g-text-color)
+}
+
+/* ========================== /Add Service Requests Section Rules ================================ */

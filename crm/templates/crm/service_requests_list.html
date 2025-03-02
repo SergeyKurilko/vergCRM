@@ -8,7 +8,7 @@
 <div class="container-md container-fluid service-requests-list-filters-container mt-3">
         <a href="?status=all" type="button" 
             class="verg-button-1 position-relative {% if current_status == 'all' %}verg-button-1-active{% endif %}">
-            Все задачи
+            Все заявки
         </a>
         <a href="?status=in_progress" type="button" 
             class="verg-button-1 position-relative {% if current_status == 'in_progress' %}verg-button-1-active{% endif %}">
@@ -57,7 +57,7 @@
             {% for service_request in service_requests %}
           <tr class="request-service-tr-link">
             <td scope="row"><a title="открыть заявку" class="service_request-detail-link" href="">{{ service_request.id }}</a></td>
-            <td><a title="открыть заявку" class="service_request-detail-link" href="">{{ service_request.service_name }}</a></td>
+            <td><a title="открыть заявку" class="service_request-detail-link" href="">{{ service_request.service }}</a></td>
             <td>{{ service_request.client.name }}</td>
             <td>
                 {% if service_request.expected_profit > 0%}{{service_request.expected_profit }}{% else %}неизвестно{% endif %}

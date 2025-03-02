@@ -1,12 +1,12 @@
 from django.db.models import F, Sum
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
-from crm.models import ServiceRequest
+from crm.models import ServiceRequest, Service, Client
 from functools import wraps
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
@@ -142,7 +142,30 @@ class ServiceRequestsListView(View):
 @method_decorator(staff_required, name='dispatch')
 class ServiceRequestCreateView(View):
     def get(self, request):
-        return render(request, "crm/add_service_request.html")
+        service_list = Service.objects.all()
+        client_list = Client.objects.filter(manager=request.user)
+
+        context = {
+            "service_list": service_list,
+            "client_list": client_list
+        }
+
+        return render(request, "crm/add_service_request.html", context)
+
+
+@method_decorator(staff_required, "dispatch")
+class ServiceRequestDetailView(View):
+    def get(self, request, service_request_id):
+        service_request = get_object_or_404(
+            ServiceRequest, id=service_request_id
+        )
+        if service_request.manager != request.user:
+            return redirect(reverse("crm:dashboard"))
+        context = {
+            "service_request": service_request
+        }
+        return render(request, "crm/service_request_detail.html", context)
+
 
 
 

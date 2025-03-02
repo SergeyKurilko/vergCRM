@@ -1,5 +1,5 @@
-console.log("Базовый скрипт base")
 
+// Переключение темы (темная / светлая)
 function toggleTheme() {
     const body = document.body;
     console.log("Переключаем тему")
@@ -34,3 +34,24 @@ document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
 // Применяем сохраненную тему при загрузке страницы
 document.addEventListener('DOMContentLoaded', applySavedTheme);
+
+///////////////////////////////////////// Инициализация toast ////////////////////////////////////////
+$(document).ready(function() {
+    // Инициализируем toast
+    var toastEl = document.getElementById('backendMessageToast');
+    var toast = new bootstrap.Toast(toastEl);
+});
+
+///////////////////////////////////////// /Инициализация toast ////////////////////////////////////////
+
+
+// Вызов toast
+function showToast(message) {
+    // Наполняем toast текстом
+    $('.backend-message-toast-text').text(message);
+
+    // Показываем toast
+    var toastEl = document.getElementById('backendMessageToast');
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
+}

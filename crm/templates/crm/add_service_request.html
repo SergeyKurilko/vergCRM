@@ -1,7 +1,195 @@
-{% extends 'crm/add_service_request.html' %}
+{% extends 'crm/base.html' %}
+{% load static %}
 
 {% block title %}Новая заявка{% endblock %}
 
 {% block content %}
-Тут создание новой заявки
+
+<div class="container-md container add-new-request-header mt-3 text-center">
+    <h4>Новая заявка</h4>
+</div>
+
+<div class="container-md container add-new-request-body mt-3">
+    <div class="card add-new-request-card">
+        <div class="card-body p-4">
+
+          <!-- Выбор услуги -->
+          <h5 class="card-title">Услуга <i class="bi bi-bucket"></i> :</h5>
+          <div class="service-select-row d-flex flex-row">
+            <select class="form-select service-select w-50" aria-label="Select service">
+                <option selected>Выбрать услугу</option>
+                {% for service in service_list %}
+                <option value="{{ service.id }}">{{ service.title }}</option>
+                {% endfor %}
+            </select>
+            <a data-bs-toggle="modal" data-bs-target="#newServiceModal" type="button" class="ms-2 verg-button-1 w-25 text-center">
+                Новая услуга &nbsp;
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                </svg>
+            </a>
+          </div>
+          <!-- /Выбор услуги -->
+
+          <hr class="hr">
+
+
+          <!-- Выбор клиента -->
+          <h5 class="card-title">Клиент 
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+            </svg>
+            :</h5>
+          <div class="service-select-row d-flex flex-row">
+            <select class="form-select client-select w-50" aria-label="Select service">
+                <option selected>Выбрать клиента</option>
+                {% for client in client_list %}
+                <option value="{{ client.id }}">{{ client.name }}</option>
+                {% endfor %}
+            </select>
+            <a data-bs-toggle="modal" data-bs-target="#newClientModal" type="button" class="ms-2 verg-button-1 w-25 text-center">
+                Новый клиент &nbsp;
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
+                </svg>
+            </a>
+          </div>
+          <!-- /Выбор клиента -->
+
+          <hr class="hr">
+
+          <form id="CreateRequestForm" action="{% url 'crm:ajax_add_new_request' %}" method="post">
+            {% csrf_token %}
+            <input id="service_id" type="hidden" name="service_id">
+            <input id="client_id" type="hidden" name="client_id">
+            <!-- Описание заявки -->
+            <h5 class="card-title">Детали:</h5>
+            <textarea class="form-control" 
+            placeholder="Детали заявки" 
+            name="request_description" 
+            id="RequestDescriptionInput" 
+            rows="5"
+            minlength="5"
+            required
+            ></textarea>
+            <!-- /Описание заявки -->
+            <button type="submit" id="createNewServiceRequestButton" 
+            class="verg-button-1 mt-4 w-100 text-center border-0">
+            Сохранить <i class="bi bi-check-lg"></i></button>
+            <div style="color: red" class="new-service-request-error-place mt-1"></div>
+          </form>
+        </div>
+      </div>
+</div>
+
+
+
+<!-- Modal for new service form -->
+<div class="modal fade" id="newServiceModal" tabindex="-1" aria-labelledby="newServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Новая услуга</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addNewServiceForm" action="{% url 'crm:ajax_add_new_service' %}" method="post">
+                {% csrf_token %}
+                <label for="ServiceInput" class="form-label">Введите название услуги</label>
+                <input class="form-control" 
+                       type="text" 
+                       name="ServiceName" 
+                       id="ServiceInput" 
+                       placeholder="Название услуги" 
+                       minlength="4"
+                       maxlength="350"
+                       required>
+                <div style="color: red" class="new-service-error-place mt-1"></div>
+                <button type="submit" class="verg-button-1 mt-2 p-2 w-100 border-0">Добавить</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /Modal for new service form -->
+
+<!-- Modal for new client form -->
+<div class="modal fade" id="newClientModal" tabindex="-1" aria-labelledby="newClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Новый клиент</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addNewClientForm" action="{% url 'crm:ajax_add_new_client' %}" method="post">
+                {% csrf_token %}
+
+                <!-- ФИО клиента -->
+                <label for="ClientNameInput" class="form-label mb-0">ФИО</label>
+                <input class="form-control mb-3" 
+                       type="text" 
+                       name="ClientName" 
+                       id="ClientNameInput" 
+                       placeholder="ФИО" 
+                       minlength="4"
+                       maxlength="255"
+                       required>
+
+                <!-- Телефон клиента -->
+                <label for="ClientPhoneInput" class="form-label mb-0">Телефон</label>
+                <input class="form-control mb-3" 
+                        type="tel"
+                        name="ClientPhone" 
+                        id="ClientPhoneInput" 
+                        placeholder="Телефон" 
+                        minlength="15"
+                        maxlength="15"
+                        required>
+
+                <!-- Whatsapp клиента -->
+                <label for="ClientWhatsappInput" class="form-label mb-0">Whatsapp</label>
+                <input class="form-control mb-3" 
+                        type="tel"
+                        name="ClientWhatsapp" 
+                        id="ClientWhatsappInput" 
+                        placeholder="whatsapp" 
+                        minlength="15"
+                        maxlength="15">
+
+                <!-- Telegram клиента -->
+                <label for="ClientTelegramInput" class="form-label mb-0">Telegram</label>
+                <input class="form-control mb-3" 
+                        type="tel"
+                        name="ClientTelegram" 
+                        id="ClientTelegramInput" 
+                        placeholder="@telegram" 
+                        minlength="2"
+                        maxlength="55">
+
+                <!-- email клиента -->
+                <label for="ClientEmailInput" class="form-label mb-0">Email</label>
+                <input class="form-control mb-3" 
+                        type="email"
+                        name="ClientEmail" 
+                        id="ClientEmailInput" 
+                        placeholder="email" 
+                        minlength="2"
+                        maxlength="255">
+
+                <div style="color: red" class="new-client-error-place mt-1"></div>
+                <button type="submit" class="verg-button-1 mt-2 p-2 w-100 border-0">Добавить</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /Modal for new service form -->
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'crm/js/add_service_request.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js" type="text/javascript"></script>
 {% endblock %}
