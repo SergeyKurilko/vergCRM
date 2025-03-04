@@ -62,8 +62,6 @@ class ServiceRequest(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE,
                                verbose_name="Клиент")
     address = models.TextField(verbose_name="Адрес", blank=True)
-    # service_name = models.CharField(max_length=155,
-    #                                 verbose_name="Название услуги")
     description = models.TextField(verbose_name="Подробное описание заявки")
     cost_price = models.IntegerField(verbose_name="Общая себестоимость", blank=True, null=True)
     total_price = models.PositiveIntegerField(verbose_name="Общая стоимость", blank=True, null=True)
@@ -103,6 +101,24 @@ class Service(models.Model):
         verbose_name = "Услуга"
         verbose_name_plural = "Услуги"
 
+
+class NoteForServiceRequest(models.Model):
+    text = models.TextField(verbose_name="Текст заметки")
+    service_request = models.ForeignKey(to=ServiceRequest,
+                                        on_delete=models.CASCADE,
+                                        related_name="notes")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name="Дата и время изменения")
+
+    def __str__(self):
+        return f"Заметка №{self.id} к заявке №{self.service_request}."
+
+    class Meta:
+        verbose_name = "Заметка"
+        verbose_name_plural = "Заметки"
+        ordering = ["-updated_at"]
 
 
 class ImageForServiceRequest(models.Model):

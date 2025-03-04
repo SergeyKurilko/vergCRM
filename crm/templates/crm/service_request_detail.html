@@ -1,9 +1,61 @@
 {% extends 'crm/base.html' %}
+{% load static %}
 
 {% block title %}Заявка №{{service_request.id}}{% endblock %}
 
 {% block content %}
 
-Тут ин-фа о заявке: {{ service_request }}
 
+<div class="container-md container mt-3 text-center">
+    <h4>Заявка № {{ service_request.id }}</h4>
+</div>
+
+<div class="container-md container service-request-detail-container mt-3">
+    <div class="card service-request-card">
+        <div class="card-body p-4">
+
+            <h5 class="card-title">Клиент: <i>{{ service_request.client.name }}</i></h5>
+            <hr class="hr">
+            <h5 class="card-title">Услуга: <i>{{ service_request.service.title }}</i></h5>
+            <hr class="hr">
+
+            <h5 class="card-title">Детали заказа:</h5>
+            <div class="service_request-description">
+                {{ service_request.description }}
+            </div>
+
+            <hr class="hr">
+            <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>
+
+            <div class="notes-container">
+                {% for note in service_request.notes.all %}
+                    <div id="note_{{ note.id }}" class="note-for-service-request">
+                        <span class="text-muted">{{ note.created_at }}</span> <hr class="hr mt-1 mb-2">
+                        {{ note.text}} 
+                        
+                    </div>
+                {% empty %}
+                    <div class="">
+                        <span class="mt-2 d-block">У этой заявки пока нет заметок.</span>
+                    </div>
+                {% endfor %}
+            </div>
+            <button 
+            class="verg-button-1 mt-2 border-0" 
+            data-bs-toggle="modal" 
+            data-bs-target="#addNewNoteModal">Добавить заметку</button>
+            
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'crm/incl/modal_for_add_new_note.html' %}
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'crm/js/service-request-detail.js' %}"></script>
 {% endblock %}

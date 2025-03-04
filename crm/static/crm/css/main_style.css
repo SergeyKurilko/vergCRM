@@ -16,6 +16,8 @@
     --ver-g-table-background: #F5F5F5;
     --ver-g-table-separator: black;
     --ver-g-text-color: #3c4145;
+    --ver-g-light-green: rgb(0, 165, 0);
+    --ver-g-red: rgb(227, 13, 13);
 }
 
 [data-theme="dark"] {
@@ -58,6 +60,40 @@ td, th {
     color: var(--ver-g-text-color)
 }
 
+/* ========================== Buttons Rules ================================ */
+
+.verg-button-danger {
+    padding: 8px;
+    background-color: var(--ver-g-red);
+    color: var(--ver-g-white-text);
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+    position: relative;
+    border: none;
+}
+
+.verg-button-danger:hover {
+    padding: 7px;
+}
+
+.verg-button-green {
+    padding: 8px;
+    background-color: var(--ver-g-green-buttons);
+    color: var(--ver-g-white-text);
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+    position: relative;
+    border: none;
+}
+
+.verg-button-green:hover {
+    padding: 7px;
+}
+
 .verg-button-1 {
     padding: 8px;
     background-color: var(--contrast-color);
@@ -73,6 +109,8 @@ td, th {
     background-color: var(--orange-accent-color);
     color: var(--contrast-color);
 }
+
+/* ========================== / Buttons Rules ================================ */
 
 .nav-link, .navbar-brand {
     transition: 0.3s;
@@ -190,3 +228,38 @@ select option:hover {
 }
 
 /* ========================== /Add Service Requests Section Rules ================================ */
+
+
+/* ========================== Service Requests Detail Section Rules ================================ */
+
+.note-for-service-request {
+    border-radius: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    padding: 5px 10px;
+    margin: 8px 0;
+}
+
+/* ========================== /Service Requests Detail Section Rules ================================ */
+
+
+
+
+@keyframes waveEffect {
+    0% {
+        background-color: white; /* Начальный цвет */
+        box-shadow: 4px -1px 30px 8px rgba(169, 251, 169, 0.0);
+    }
+    50% {
+        background-color: rgb(142, 255, 94); /* Цвет в середине анимации */
+        box-shadow: 4px -1px 30px 8px rgba(169, 251, 169, 0.7);
+    }
+    100% {
+        background-color: white; /* Конечный цвет */
+        box-shadow: 4px -1px 30px 8px rgba(169, 251, 169, 0.0);
+    }
+}
+
+/* Применяем анимацию к элементу */
+.wave-effect {
+    animation: waveEffect 2s ease-in-out; /* Длительность анимации 2 секунды */
+}

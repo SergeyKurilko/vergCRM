@@ -1,7 +1,7 @@
 from django.contrib import admin
 from crm.models import (Client, ServiceRequest, Comment,
                         ImageForServiceRequest, UserProfile,
-                        Task, Service)
+                        Task, Service, NoteForServiceRequest)
 
 
 @admin.register(Client)
@@ -35,4 +35,9 @@ class TaskAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(NoteForServiceRequest)
+class NoteForServiceRequestAdmin(admin.ModelAdmin):
     pass

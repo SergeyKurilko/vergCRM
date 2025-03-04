@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views import View
 
 from crm.views import staff_required
-from crm.models import Service, Client, ServiceRequest
+from crm.models import Service, Client, ServiceRequest, NoteForServiceRequest
 
 
 class JsonResponses:
@@ -112,4 +112,27 @@ class AddNewServiceRequestAjaxView(View):
         return JsonResponse({
             "success": True,
             "redirect_url": new_service_request.get_absolute_url()
+        }, status=201)
+
+
+@method_decorator(staff_required, "dispatch")
+class AddNewNoteAjaxView(View):
+    def post(self, request):
+        note_text = request.POST.get("note_text")
+        service_request_id = request.POST.get("service_request_id")
+        if len(note_text) < 5:
+            return json_response.validation_error("Введите текст заметки. Не менее 5 символов.")
+        if not service_request_id:
+            return json_response.validation_error("Что-то пошло не так. Попробуйте перезагрузить страницу.")
+
+        new_note = NoteForServiceRequest.objects.create(
+            text=note_text,
+            service_request_id=service_request_id
+        )
+
+        return JsonResponse({
+            "success": True,
+            "new_note_id": new_note.id,
+            "new_note_text": new_note.text,
+            "new_note_created_at": new_note.created_at
         }, status=201)

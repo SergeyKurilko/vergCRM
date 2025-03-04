@@ -3,7 +3,8 @@ from crm.views import (CrmLoginView, DashboardView, test,
                        user_logout_view, ServiceRequestsListView,
                        ServiceRequestCreateView, ServiceRequestDetailView)
 
-from crm.ajax_views import AddNewServiceAjaxView, AddNewClientAjaxView, AddNewServiceRequestAjaxView
+from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
+                            AddNewServiceRequestAjaxView, AddNewNoteAjaxView)
 
 app_name = "crm"
 
@@ -29,6 +30,7 @@ ajax_urlpatterns = [
     path("ajax/add-new-service", AddNewServiceAjaxView.as_view(), name="ajax_add_new_service"),
     path("ajax/add-new-client", AddNewClientAjaxView.as_view(), name="ajax_add_new_client"),
     path("ajax/add-new-service-request", AddNewServiceRequestAjaxView.as_view(), name="ajax_add_new_request"),
+    path("ajax/add-new-note", AddNewNoteAjaxView.as_view(), name="ajax_add_new_note"),
 ]
 
 urlpatterns += ajax_urlpatterns

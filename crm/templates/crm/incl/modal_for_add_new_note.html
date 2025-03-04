@@ -1,0 +1,31 @@
+<!-- Modal for add new note -->
+<div class="modal fade" id="addNewNoteModal" tabindex="-1" aria-labelledby="addNewNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addNewNoteModalLabel">Новая заметка</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addNewNoteForm" action="{% url 'crm:ajax_add_new_note' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="service_request_id" value="{{ service_request.id }}">
+                <label for="NoteText">Текст заметки</label>
+                <textarea class="form-control" 
+                name="note_text" 
+                id="NoteText" 
+                rows="10" 
+                placeholder="Введите текст заметки"
+                minlength="5"
+                required
+                ></textarea>
+
+                <button id="" class="verg-button-1 mt-3 border-0 w-100" type="submit">Сохранить <i class="bi bi-check-circle"></i></button>
+                <div style="color: red" class="new-note-error-place mt-2"></div>
+            </form>
+            
+            
+        </div>
+      </div>
+    </div>
+</div>
