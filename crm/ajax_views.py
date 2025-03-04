@@ -14,6 +14,13 @@ class JsonResponses:
             "message": message
         }, status=422)
 
+    @staticmethod
+    def not_found_error(message: str):
+        return JsonResponse({
+            "error": True,
+            "message": message
+        }, status=404)
+
 json_response = JsonResponses()
 
 
@@ -136,3 +143,31 @@ class AddNewNoteAjaxView(View):
             "new_note_text": new_note.text,
             "new_note_created_at": new_note.created_at
         }, status=201)
+
+
+@method_decorator(staff_required, "dispatch")
+class AddAddressForServiceRequest(View):
+    def post(self, request):
+        address = request.POST.get('address')
+        service_request_id = request.POST.get('service-request')
+
+        try:
+            service_request = ServiceRequest.objects.get(pk=service_request_id)
+        except ServiceRequest.DoesNotExist:
+            return json_response.not_found_error("Заявка не найдена")
+
+        if not address:
+            return json_response.validation_error("Введите адрес. Не менее 5 символов.")
+
+        if len(address) < 5:
+            return json_response.validation_error("Введите адрес. Не менее 5 символов.")
+
+        service_request.address = address
+        service_request.save()
+
+        service_request_address = service_request.address
+
+        return JsonResponse({
+            "success": True,
+            "address": service_request_address
+        }, status=200)

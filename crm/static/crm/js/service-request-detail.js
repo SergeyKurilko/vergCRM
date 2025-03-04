@@ -1,4 +1,53 @@
 $(document).ready(function () {
+    // Добавление адреса для заявки
+    $('#RequestDetailAddAdressButton').click(function (e) { 
+        e.preventDefault();
+        var RequestDetailAddAdressButton = $(this)
+         
+        // Убираем кнопку добавления адреса
+        RequestDetailAddAdressButton.addClass('d-none')
+
+        // Показываем форму добавления адреса.
+        $('.add-address-form').removeClass('d-none');
+
+        $('#RequestDetailAddAdressInput').focus();
+
+        // Отмена изменения адреса
+        $('#CancelAddAddressButton').click(function (e) { 
+            e.preventDefault();
+            $('#RequestDetailAddAdressInput').val('')
+            $('.add-address-form').addClass('d-none');
+            RequestDetailAddAdressButton.removeClass('d-none');
+            $('.add-adress-error-place').text('');
+        });
+
+        // Сохранение нового адреса
+        $('#AddAddressForm').submit(function (e) { 
+            e.preventDefault();
+
+            var newAddressCsrfToken = $('input[name=csrfmiddlewaretoken]').val()
+            
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': newAddressCsrfToken
+                },
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (response) {
+                    var errorMessage = response.responseJSON['message']
+                    $('.add-adress-error-place').text(errorMessage)
+                }
+            });
+
+        });
+    });
+
+
     // Сохранение новой заметки для заявки
     $('#addNewNoteForm').submit(function (e) { 
         e.preventDefault();

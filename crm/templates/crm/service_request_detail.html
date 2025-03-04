@@ -7,7 +7,7 @@
 
 
 <div class="container-md container mt-3 text-center">
-    <h4>Заявка № {{ service_request.id }}</h4>
+    <h4>Заявка № {{ service_request.id }} ({{ service_request.get_status_display }})</h4>
 </div>
 
 <div class="container-md container service-request-detail-container mt-3">
@@ -17,12 +17,39 @@
             <h5 class="card-title">Клиент: <i>{{ service_request.client.name }}</i></h5>
             <hr class="hr">
             <h5 class="card-title">Услуга: <i>{{ service_request.service.title }}</i></h5>
+            
             <hr class="hr">
 
             <h5 class="card-title">Детали заказа:</h5>
             <div class="service_request-description">
                 {{ service_request.description }}
             </div>
+
+            <hr class="hr">
+
+            <h5 class="card-title">Адрес <i class="bi bi-geo-alt"></i>:</h5>
+            <div class="service_request-address">
+                {% if service_request.address %}
+                {{ service_request.address }}
+                {% else %}
+                <span style="color: red">Адрес пока не добавлен</span> <br>
+                <div class="add-address-form d-none">
+                    <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="service-request" value="{{ service_request.id }}">
+                        <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
+                        <div style="color: red" class="add-adress-error-place mt-2"></div>
+                        <div class="confirm-add-address-buttons d-flex flex-row">
+                            <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                            <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+                        </div>
+                    </form>
+                </div>
+
+                <button id="RequestDetailAddAdressButton" type="button" class="border-0 verg-button-1 mt-2">Добавить адрес</button>
+                {% endif %}
+            </div>
+            
 
             <hr class="hr">
             <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>
