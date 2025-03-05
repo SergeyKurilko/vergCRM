@@ -168,3 +168,32 @@ class AddAddressForServiceRequest(View):
             "success": True,
             "address": address
         }, status=200)
+
+
+@method_decorator(staff_required, "dispatch")
+class AjaxChangeTotalPriceForServiceRequest(View):
+    def post(self, request):
+        new_total_price = request.POST.get("new_total_price")
+        service_id = request.POST.get("service_id")
+
+        if not new_total_price:
+            return json_response.validation_error(
+                message="Введите стоимость."
+            )
+
+        if not new_total_price.isalnum() or (new_total_price.isalnum() and new_total_price < 0):
+            return json_response.validation_error(
+                message="Должно быть числом больше нуля."
+            )
+
+        updated = ServiceRequest.objects.filter(
+            id=service_id
+        ).update(total_price=new_total_price)
+
+        if not updated:
+            return json_response.not_found_error("Заявка не найдена")
+
+        return JsonResponse({
+            "success": True,
+            "new_total_price": new_total_price
+        }, status=200)
