@@ -69,7 +69,7 @@
             
             <hr class="hr">
 
-            <!-- Себестоимость -->
+            <!-- Финансы -->
             <h5 class="card-title">Рассчет стоимости <i class="bi bi-cash-stack"></i>:</h5>
             <div class="coast-price-container">
                 <table class="table table-bordered">
@@ -80,18 +80,32 @@
                     </tr>
                     <tr>
                         <td>Стоимость</td>
-                        <td>{{ service_request.total_price }} ₽</td>
-                        <td class="w-25"><button class="verg-button-1 border-0 w-100" type="button">Изменить стоимость</button></td>
+                        <td>
+                            <span class="current-total-price-placeholder">{{ service_request.total_price }} ₽</span>
+                            <form class="d-none" action="{% url 'crm:ajax_change_request_total_price' %}" id="changeTotalPriceForm" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="service_id" value="{{ service_request.id }}">
+                                <input class="form-control" type="number" name="new_total_price" id="newTotalPriceInput" required>
+                                <div style="color: red" class="total-price-error-place mt-2"></div>
+                                <div class="confirm-total-price-buttons d-flex flex-row">
+                                    <button id="ConfirmTotalPriceButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                                    <button id="CancelTotalPriceButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+                                </div>
+                            </form>
+                        </td>
+                        <td class="w-25"><button id="initialChangeTotalPriceButton" class="verg-button-1 border-0 w-100" type="button">Изменить стоимость</button>
+                        </td>
+                        
                     </tr>
                     <tr>
                         <td>Прибыль</td>
-                        <td>{{ profit }}</td>
+                        <td><span class="request-profit-placeholder">{{ profit }}</span></td>
                         <td></td>
                     </tr>
                 </table>
             </div>
 
-            <!-- /Себестоимость -->
+            <!-- /Финансы -->
 
             <hr class="hr">
             <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>

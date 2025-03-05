@@ -110,6 +110,20 @@ td, th {
     color: var(--contrast-color);
 }
 
+.verg-button-1-disabled {
+    padding: 8px;
+    background-color: var(--contrast-color);
+    color: var(--ver-g-white-text);
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+    position: relative;
+    filter: blur(0.1rem);
+    cursor:not-allowed !important;
+}
+
+
 /* ========================== / Buttons Rules ================================ */
 
 .nav-link, .navbar-brand {

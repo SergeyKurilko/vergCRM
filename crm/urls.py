@@ -52,7 +52,7 @@ ajax_urlpatterns = [
     path("ajax/add-new-address",
          AddAddressForServiceRequest.as_view(),
          name="ajax_add_new_address"),
-    path("ajax/change-request-total-price-",
+    path("ajax/change-request-total-price",
          AjaxChangeTotalPriceForServiceRequest.as_view(),
          name="ajax_change_request_total_price"),
 ]

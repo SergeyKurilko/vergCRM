@@ -202,20 +202,35 @@ class AjaxChangeTotalPriceForServiceRequest(View):
             return json_response.validation_error(
                 message="Введите стоимость."
             )
-
-        if not new_total_price.isalnum() or (new_total_price.isalnum() and new_total_price < 0):
+        if not new_total_price.isdigit():
             return json_response.validation_error(
                 message="Должно быть числом больше нуля."
             )
+        # if int(new_total_price) < 0:
+        #     return json_response.validation_error(
+        #         message="Должно быть числом больше нуля."
+        #     )
 
-        updated = ServiceRequest.objects.filter(
-            id=service_id
-        ).update(total_price=new_total_price)
-
-        if not updated:
+        try:
+            service_request = ServiceRequest.objects.get(id=service_id)
+        except ServiceRequest.DoesNotExist:
             return json_response.not_found_error("Заявка не найдена")
+
+        new_profit = int(new_total_price) - service_request.cost_price
+
+        service_request.total_price = new_total_price
+        service_request.save()
+
+
+        # updated = ServiceRequest.objects.filter(
+        #     id=service_id
+        # ).update(total_price=new_total_price)
+        #
+        # if not updated:
+        #     return json_response.not_found_error("Заявка не найдена")
 
         return JsonResponse({
             "success": True,
-            "new_total_price": new_total_price
+            "new_total_price": f"{new_total_price} ₽",
+            "new_profit": f"{new_profit} ₽"
         }, status=200)

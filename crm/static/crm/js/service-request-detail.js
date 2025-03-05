@@ -55,6 +55,59 @@ $(document).ready(function () {
         });
     });
 
+    // Созранение новой стоимости заявки
+    $('#initialChangeTotalPriceButton').click(function (e) { 
+        e.preventDefault();
+
+        $('.current-total-price-placeholder').addClass('d-none');
+        $('#changeTotalPriceForm').removeClass('d-none');
+        $(this).removeClass('verg-button-1').addClass('verg-button-1-disabled');
+
+        $('#CancelTotalPriceButton').click(function (e) { 
+            e.preventDefault();
+            $('#newTotalPriceInput').val('');
+            $('.current-total-price-placeholder').removeClass('d-none');
+            $('#changeTotalPriceForm').addClass('d-none');
+            $('#initialChangeTotalPriceButton').addClass('verg-button-1').removeClass('verg-button-1-disabled');
+        });
+
+        $('#changeTotalPriceForm').submit(function (e) { 
+            e.preventDefault();
+
+            var newPriceCsrfToken = $('input[name=csrfmiddlewaretoken]').val()
+            
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': newPriceCsrfToken
+                },
+                success: function (response) {
+                    var newTotalPrice = response.new_total_price
+                    var newProfit = response.new_profit
+                    $('#newTotalPriceInput').val('');
+                    $('.current-total-price-placeholder').removeClass('d-none');
+                    $('#changeTotalPriceForm').addClass('d-none');
+                    $('#initialChangeTotalPriceButton').addClass('verg-button-1').removeClass('verg-button-1-disabled');
+
+                    $('.current-total-price-placeholder').text(newTotalPrice)
+                    $('.request-profit-placeholder').text(newProfit)
+
+                    showToast("Стоимость обновлена")
+                    
+                },
+                error: function (response) {
+                    var errorMessage = response.responseJSON['message']
+                    $('.total-price-error-place').text(errorMessage)
+                }
+            });
+
+        });
+        
+    });
+
 
     // Сохранение новой заметки для заявки
     $('#addNewNoteForm').submit(function (e) { 
