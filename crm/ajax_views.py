@@ -7,6 +7,9 @@ from crm.models import Service, Client, ServiceRequest, NoteForServiceRequest
 
 
 class JsonResponses:
+    """
+    Типовые ответы для ajax запросов с клиентской стороны.
+    """
     @staticmethod
     def validation_error(message: str):
         return JsonResponse({
@@ -27,6 +30,9 @@ json_response = JsonResponses()
 
 @method_decorator(staff_required, "dispatch")
 class AddNewServiceAjaxView(View):
+    """
+    Создание новой заявки
+    """
     def post(self, request):
         service_name = request.POST.get("ServiceName")
 
@@ -56,6 +62,9 @@ class AddNewServiceAjaxView(View):
 
 @method_decorator(staff_required, "dispatch")
 class AddNewClientAjaxView(View):
+    """
+    Добавление нового клиента.
+    """
     def post(self, request):
         client_name = request.POST.get("ClientName")
         client_phone = request.POST.get("ClientPhone")
@@ -95,6 +104,9 @@ class AddNewClientAjaxView(View):
 
 @method_decorator(staff_required, "dispatch")
 class AddNewServiceRequestAjaxView(View):
+    """
+    Добавление новой услуги для заявки.
+    """
     def post(self, request):
         data = request.POST
         service_id = data.get('service_id')
@@ -124,6 +136,9 @@ class AddNewServiceRequestAjaxView(View):
 
 @method_decorator(staff_required, "dispatch")
 class AddNewNoteAjaxView(View):
+    """
+    Добавление заметки для заявки
+    """
     def post(self, request):
         note_text = request.POST.get("note_text")
         service_request_id = request.POST.get("service_request_id")
@@ -147,6 +162,9 @@ class AddNewNoteAjaxView(View):
 
 @method_decorator(staff_required, "dispatch")
 class AddAddressForServiceRequest(View):
+    """
+    Добавление адреса для заявки.
+    """
     def post(self, request):
         address = request.POST.get('address')
         service_request_id = request.POST.get('service-request')
@@ -172,6 +190,10 @@ class AddAddressForServiceRequest(View):
 
 @method_decorator(staff_required, "dispatch")
 class AjaxChangeTotalPriceForServiceRequest(View):
+    """
+    Изменение общей стоимости для заявки.
+    Ожидает ajax запрос из скрипта.
+    """
     def post(self, request):
         new_total_price = request.POST.get("new_total_price")
         service_id = request.POST.get("service_id")
