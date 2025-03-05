@@ -151,23 +151,20 @@ class AddAddressForServiceRequest(View):
         address = request.POST.get('address')
         service_request_id = request.POST.get('service-request')
 
-        try:
-            service_request = ServiceRequest.objects.get(pk=service_request_id)
-        except ServiceRequest.DoesNotExist:
-            return json_response.not_found_error("Заявка не найдена")
-
         if not address:
             return json_response.validation_error("Введите адрес. Не менее 5 символов.")
 
         if len(address) < 5:
             return json_response.validation_error("Введите адрес. Не менее 5 символов.")
 
-        service_request.address = address
-        service_request.save()
+        # Обновляем только поле address
+        updated = ServiceRequest.objects.filter(pk=service_request_id).update(address=address)
 
-        service_request_address = service_request.address
+        if not updated:
+            return json_response.not_found_error("Заявка не найдена")
+
 
         return JsonResponse({
             "success": True,
-            "address": service_request_address
+            "address": address
         }, status=200)

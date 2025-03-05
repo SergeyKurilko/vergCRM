@@ -36,7 +36,15 @@ $(document).ready(function () {
                     'X-CSRF-TOKEN': newAddressCsrfToken
                 },
                 success: function (response) {
-                    window.location.reload();
+                    var newAddress = response.address
+                    $('.address-missing-alert-placeholder').remove();
+                    $('.service-request-adress-placeholder').text(newAddress)
+                    $('#RequestDetailAddAdressInput').val('')
+                    $('.add-address-form').addClass('d-none');
+                    $('.add-adress-error-place').text('');
+                    $('.change-address-button').removeClass('d-none')
+                    showToast("Адрес изменен")
+                    
                 },
                 error: function (response) {
                     var errorMessage = response.responseJSON['message']
