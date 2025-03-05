@@ -67,6 +67,31 @@
             </div>
             <!-- / Адрес -->
             
+            <hr class="hr">
+
+            <!-- Себестоимость -->
+            <h5 class="card-title">Рассчет стоимости <i class="bi bi-cash-stack"></i>:</h5>
+            <div class="coast-price-container">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>Себестоимость</td>
+                        <td><div class="">{{ service_request.cost_price }} ₽</div></td>
+                        <td class="w-25"><button class="verg-button-1 border-0 w-100 py-2" type="button">Рассчитать себестоимость</button></td>
+                    </tr>
+                    <tr>
+                        <td>Стоимость</td>
+                        <td>{{ service_request.total_price }} ₽</td>
+                        <td class="w-25"><button class="verg-button-1 border-0 w-100" type="button">Изменить стоимость</button></td>
+                    </tr>
+                    <tr>
+                        <td>Прибыль</td>
+                        <td>{{ profit }}</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- /Себестоимость -->
 
             <hr class="hr">
             <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>

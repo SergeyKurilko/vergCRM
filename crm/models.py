@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from crm.utils import service_request_image_path
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 
 
 class UserProfile(models.Model):
@@ -63,7 +64,11 @@ class ServiceRequest(models.Model):
                                verbose_name="Клиент")
     address = models.TextField(verbose_name="Адрес", blank=True)
     description = models.TextField(verbose_name="Подробное описание заявки")
-    cost_price = models.IntegerField(verbose_name="Общая себестоимость", blank=True, null=True)
+    cost_price = models.IntegerField(verbose_name="Общая себестоимость",
+                                     blank=True,
+                                     null=True,
+                                     default=0
+                                     )
     total_price = models.PositiveIntegerField(verbose_name="Общая стоимость", blank=True, null=True)
     manager = models.ForeignKey(to=User,
                                 on_delete=models.SET_NULL,
@@ -91,7 +96,61 @@ class ServiceRequest(models.Model):
         ordering = ["-updated_at"]
 
 
+class CostPriceCase(models.Model):
+    """
+    Кейс себестоимости
+    """
+    title = models.CharField(
+        max_length=255,
+        verbose_name="Название кейса",
+        blank=True,
+        null=True)
+    sum = models.IntegerField(
+        verbose_name="Общая себестоимость кейса",
+        blank=True,
+        null=True,
+        default=0
+    )
+    service_request = models.ForeignKey(
+        to="ServiceRequest",
+        related_name="coast_price_cases",
+        verbose_name="Заявка",
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = "Кейс себестоимости"
+        verbose_name_plural = "Кейс себестоимости"
+
+
+class PartOfCostPriceCase(models.Model):
+    """
+    Одна составная часть кейса себестоимости
+    """
+    title = models.CharField(
+        max_length=300,
+        verbose_name="Название"
+    )
+    sum = models.IntegerField(
+        validators=[MinValueValidator(0)],
+        verbose_name="Сумма"
+    )
+    cost_price_case = models.ForeignKey(
+        to="CostPriceCase",
+        related_name="parts",
+        verbose_name="Часть себестоимости",
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = "Часть кейса себестоимости"
+        verbose_name_plural = "Части кейсов себестоимости"
+
+
 class Service(models.Model):
+    """
+    Услуга для заявки
+    """
     title = models.CharField(max_length=350, verbose_name="Услуга")
 
     def __str__(self):
