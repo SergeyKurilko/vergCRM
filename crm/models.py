@@ -125,6 +125,9 @@ class CostPriceCase(models.Model):
         on_delete=models.CASCADE
     )
 
+    def __str__(self):
+        return f"Кейс себестоимости. Прайс: {self.sum}. Выбран: {self.current}"
+
     class Meta:
         verbose_name = "Кейс себестоимости"
         verbose_name_plural = "Кейс себестоимости"
