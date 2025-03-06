@@ -5,6 +5,34 @@
 
 {% block content %}
 
+<!-- Offcanvas for cost price cases -->
+<div class="offcanvas offcanvas-bottom h-100" 
+tabindex="-1" 
+id="CalculateCostPriceOffcanvas" 
+aria-labelledby="CalculateCostPriceOffcanvasLabel">
+</div>
+<!-- /Offcanvas for cost cases -->
+
+<!-- Modal for add cost price case -->
+<div class="modal fade" 
+id="addCostPriceCaseModal" 
+tabindex="-1" 
+aria-labelledby="addCostPriceCaseModalLabel" 
+aria-hidden="true">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCostPriceCaseModalLabel">Новый кейс себестоимости</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-body-add-cost-price-case">
+        ...
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Modal for add cost price case -->
+
 
 <div class="container-md container mt-3 text-center">
     <h4>Заявка № {{ service_request.id }} ({{ service_request.get_status_display }})</h4>
@@ -70,13 +98,19 @@
             <hr class="hr">
 
             <!-- Финансы -->
-            <h5 class="card-title">Рассчет стоимости <i class="bi bi-cash-stack"></i>:</h5>
+            <h5 class="card-title">Расчет стоимости <i class="bi bi-cash-stack"></i>:</h5>
             <div class="coast-price-container">
                 <table class="table table-bordered">
                     <tr>
                         <td>Себестоимость</td>
                         <td><div class="">{{ service_request.cost_price }} ₽</div></td>
-                        <td class="w-25"><button class="verg-button-1 border-0 w-100 py-2" type="button">Рассчитать себестоимость</button></td>
+                        <td class="w-25">
+                            <button class="verg-button-1 border-0 w-100 py-2" 
+                            data-call-offcanvas-url="{% url 'crm:ajax_calculate-cost-price' %}"
+                            data-service-request-id="{{ service_request.id }}"
+                            id="callCulateCostPriceOffcanvasButton"
+                            type="button">Рассчитать себестоимость</button>
+                        </td>
                     </tr>
                     <tr>
                         <td>Стоимость</td>
@@ -85,7 +119,7 @@
                             <form class="d-none" action="{% url 'crm:ajax_change_request_total_price' %}" id="changeTotalPriceForm" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="service_id" value="{{ service_request.id }}">
-                                <input class="form-control" type="number" name="new_total_price" id="newTotalPriceInput" required>
+                                <input class="form-control" min="1" type="number" name="new_total_price" id="newTotalPriceInput" required>
                                 <div style="color: red" class="total-price-error-place mt-2"></div>
                                 <div class="confirm-total-price-buttons d-flex flex-row">
                                     <button id="ConfirmTotalPriceButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>

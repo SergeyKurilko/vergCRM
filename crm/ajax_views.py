@@ -1,9 +1,12 @@
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.views import View
 
 from crm.views import staff_required
-from crm.models import Service, Client, ServiceRequest, NoteForServiceRequest
+from crm.models import (Service, Client, ServiceRequest,
+                        NoteForServiceRequest, CostPriceCase,
+                        PartOfCostPriceCase)
 
 
 class JsonResponses:
@@ -223,3 +226,95 @@ class AjaxChangeTotalPriceForServiceRequest(View):
             "new_total_price": f"{new_total_price} ₽",
             "new_profit": f"{new_profit} ₽"
         }, status=200)
+
+
+@method_decorator(staff_required, "dispatch")
+class GetHtmlForCalculateCostPrice(View):
+    def get(self, request):
+        allowed_queries_params = {'get_cases', 'add_case'}
+        query_param = request.GET.get("query_param")
+        #TODO: обработать ответ с неразрешенным параметром или с отсутствием параметра
+
+        # Получение html для рендера содержимого calculate-cost-price-offcanvas.html
+        if query_param == 'get_cases':
+            service_request_id = request.GET.get("ServiceRequestId")
+            cost_price_cases = CostPriceCase.objects.filter(
+                service_request_id=service_request_id
+            )
+            context = {
+                "test": "Привет!",
+                "cost_price_cases": cost_price_cases,
+                "service_request_id": service_request_id
+            }
+            offcanvas_html = render_to_string(
+                template_name="crm/incl/calculate-cost-price-offcanvas.html",
+                request=request,
+                context=context
+            )
+            return JsonResponse({
+                "success": True,
+                "offcanvas_html": offcanvas_html
+                }
+            )
+
+        # Получение html для рендера формы создания нового CostPriceCase
+        if query_param == 'add_case':
+            service_request_id = request.GET.get("ServiceRequestId")
+            context = {
+                "service_request_id": service_request_id
+            }
+            add_cost_case_html = render_to_string(
+                template_name="crm/incl/add-cost-price-case-form.html",
+                request=request,
+                context=context
+            )
+
+            return JsonResponse({
+                "success": True,
+                "add_cost_case_html": add_cost_case_html
+                }
+            )
+
+
+@method_decorator(staff_required, "dispatch")
+class AddCostPriceCaseView(View):
+    def post(self, request):
+        data = request.POST
+
+        case_title = data.get("case_title")
+        service_request_id = data.get("service_request")
+        total_cost_price = data.get("total_cost_price")
+
+        # Создаем объект CostPriceCase
+        cost_price_case = CostPriceCase.objects.create(
+            title=case_title,
+            service_request_id=service_request_id,
+            sum=int(total_cost_price)
+        )
+
+        # Парсим данные из формы для создания списка PartOfCostPriceCase объектов
+        cost_price_parts = []
+        for key, value in data.items():
+            if key.startswith("part_title_"):
+                index = key.split("_")[-1]
+                part_title = value
+                part_price = data.get(f"part_price_{index}")
+
+
+                if part_title and part_price:
+                    cost_price_parts.append(
+                        PartOfCostPriceCase(
+                            title=part_title,
+                            sum=int(part_price),
+                            cost_price_case=cost_price_case
+                        )
+                    )
+
+        # Создаем все PartOfCostPriceCase за один запрос
+        PartOfCostPriceCase.objects.bulk_create(cost_price_parts)
+
+        return JsonResponse({
+            "success": True,
+            "case_title": case_title,
+            "case_price": total_cost_price,
+            })

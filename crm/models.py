@@ -69,7 +69,10 @@ class ServiceRequest(models.Model):
                                      null=True,
                                      default=0
                                      )
-    total_price = models.PositiveIntegerField(verbose_name="Общая стоимость", blank=True, null=True)
+    total_price = models.PositiveIntegerField(verbose_name="Общая стоимость",
+                                              blank=True,
+                                              null=True,
+                                              default=0)
     manager = models.ForeignKey(to=User,
                                 on_delete=models.SET_NULL,
                                 related_name="service_requests",
@@ -110,6 +113,10 @@ class CostPriceCase(models.Model):
         blank=True,
         null=True,
         default=0
+    )
+    current = models.BooleanField(
+        verbose_name="Актуальный",
+        default=True
     )
     service_request = models.ForeignKey(
         to="ServiceRequest",

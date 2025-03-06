@@ -60,6 +60,12 @@ td, th {
     color: var(--ver-g-text-color)
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 /* ========================== Buttons Rules ================================ */
 
 .verg-button-danger {
@@ -75,7 +81,7 @@ td, th {
 }
 
 .verg-button-danger:hover {
-    padding: 7px;
+    box-shadow: 2px 3px 11px -7px rgba(34, 60, 80, 0.75);
 }
 
 .verg-button-green {
@@ -91,7 +97,7 @@ td, th {
 }
 
 .verg-button-green:hover {
-    padding: 7px;
+    box-shadow: 2px 3px 11px -7px rgba(34, 60, 80, 0.75);
 }
 
 .verg-button-1 {
@@ -121,6 +127,16 @@ td, th {
     position: relative;
     filter: blur(0.1rem);
     cursor:not-allowed !important;
+}
+
+.delete-cost-part-button {
+    color: red;
+    transition: 0.3s;
+}
+
+.delete-cost-part-button:hover {
+    background-color: red;
+    color: var(--ver-g-white-text) !important;
 }
 
 

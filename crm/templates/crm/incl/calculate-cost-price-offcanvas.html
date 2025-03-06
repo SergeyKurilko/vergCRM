@@ -1,0 +1,45 @@
+{% load static %}
+
+<div class="container-md container-fluid mt-3">
+  <div class="offcanvas-header ps-0 pb-0">
+    <h4>Кейсы себестоимости для заявки.</h4>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <hr class="hr mt-0">
+
+  <div class="cost-price-cases-container">
+    
+    <table class="table cost-price-cases-table {% if cost_price_cases.count < 1 %}d-none{% endif %}">
+      <thead>
+        <tr>
+          <th scope="col">Название</th>
+          <th scope="col">Сумма</th>
+          <th scope="col">Выбран</th>
+        </tr>
+      </thead>
+      <tbody class="cost-price-cases">
+        {% for case in cost_price_cases %}
+        <tr>
+          <td>{{ case.title }}</td>
+          <td>{{ case.sum }}</td>
+          <td>{{ case.current }}</td>
+        </tr>
+        {% empty %}
+        <h5>У этой заявки пока нет кейсов себестоимости.</h5>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <button 
+      id="AddCostPriceCaseButton" 
+      data-service-request-id="{{ service_request_id }}"
+      data-add-case-url="{% url 'crm:ajax_calculate-cost-price' %}" 
+      class="verg-button-1 border-0 mt-2">Добавить кейс <i class="bi bi-box"></i>
+    </button>
+   
+  </div>
+</div>
+
+
+
+<script src="{% static 'crm/js/calculate-cost-price.js' %}"></script>

@@ -1,0 +1,51 @@
+{% load static %}
+
+<form id="addNewCostPriceCaseForm" action="{% url 'crm:ajax_add_cost_price_case' %}" method="post">
+    <label for="case_title">Название кейса</label>
+    {% csrf_token %}
+    <input id="case_title" name="case_title" type="text" class="form-control" placeholder="Название кейса" required>
+    <input id="service_request" name="service_request" type="hidden" value="{{ service_request_id }}">
+    <input id="total_cost_price" name="total_cost_price" type="hidden" value="">
+    <hr class="hr">
+    <span>Состав себестоимости</span>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Стоимость</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cost-part-item_1">
+            <td><input type="text" name="part_title_1" id="part_title_1" required placeholder="название позиции" class="form-control"></td>
+            <td><input type="number" name="part_price_1" id="part_price_1" required placeholder="стоимость" class="form-control"></td>
+            <td><input type="button" id="" value="удалить" class="form-control delete-cost-part-button" style="color: red"></td>
+          </tr>
+          <tr>
+            <td><button id="add-cost-part" type="button" class="verg-button-1 border-0 w-100">Добавить +</button></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th></th>
+            <th>Сумма</th>
+            <th class="total_cost_price"><span class="total_cost_price_val">0</span> ₽</th>
+          </tr>
+        </tbody>
+    </table>
+
+    <hr class="hr">
+
+    <div style="color: red" class="add-adress-error-place mt-2"></div>
+    <div class="confirm-add-cost-price-case-buttons d-flex flex-row">
+        <button id="ConfirmCreateCostPriceCaseButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+        <button id="CancelCreateCostPriceCaseButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+    </div>  
+        
+
+
+
+</form>
+
+<script src="{% static 'crm/js/add-cost-price-case.js' %}"></script>

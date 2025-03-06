@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.db.models import F, Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
@@ -67,6 +69,7 @@ class CrmLoginView(View):
 
 def test(request):
     # Тестовая view
+    pprint(request.META)
     st = request.user.is_staff
     return HttpResponse(f"user.is_staff: {st}")
 

@@ -62,6 +62,7 @@ $(document).ready(function () {
         $('.current-total-price-placeholder').addClass('d-none');
         $('#changeTotalPriceForm').removeClass('d-none');
         $(this).removeClass('verg-button-1').addClass('verg-button-1-disabled');
+        $('#newTotalPriceInput').focus();
 
         $('#CancelTotalPriceButton').click(function (e) { 
             e.preventDefault();
@@ -176,4 +177,26 @@ $(document).ready(function () {
         });
     });
 
+    // Вызоа окна calculate-cost-price-offcanvas и вставка в него контента
+    $('#callCulateCostPriceOffcanvasButton').click(function (e) { 
+        e.preventDefault();
+        var urlForCallOffcanvas = $(this).data('call-offcanvas-url')
+        var serviceRequestId = $(this).data('service-request-id')
+        console.log("Отправлять будем сюда: " + urlForCallOffcanvas)
+        var params = `query_param=get_cases&ServiceRequestId=${serviceRequestId}`
+
+        $.ajax({
+            type: "GET",
+            url: urlForCallOffcanvas,
+            data: params,
+            dataType: "json",
+            success: function (response) {
+                var htmlForOffcanvas = response.offcanvas_html
+                $('#CalculateCostPriceOffcanvas').html(htmlForOffcanvas)
+
+                // Открываем offcanvas после наполнения
+                $('#CalculateCostPriceOffcanvas').offcanvas('toggle')
+            }
+        });    
+    });
 });
