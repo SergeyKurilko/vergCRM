@@ -21,4 +21,25 @@ $(document).ready(function () {
         });
     });
 
+    // Переключение кейсов себестоимости
+    $('.select_this_case').click(function (e) { 
+        e.preventDefault();
+        var service_id = $(this).data('request-id')
+        var case_id = $(this).data('case-id')
+        var csrf = $('input[name=csrfmiddlewaretoken]').val()
+
+        $.ajax({
+            type: "POST",
+            url: urlForChangeCurrentCase,
+            data: {"request_id": service_id, "case_id": case_id, "csrfmiddlewaretoken": csrf},
+            dataType: "json",
+
+            success: function (response) {
+                
+            }
+        });
+        
+        
+    });
+
 });

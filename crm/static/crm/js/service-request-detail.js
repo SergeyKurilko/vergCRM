@@ -177,7 +177,7 @@ $(document).ready(function () {
         });
     });
 
-    // Вызоа окна calculate-cost-price-offcanvas и вставка в него контента
+    // Вызов окна calculate-cost-price-offcanvas и вставка в него контента
     $('#callCulateCostPriceOffcanvasButton').click(function (e) { 
         e.preventDefault();
         var urlForCallOffcanvas = $(this).data('call-offcanvas-url')

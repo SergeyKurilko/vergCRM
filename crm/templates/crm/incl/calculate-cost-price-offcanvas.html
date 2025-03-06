@@ -22,7 +22,11 @@
         <tr>
           <td>{{ case.title }}</td>
           <td>{{ case.sum }}</td>
-          <td>{{ case.current }}</td>
+          <td>
+            {% if case.current %}<span data-request-id="{{ service_request_id }}" data-case-id="{{ case.id }}" class="selected-case" style="color: green"><i class="bi bi-check-circle"></i></span>
+            {% else %}<a type="button" data-request-id="{{ service_request_id }}" data-case-id="{{ case.id }}" class="select_this_case">Выбрать</a>
+            {% endif %}
+          </td>
         </tr>
         {% empty %}
         <h5>У этой заявки пока нет кейсов себестоимости.</h5>
@@ -39,6 +43,10 @@
    
   </div>
 </div>
+
+<script>
+  var urlForChangeCurrentCase = "{% url 'crm:ajax_change_current_cost_price_case' %}"
+</script>
 
 
 

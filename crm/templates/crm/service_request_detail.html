@@ -103,7 +103,7 @@ aria-hidden="true">
                 <table class="table table-bordered">
                     <tr>
                         <td>Себестоимость</td>
-                        <td><div class="">{{ service_request.cost_price }} ₽</div></td>
+                        <td><div class="request-current-cost">{{ service_request.cost_price }} ₽</div></td>
                         <td class="w-25">
                             <button class="verg-button-1 border-0 w-100 py-2" 
                             data-call-offcanvas-url="{% url 'crm:ajax_calculate-cost-price' %}"

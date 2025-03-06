@@ -57,6 +57,9 @@ $(document).ready(function() {
         e.preventDefault();
         var urlForCreateCostPriceCase = $(this).attr('action')
         var csrfForCreateCostPriceCase = $('input[name=csrfmiddlewaretoken]').val()
+        
+        var currentSelectedCase = $('.selected-case')
+        var currentSelectedCaseId = currentSelectedCase.data('case-id')
 
         $.ajax({
             type: "POST",
@@ -69,20 +72,36 @@ $(document).ready(function() {
             success: function (response) {
                 var caseTitle = response.case_title
                 var casePrice = response.case_price
+                var caseId = response.cost_price_case_id
+                var requestId = response.service_request_id
 
                 var htmlForNewCase = `
                     <tr>
                         <td>${caseTitle}</td>
                         <td>${casePrice}</td>
-                        <td></td>
+                        <td><span data-request-id="${requestId}" data-case-id="${caseId}" class="selected-case" style="color: green"><i class="bi bi-check-circle"></i></span></td>
                     </tr>
                 `
 
                 $('.modal-body-add-cost-price-case').html('')
                 $('#addCostPriceCaseModal').modal('hide');
                 $('.cost-price-cases-table').removeClass('d-none')
+                
+                currentSelectedCase.html(`<a type="button" data-request-id="${requestId}" data-case-id="${currentSelectedCaseId}" class="select_this_case">Выбрать</a>`)
                 $('.cost-price-cases').append(htmlForNewCase);
+
+                $('.request-current-cost').text(casePrice + " ₽")
+                var currentRequestPriceText = $('.current-total-price-placeholder').text()
+                var currentRequestPriceInt = parseInt(currentRequestPriceText.slice(0, -2).trim(), 10);
+                var newCurrentProfit = currentRequestPriceInt - casePrice
+
+                $('.request-profit-placeholder').text(newCurrentProfit + " ₽")
             }
         });
+    });
+
+    $('#CancelCreateCostPriceCaseButton').click(function (e) { 
+        e.preventDefault();
+        $('#addCostPriceCaseModal').modal('hide');
     });
 });

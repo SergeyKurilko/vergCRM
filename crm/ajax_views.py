@@ -317,4 +317,24 @@ class AddCostPriceCaseView(View):
             "success": True,
             "case_title": case_title,
             "case_price": total_cost_price,
+            "cost_price_case_id": cost_price_case.id,
+            "service_request_id": service_request_id
             })
+
+
+@method_decorator(staff_required, "dispatch")
+class ChangeCurrentCostCaseView(View):
+    def post(self, request):
+        """
+        При сохранении CostPriceCase срабатывает signal post_save
+        """
+        request_id = request.POST.get("request_id")
+        case_id = request.POST.get("case_id")
+
+        cost_price_case = CostPriceCase.objects.get(id=case_id)
+        cost_price_case.current = True
+        cost_price_case.save()
+
+        return JsonResponse({
+            "success": True,
+        })
