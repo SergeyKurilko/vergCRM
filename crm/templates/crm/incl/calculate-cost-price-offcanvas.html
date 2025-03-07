@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="container-md container-fluid mt-3">
-  <div class="offcanvas-header ps-0 pb-0">
+  <div class="offcanvas-header ps-0 py-0">
     <h4>Кейсы себестоимости для заявки.</h4>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
@@ -9,17 +9,18 @@
 
   <div class="cost-price-cases-container">
     
-    <table class="table cost-price-cases-table {% if cost_price_cases.count < 1 %}d-none{% endif %}">
+    <table class="table rounded-table cost-price-cases-table {% if cost_price_cases.count < 1 %}d-none{% endif %}">
       <thead>
         <tr>
           <th scope="col">Название</th>
           <th scope="col">Сумма</th>
           <th scope="col">Выбран</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody class="cost-price-cases">
         {% for case in cost_price_cases %}
-        <tr>
+        <tr class="case_tr" id="case_tr_{{ case.id }}">
           <td>{{ case.title }}</td>
           <td>{{ case.sum }}</td>
           <td>
@@ -27,6 +28,8 @@
             {% else %}<a type="button" data-request-id="{{ service_request_id }}" data-case-id="{{ case.id }}" class="select_this_case">Выбрать</a>
             {% endif %}
           </td>
+          <td><span class="delete-case-button" data-case-id="{{ case.id }}">Удалить <i class="bi bi-x-circle"></i></span></td>
+          
         </tr>
         {% empty %}
         <h5>У этой заявки пока нет кейсов себестоимости.</h5>
@@ -46,6 +49,7 @@
 
 <script>
   var urlForChangeCurrentCase = "{% url 'crm:ajax_change_current_cost_price_case' %}"
+  var urlForDelCase = "{% url 'crm:ajax_delete_cost_price_case' %}"
 </script>
 
 

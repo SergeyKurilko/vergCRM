@@ -2,7 +2,6 @@
 // Переключение темы (темная / светлая)
 function toggleTheme() {
     const body = document.body;
-    console.log("Переключаем тему")
     // Проверяем текущую тему
     if (body.getAttribute('data-theme') === 'dark') {
         // Если тема темная, то переключаем на светлую
@@ -47,11 +46,30 @@ $(document).ready(function() {
 
 // Вызов toast
 function showToast(message) {
-    // Наполняем toast текстом
+    // Определяем toast и закрываем toast (если он уже открыт)
+    var toastEl = document.getElementById('backendMessageToast');
+    var toast = new bootstrap.Toast(toastEl);
+    toast.hide();
+
+    // Наполняем toast текстом и добавляем стили
+    $('#backendMessageToast').removeClass('alert_toast').addClass('success_toast')
     $('.backend-message-toast-text').text(message);
 
     // Показываем toast
+    toast.show();
+}
+
+// Вызов toast
+function showAlertToast(message) {
+    // Определяем toast и закрываем toast (если он уже открыт)
     var toastEl = document.getElementById('backendMessageToast');
     var toast = new bootstrap.Toast(toastEl);
+    toast.hide();
+
+    // Наполняем toast текстом и добавляем стили
+    $('#backendMessageToast').removeClass('success_toast').addClass('alert_toast')
+    $('.backend-message-toast-text').text(message);
+
+    // Показываем toast
     toast.show();
 }

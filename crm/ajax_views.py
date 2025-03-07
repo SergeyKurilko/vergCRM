@@ -337,4 +337,65 @@ class ChangeCurrentCostCaseView(View):
 
         return JsonResponse({
             "success": True,
+            "cost_price_case_sum": cost_price_case.sum,
+            "selected_case_id": case_id
         })
+
+
+@method_decorator(staff_required, "dispatch")
+class DeleteCostCaseView(View):
+    def get(self, request):
+        case_id = request.GET.get("case_id")
+        if not case_id:
+            return json_response.validation_error("Expected case_id.")
+
+        try:
+            cost_price_case = CostPriceCase.objects.get(
+                id=case_id
+            )
+        except CostPriceCase.DoesNotExist:
+            return json_response.not_found_error("CostPriceCase not found.")
+
+        if cost_price_case.current:
+            return json_response.validation_error("Нельзя удалить выбранный кейс.")
+
+        context = {
+            "case_id": cost_price_case.id,
+            "case_title": cost_price_case.title,
+            "case_sum": cost_price_case.sum
+        }
+        confirm_delete_case_modal_html = render_to_string(
+            template_name="crm/incl/confirm-delete-cost-price-case.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "confirm_delete_case_modal_html": confirm_delete_case_modal_html
+        })
+
+    def delete(self, request):
+        case_id = request.GET.get("delete_case")
+        if not case_id:
+            return json_response.validation_error("Expected case_id.")
+
+        try:
+            cost_price_case = CostPriceCase.objects.get(
+                id=case_id
+            )
+        except CostPriceCase.DoesNotExist:
+            return json_response.not_found_error("CostPriceCase not found.")
+
+        if cost_price_case.current:
+            return json_response.validation_error("Нельзя удалить выбранный кейс.")
+
+        cost_price_case.delete()
+
+        return JsonResponse({
+            "success": True,
+        })
+
+
+class CostPriceCaseDetailView(View):
+    pass

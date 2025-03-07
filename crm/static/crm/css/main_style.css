@@ -174,16 +174,30 @@ select option:hover {
     red !important; /* Цвет текста при наведении */
 }
 
-#backendMessageToast {
+.success_toast {
     position: fixed;  /* Фиксированное позиционирование */
-    top: 57px;        /* Отступ сверху */
+    bottom: 15px;
     right: 20px;      /* Отступ справа */
     z-index: 1050;    /* Убедитесь, что toast поверх других элементов */
     min-width: 250px; /* Минимальная ширина */
-    background-color: var(--ver-g-table-background);
-    color: var(--ver-g-text-color);
+    background-color: greenyellow;
+    color: var(--contrast-color);
     border-radius: 5px; /* Скругление углов */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+    font-weight: 600;
+}
+
+.alert_toast {
+    position: fixed;  /* Фиксированное позиционирование */
+    bottom: 15px;
+    right: 20px;      /* Отступ справа */
+    z-index: 1050;    /* Убедитесь, что toast поверх других элементов */
+    min-width: 250px; /* Минимальная ширина */
+    background-color: rgb(255, 47, 47);
+    color: var(--ver-g-white-text);
+    border-radius: 5px; /* Скругление углов */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+    font-weight: 600;
 }
 
 /* ========================== Paginator Section Rules ================================ */
@@ -271,6 +285,31 @@ select option:hover {
 
 /* ========================== /Service Requests Detail Section Rules ================================ */
 
+
+/* Cost Price Cases offcanvas Rules */
+
+
+#CalculateCostPriceOffcanvas {
+    background-color: rgba(224, 255, 255, 0.289);
+    overflow: auto;
+    padding-bottom: 25px;
+}
+
+#CalculateCostPriceOffcanvas .container-md {
+    background-color: #ddebefee;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid grey;
+}
+
+.delete-case-button {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.delete-case-button:hover {
+    color: red;
+}
 
 
 

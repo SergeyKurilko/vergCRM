@@ -119,7 +119,7 @@ aria-hidden="true">
                             <form class="d-none" action="{% url 'crm:ajax_change_request_total_price' %}" id="changeTotalPriceForm" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="service_id" value="{{ service_request.id }}">
-                                <input class="form-control" min="1" type="number" name="new_total_price" id="newTotalPriceInput" required>
+                                <input class="form-control" min="1" type="number" name="new_total_price" id="newTotalPriceInput" required placeholder="введите стоимость">
                                 <div style="color: red" class="total-price-error-place mt-2"></div>
                                 <div class="confirm-total-price-buttons d-flex flex-row">
                                     <button id="ConfirmTotalPriceButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>

@@ -23,7 +23,6 @@ $(document).ready(function() {
 
     // Обработчик для кнопки "Добавить +"
     $('#add-cost-part').on('click', function() {
-        console.log("Добавить строку")
         // Находим последний элемент с классом cost-part-item_
         var lastItem = $('[class^="cost-part-item_"]').last();
         var lastIndex = parseInt(lastItem.attr('class').split('_')[1], 10); // Получаем текущий номер
@@ -75,20 +74,28 @@ $(document).ready(function() {
                 var caseId = response.cost_price_case_id
                 var requestId = response.service_request_id
 
+                // Выбранный до создания новго кейс
+                var oldSelectedCase = $('.selected-case')
+                var oldSelectedCaseId = oldSelectedCase.data('case-id')
+                var requestId = oldSelectedCase.data('request-id')
+                var newHtmlForOldSelectedCase = `<a type="button" data-request-id="${requestId}" data-case-id="${oldSelectedCaseId}" class="select_this_case">Выбрать</a>`
+                oldSelectedCase.replaceWith(newHtmlForOldSelectedCase);
+
+                // Новый кейс
                 var htmlForNewCase = `
-                    <tr>
+                    <tr class="case_tr" id="case_tr_${caseId}">
                         <td>${caseTitle}</td>
                         <td>${casePrice}</td>
                         <td><span data-request-id="${requestId}" data-case-id="${caseId}" class="selected-case" style="color: green"><i class="bi bi-check-circle"></i></span></td>
+                        <td><span class="delete-case-button" data-case-id="${caseId}">Удалить <i class="bi bi-x-circle"></i></span></td>
                     </tr>
                 `
+                $('.cost-price-cases').append(htmlForNewCase);
 
                 $('.modal-body-add-cost-price-case').html('')
                 $('#addCostPriceCaseModal').modal('hide');
-                $('.cost-price-cases-table').removeClass('d-none')
+                $('.cost-price-cases-table').removeClass('d-none');
                 
-                currentSelectedCase.html(`<a type="button" data-request-id="${requestId}" data-case-id="${currentSelectedCaseId}" class="select_this_case">Выбрать</a>`)
-                $('.cost-price-cases').append(htmlForNewCase);
 
                 $('.request-current-cost').text(casePrice + " ₽")
                 var currentRequestPriceText = $('.current-total-price-placeholder').text()
