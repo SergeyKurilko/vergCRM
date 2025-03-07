@@ -1,7 +1,9 @@
+{% extends 'crm/base.html' %}
 {% load static %}
 
+{% block content %}
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#costPriceDetailModal">
+<button type="button" class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#costPriceDetailModal">
   Открыть modal
 </button>
 
@@ -11,14 +13,62 @@
 
 
 <div class="modal fade" id="costPriceDetailModal" tabindex="-1" aria-labelledby="costPriceDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="costPriceDetailModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="costPriceDetailModalLabel">Кейс себестоимости "{{ cost_price_case.title }}"</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+          <!-- Modal body -->
+          <form id="detailCostPriceCaseForm" action="" method="post">
+            <label for="case_title">Название кейса</label>
+            {% csrf_token %}
+            <div class="">
+              <input id="case_detail_title" name="case_title" type="text" class="form-control text-muted" value="{{ cost_price_case.title }}" readonly>
+              <button id="ConfirmCreateCostPriceCaseButton" type="submit" class="border-0 verg-button-green mt-2"><i class="bi bi-check-circle"></i></button>
+            </div>
+            <input id="service_request" name="service_request" type="hidden" value="">
+            <input id="total_cost_price" name="total_cost_price" type="hidden" value="">
+            <hr class="hr">
+            <span>Состав себестоимости</span>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Стоимость</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="cost-part-item_1">
+                    <td><input type="text" name="part_title_1" id="part_title_1" required placeholder="название позиции" class="form-control"></td>
+                    <td><input type="number" name="part_price_1" id="part_price_1" required placeholder="стоимость" class="form-control"></td>
+                    <td><input type="button" id="" value="удалить" class="form-control delete-cost-part-button" style="color: red"></td>
+                  </tr>
+                  <tr>
+                    <td><button id="add-cost-part" type="button" class="verg-button-1 border-0 w-100">Добавить +</button></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th>Сумма</th>
+                    <th class="total_cost_price"><span class="total_cost_price_val">0</span> ₽</th>
+                  </tr>
+                </tbody>
+            </table>
+        
+            <hr class="hr">
+        
+            <div style="color: red" class="add-adress-error-place mt-2"></div>
+            <div class="confirm-add-cost-price-case-buttons d-flex flex-row">
+                <button id="ConfirmCreateCostPriceCaseButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                <button id="CancelCreateCostPriceCaseButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+            </div>  
+        </form>
+
+          <!-- / Modal body -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -30,5 +80,6 @@
     <script src="{% static 'crm/js/cost-price-case-detail-modal.js' %}"></script>
 </div>
 
+{% endblock %}
 
 

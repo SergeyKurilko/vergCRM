@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
@@ -397,5 +398,21 @@ class DeleteCostCaseView(View):
         })
 
 
+@method_decorator(staff_required, "dispatch")
 class CostPriceCaseDetailView(View):
-    pass
+    def get(self, request):
+        case_id = request.GET.get("case_id")
+        if not case_id:
+            return json_response.validation_error("Expected case_id.")
+
+        try:
+            cost_price_case = CostPriceCase.objects.get(
+                id=case_id
+            )
+        except CostPriceCase.DoesNotExist:
+            return json_response.not_found_error("CostPriceCase not found.")
+
+        # TODO: после завершения разработки поменять на json + render_to_string
+        return render(request,
+                      'crm/incl/cost-price-case-detail-modal.html',
+                      {"cost_price_case": cost_price_case})
