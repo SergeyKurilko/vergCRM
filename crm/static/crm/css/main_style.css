@@ -129,14 +129,57 @@ input::-webkit-inner-spin-button {
     cursor:not-allowed !important;
 }
 
-.delete-cost-part-button {
+.delete-cost-part-button,
+.delete-new-part-button {
     color: red;
     transition: 0.3s;
 }
 
-.delete-cost-part-button:hover {
+.delete-cost-part-button:hover,
+.delete-new-part-button:hover {
     background-color: red;
     color: var(--ver-g-white-text) !important;
+}
+
+.verg-input-button-1 {
+    background-color: var(--contrast-color);
+    color: var(--ver-g-white-text);
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.verg-input-button-1:focus {
+    background-color: var(--contrast-color) !important;
+    color: var(--ver-g-white-text) !important;
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.verg-input-button-1:hover {
+    background-color: var(--orange-accent-color);
+    color: var(--contrast-color);
+}
+
+.verg-green-input-btn {
+    background-color: var(--ver-g-green-buttons) !important;
+    color: var(--ver-g-white-text) !important;
+}
+
+.verg-input-button-1:focus {
+    background-color: var(--ver-g-green-buttons);
+    color: var(--ver-g-white-text);
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.edit_part_inputs_focus:focus {
+    border: 1px solid rgb(94, 255, 0) !important;
 }
 
 
@@ -332,3 +375,13 @@ select option:hover {
 .wave-effect {
     animation: waveEffect 2s ease-in-out; /* Длительность анимации 2 секунды */
 }
+
+
+/* ========================== Cost Price Case Detail Section Rules ================================ */
+
+.cost-price-case-edit-mode {
+    border: 2px solid #61f461;
+    border-radius: 5px;
+}
+
+/* ========================== /Cost Price Case Detail Section Rules ================================ */

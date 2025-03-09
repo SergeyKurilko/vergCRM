@@ -21,7 +21,7 @@
       <tbody class="cost-price-cases">
         {% for case in cost_price_cases %}
         <tr class="case_tr" id="case_tr_{{ case.id }}">
-          <td>{{ case.title }}</td>
+          <td><a id="LinkForCase{{ case.id }}" class="get-case-detail-modal" href="{% url 'crm:ajax_cost-price-case-detail' %}?case_id={{ case.id }}">{{ case.title }}</a></td>
           <td>{{ case.sum }}</td>
           <td>
             {% if case.current %}<span data-request-id="{{ service_request_id }}" data-case-id="{{ case.id }}" class="selected-case" style="color: green"><i class="bi bi-check-circle"></i></span>

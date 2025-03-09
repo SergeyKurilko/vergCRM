@@ -1,57 +1,105 @@
-{% extends 'crm/base.html' %}
+
 {% load static %}
-
-{% block content %}
-
-<button type="button" class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#costPriceDetailModal">
-  Открыть modal
-</button>
-
-
-
-
 
 
 <div class="modal fade" id="costPriceDetailModal" tabindex="-1" aria-labelledby="costPriceDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+      <div class="modal-content cost-price-case-detail-modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="costPriceDetailModalLabel">Кейс себестоимости "{{ cost_price_case.title }}"</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <h4 class="edit-mode-title text-center d-none">Режим редактирования</h4>
           <!-- Modal body -->
-          <form id="detailCostPriceCaseForm" action="" method="post">
-            <label for="case_title">Название кейса</label>
+          <form id="detailCostPriceCaseForm" action="{% url 'crm:ajax_cost-price-case-detail' %}" method="post">
             {% csrf_token %}
-            <div class="">
-              <input id="case_detail_title" name="case_title" type="text" class="form-control text-muted" value="{{ cost_price_case.title }}" readonly>
-              <button id="ConfirmCreateCostPriceCaseButton" type="submit" class="border-0 verg-button-green mt-2"><i class="bi bi-check-circle"></i></button>
-            </div>
-            <input id="service_request" name="service_request" type="hidden" value="">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Название кейса</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input id="case_detail_title" name="case_title" type="text" class="form-control text-muted" value="{{ cost_price_case.title }}" readonly>
+                    </td>
+                    <td>
+                      <input 
+                      type="button" 
+                      id="editCaseTitle"
+                      value="редактировать" 
+                      class="form-control verg-input-button-1 editPartItem d-none">
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              
+              </table>
+            <input id="service_request" name="cost_price_id" type="hidden" value="{{ cost_price_case.id }}">
             <input id="total_cost_price" name="total_cost_price" type="hidden" value="">
             <hr class="hr">
-            <span>Состав себестоимости</span>
             <table class="table">
                 <thead>
                   <tr>
                     <th scope="col">Название</th>
                     <th scope="col">Стоимость</th>
                     <th scope="col"></th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="cost-part-item_1">
-                    <td><input type="text" name="part_title_1" id="part_title_1" required placeholder="название позиции" class="form-control"></td>
-                    <td><input type="number" name="part_price_1" id="part_price_1" required placeholder="стоимость" class="form-control"></td>
-                    <td><input type="button" id="" value="удалить" class="form-control delete-cost-part-button" style="color: red"></td>
+                  {% for part in cost_price_case.parts.all %}
+                  <tr class="part-item_{{ part.id }}">
+                    <td><input 
+                      type="text" 
+                      name="part_title_{{ part.id }}" 
+                      id="part_title_{{ part.id }}" 
+                      required 
+                      placeholder="название позиции" 
+                      class="form-control text-muted" 
+                      value="{{ part.title }}" 
+                      readonly>
+                    </td>
+                    <td><input 
+                      type="number" 
+                      name="part_price_{{ part.id }}" 
+                      id="part_price_{{ part.id }}" 
+                      required 
+                      placeholder="стоимость" 
+                      class="form-control text-muted"
+                      value="{{ part.sum }}"
+                      readonly>
+                    </td>
+                    <td>
+                      <input 
+                      type="button" 
+                      id="edit_part_btn_{{ part.id }}"
+                      data-part-id="{{ part.id }}"
+                      value="редактировать" 
+                      class="form-control verg-input-button-1 editPartItem d-none">
+                    </td>
+                    <td>
+                      <input 
+                      type="button" 
+                      id="deletePartItem" 
+                      value="удалить" 
+                      class="form-control delete-cost-part-button d-none" 
+                      style="color: red">
+                    </td>
                   </tr>
-                  <tr>
-                    <td><button id="add-cost-part" type="button" class="verg-button-1 border-0 w-100">Добавить +</button></td>
+                  {% endfor %}
+                  <tr class="add-new-part-tr">
+                    <td><button id="add-new-part-btn" type="button" class="verg-button-1 border-0 w-100 d-none">Добавить +</button></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                   </tr>
-                  <tr>
+                  <tr class="total_cost_tr">
+                    <th></th>
                     <th></th>
                     <th>Сумма</th>
                     <th class="total_cost_price"><span class="total_cost_price_val">0</span> ₽</th>
@@ -61,25 +109,45 @@
         
             <hr class="hr">
         
-            <div style="color: red" class="add-adress-error-place mt-2"></div>
-            <div class="confirm-add-cost-price-case-buttons d-flex flex-row">
-                <button id="ConfirmCreateCostPriceCaseButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
-                <button id="CancelCreateCostPriceCaseButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
-            </div>  
+            <div style="color: red" class="edit-cost-price-case-error-place mt-2"></div>
+            <div class="confirm-edit-cost-price-case-buttons d-flex flex-row d-none">
+                <button id="ConfirmEditCostPriceCase" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                <button id="CancelEditCostPriceCaseButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+            </div>
+            <div class="on-off-edit-mode-buttons d-flex flex-row">
+              <button id="OnEditModeBtn" type="button" class="border-0 verg-button-1 mt-2">Режим редактирования <i class="bi bi-pencil-square"></i></button>
+            </div>    
         </form>
 
           <!-- / Modal body -->
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
       </div>
     </div>
 
+    <!-- Modal for confirm cancel changes -->
+    <div class="modal fade" id="confirmCancelChangesModal" tabindex="-1" aria-labelledby="confirmCancelChangesModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h6>Кажется были внесены изменения. Вы точно хотите отменить? В таком случае изменения не будут сохранены.</h6>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary final-cancel-save-edits-for-case">Да, я хочу отменить изменения.</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Вернуться к редактированию</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Modal for confirm cancel changes -->
+
+
     <script src="{% static 'crm/js/cost-price-case-detail-modal.js' %}"></script>
+    <script>
+      var currentCaseTotalPrice = {{ cost_price_case.sum }}
+    </script>
 </div>
 
-{% endblock %}
+
+
 
 

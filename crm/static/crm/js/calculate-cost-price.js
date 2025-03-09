@@ -94,5 +94,44 @@ $(document).ready(function () {
         });
     });
 
+    // Функция получения модального окна с cost case price detail
+    
+    function getCostPriceCaseModal(link) {
+        $.ajax({
+            type: "GET",
+            url: link,
+            dataType: "json",
+            success: function (response) {
+                var costPriceCaseHtml = response.cost_price_case_html
+                $('.main_wrapper').prepend(costPriceCaseHtml);
+                $('#costPriceDetailModal').modal('show')
+            }
+        });
+    }
+
+    // Обработчик нажатия на вызов (link) cost price case detail
+    $(document).on('click', '.get-case-detail-modal', function (e) {
+        e.preventDefault();
+        var linkForGetModal = $(this).attr('href')
+        getCostPriceCaseModal(linkForGetModal)
+        }
+    )
+
+    // Обработчик события закрытия modal
+    $(document).on('hidden.bs.modal', '#costPriceDetailModal', function(){
+        $('#costPriceDetailModal').remove(); // При закрытии, удаляем элемент
+        $('.modal-backdrop').remove(); // Удаляем backdrop
+      });
+
+    // Функция для отмены редактирования cost price detail
+    function cancelChangesCostPriceCase() {
+        $('#confirmCancelChangesModal').modal('hide');
+        $('#costPriceDetailModal').modal('hide');
+    }
+
+    // Обработчик нажатия отмены изменений, внесенных в cost case detail
+    $(document).on('click', '.final-cancel-save-edits-for-case', function () {
+        cancelChangesCostPriceCase()
+    })
 
 });

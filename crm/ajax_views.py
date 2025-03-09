@@ -1,3 +1,6 @@
+from pprint import pprint
+import json
+
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -404,7 +407,6 @@ class CostPriceCaseDetailView(View):
         case_id = request.GET.get("case_id")
         if not case_id:
             return json_response.validation_error("Expected case_id.")
-
         try:
             cost_price_case = CostPriceCase.objects.get(
                 id=case_id
@@ -412,7 +414,100 @@ class CostPriceCaseDetailView(View):
         except CostPriceCase.DoesNotExist:
             return json_response.not_found_error("CostPriceCase not found.")
 
-        # TODO: после завершения разработки поменять на json + render_to_string
-        return render(request,
-                      'crm/incl/cost-price-case-detail-modal.html',
-                      {"cost_price_case": cost_price_case})
+        cost_price_case_html = render_to_string(
+            template_name='crm/incl/cost-price-case-detail-modal.html',
+            context={"cost_price_case": cost_price_case},
+            request=request,
+        )
+
+        return JsonResponse({
+            "cost_price_case_html": cost_price_case_html
+        })
+
+        # # TODO: после завершения разработки поменять на json + render_to_string
+        # return render(request,
+        #               'crm/incl/cost-price-case-detail-modal.html',
+        #               {"cost_price_case": cost_price_case})
+
+    def post(self, request):
+        query_dict = request.POST
+
+        # Ожидаемые ключи
+        required_keys = {'case_title', 'cost_price_id',
+                         'total_cost_price',
+                         'existing_parts_have_been_modified',
+                         'total_price_has_been_changed',
+                         'has_new_parts', 'case_title'}
+
+        # Проверка наличия всех ожидаемых ключей в request.POST
+        if not required_keys.issubset(set(query_dict.keys())):
+            return json_response.validation_error(
+                message="Что-то пошло не так. Перезагрузите страницу"
+            )
+
+        existing_parts_have_been_modified = query_dict.get("existing_parts_have_been_modified")
+        cost_price_id = query_dict.get("cost_price_id")
+        total_cost_price = query_dict.get("total_cost_price")
+        total_price_has_been_changed = query_dict.get("total_price_has_been_changed")
+        has_new_parts = query_dict.get("has_new_parts")
+
+        try:
+            cost_price_case = CostPriceCase.objects.get(id=cost_price_id)
+        except CostPriceCase.DoesNotExist:
+            return json_response.not_found_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        if total_price_has_been_changed == "true":
+            cost_price_case.sum = int(total_cost_price)
+
+
+        # Были изменены существующие поля
+        if existing_parts_have_been_modified == "true":
+            modified_parts_ids = []
+            for key, value in query_dict.items():
+                if key.startswith("part_title_"):
+                    index = key[11:]
+                    modified_parts_ids.append(index)
+
+            # Список объектов для обновления
+            modified_parts = PartOfCostPriceCase.objects.filter(
+                id__in=modified_parts_ids
+            )
+
+            # Обновляем значения в полях title и price
+            for part in modified_parts:
+                part_id = part.id
+                part.title = query_dict[f"part_title_{part_id}"]
+                part.sum = int(query_dict[f"part_price_{part_id}"])
+
+            PartOfCostPriceCase.objects.bulk_update(modified_parts, ['title', 'sum'])
+
+        # Были добавлены новые поля (новые PartOfCostPriceCase)
+        if has_new_parts == "true":
+            new_parts = []
+            for key, value in query_dict.items():
+                if key.startswith("new_part_title_"):
+                    index = key[15:]
+                    new_part = PartOfCostPriceCase(
+                            title=query_dict[f"new_part_title_{index}"],
+                            sum=int(query_dict[f"new_part_price_{index}"]),
+                            cost_price_case=cost_price_case,
+                        )
+                    new_parts.append(new_part)
+
+
+            # Создаем все PartOfCostPriceCase за один запрос
+            PartOfCostPriceCase.objects.bulk_create(new_parts)
+
+        if cost_price_case.title != query_dict["case_title"]:
+            cost_price_case.title = query_dict["case_title"]
+
+        cost_price_case.save()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "case_id": cost_price_case.id
+            }
+        )
