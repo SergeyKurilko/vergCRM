@@ -1,11 +1,15 @@
 from pprint import pprint
 import json
 
+
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.views import View
+
+
 
 from crm.views import staff_required
 from crm.models import (Service, Client, ServiceRequest,
@@ -281,6 +285,30 @@ class GetHtmlForCalculateCostPrice(View):
 
 
 @method_decorator(staff_required, "dispatch")
+class UpdateListOfCostPriceCases(View):
+    def get(self, request: HttpRequest):
+
+        service_request_id = request.GET.get("ServiceRequestId")
+        cost_price_cases = CostPriceCase.objects.filter(
+            service_request_id=service_request_id
+        )
+        context = {
+            "cost_price_cases": cost_price_cases,
+            "service_request_id": service_request_id
+        }
+        list_of_cost_prices_html = render_to_string(
+            template_name="crm/dynamic_content/calculate-cost-content.html",
+            request=request,
+            context=context
+        )
+        return JsonResponse({
+            "success": True,
+            "new_content": list_of_cost_prices_html
+            }
+        )
+
+
+@method_decorator(staff_required, "dispatch")
 class AddCostPriceCaseView(View):
     def post(self, request):
         data = request.POST
@@ -322,16 +350,16 @@ class AddCostPriceCaseView(View):
             "case_title": case_title,
             "case_price": total_cost_price,
             "cost_price_case_id": cost_price_case.id,
-            "service_request_id": service_request_id
+            "service_request_id": service_request_id,
+            "url_for_update_cost_price_list": reverse(
+                "crm:ajax-update-list-cost-prices"
+                )
             })
 
 
 @method_decorator(staff_required, "dispatch")
 class ChangeCurrentCostCaseView(View):
     def post(self, request):
-        """
-        При сохранении CostPriceCase срабатывает signal post_save
-        """
         request_id = request.POST.get("request_id")
         case_id = request.POST.get("case_id")
 
@@ -339,10 +367,22 @@ class ChangeCurrentCostCaseView(View):
         cost_price_case.current = True
         cost_price_case.save()
 
+        ServiceRequest.objects.filter(id=request_id).update(cost_price=cost_price_case.sum)
+
+        (CostPriceCase.objects.filter(
+            service_request_id=request_id
+        )
+        .exclude(id=case_id)
+        .update(current=False))
+
+
+
         return JsonResponse({
             "success": True,
-            "cost_price_case_sum": cost_price_case.sum,
-            "selected_case_id": case_id
+            "url_for_update_cost_price_list": reverse(
+                "crm:ajax-update-list-cost-prices"
+            ),
+            "current_cost_price": cost_price_case.sum
         })
 
 
@@ -430,14 +470,18 @@ class CostPriceCaseDetailView(View):
         #               {"cost_price_case": cost_price_case})
 
     def post(self, request):
+        """
+        Редактирование кейса
+        """
         query_dict = request.POST
+        print(query_dict)
 
         # Ожидаемые ключи
         required_keys = {'case_title', 'cost_price_id',
                          'total_cost_price',
                          'existing_parts_have_been_modified',
                          'total_price_has_been_changed',
-                         'has_new_parts', 'case_title'}
+                         'has_new_parts', 'case_title', 'for_delete_ids'}
 
         # Проверка наличия всех ожидаемых ключей в request.POST
         if not required_keys.issubset(set(query_dict.keys())):
@@ -450,6 +494,7 @@ class CostPriceCaseDetailView(View):
         total_cost_price = query_dict.get("total_cost_price")
         total_price_has_been_changed = query_dict.get("total_price_has_been_changed")
         has_new_parts = query_dict.get("has_new_parts")
+        for_delete_ids = query_dict.get("for_delete_ids")
 
         try:
             cost_price_case = CostPriceCase.objects.get(id=cost_price_id)
@@ -458,8 +503,17 @@ class CostPriceCaseDetailView(View):
                 "Что-то пошло не так. Перезагрузите страницу."
             )
 
+        if len(for_delete_ids) > 0:
+            deleted_parts = PartOfCostPriceCase.objects.filter(
+                id__in=for_delete_ids.split(',')
+            ).delete()
+
+
         if total_price_has_been_changed == "true":
             cost_price_case.sum = int(total_cost_price)
+            ServiceRequest.objects.filter(
+                id=cost_price_case.service_request_id
+            ).update(cost_price=int(total_cost_price))
 
 
         # Были изменены существующие поля
@@ -508,6 +562,11 @@ class CostPriceCaseDetailView(View):
         return JsonResponse(
             {
                 "success": True,
-                "case_id": cost_price_case.id
+                "case_id": cost_price_case.id,
+                "url_for_update_cost_price_list": reverse(
+                    "crm:ajax-update-list-cost-prices"
+                ),
+                "case_is_current": cost_price_case.current,
+                "current_cost_price": cost_price_case.sum
             }
         )

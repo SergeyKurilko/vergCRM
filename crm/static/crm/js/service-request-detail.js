@@ -192,11 +192,141 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 var htmlForOffcanvas = response.offcanvas_html
-                $('#CalculateCostPriceOffcanvas').html(htmlForOffcanvas)
+                // $('#CalculateCostPriceOffcanvas').html(htmlForOffcanvas)
+                $('.main_wrapper').prepend(htmlForOffcanvas);
 
                 // Открываем offcanvas после наполнения
                 $('#CalculateCostPriceOffcanvas').offcanvas('toggle')
             }
         });    
     });
+
+
+    ////////// Обработчики для динамчески добавляющегося контента ///////////////////////////////////////////
+    // Функция для подсчета суммы в cost price case detail
+    function calculateTotalCostPrice() {
+        let total = 0;
+        console.log("Считаем цену")
+
+        $('input[id^="part_price_"]').each(function() {
+            let value = parseInt($(this).val()) || 0;
+            total += value;
+        });
+
+        $('input[id^="new_part_price_"]').each(function() {
+            let value = parseInt($(this).val()) || 0;
+            total += value;
+        });
+
+        $('.total_cost_price_val').text(total);
+        $('#total_cost_price').val(total);
+    }
+
+    function getCostPriceCaseModal(link) {
+        $.ajax({
+            type: "GET",
+            url: link,
+            dataType: "json",
+            success: function (response) {
+                var costPriceCaseHtml = response.cost_price_case_html
+                $('.main_wrapper').prepend(costPriceCaseHtml);
+                $('#costPriceDetailModal').modal('show')
+            }
+        });
+    }
+
+    // Функция для отмены редактирования cost price detail
+    function cancelChangesCostPriceCase() {
+        $('#confirmCancelChangesModal').modal('hide');
+        $('#costPriceDetailModal').modal('hide');
+    }
+
+    // Обработчик нажатия отмены изменений, внесенных в cost case detail
+    $(document).on('click', '.final-cancel-save-edits-for-case', function () {
+        cancelChangesCostPriceCase()
+    })
+
+    // Обработчик нажатия на вызов (link) cost price case detail
+    $(document).on('click', '.get-case-detail-modal', function (e) {
+        e.preventDefault();
+        var linkForGetModal = $(this).attr('href')
+        getCostPriceCaseModal(linkForGetModal)
+        }
+    )
+
+    // Обработчик события закрытия modal
+    $(document).on('hidden.bs.modal', '#costPriceDetailModal', function(){
+        $('#costPriceDetailModal').remove(); // При закрытии, удаляем элемент
+      });
+
+    // Обработчик нажатия кнопки включения режима редактирования
+    $(document).on('click', '#OnEditModeBtn', function() {
+        offOnEditMode();
+    });
+
+    // Обработчик нажатия кнопки выключения режима редактирования
+    $(document).on('click', '#CancelEditCostPriceCaseButton', function() {
+        if (!hasChanges) {
+            offOnEditMode();
+        } else {
+            $('#confirmCancelChangesModal').modal('show');
+            $('.cost-price-case-detail-modal-content').css('opacity', 0.4)
+            console.log("Были изменения. Нужно предупредить пользователя")
+        }
+        
+    });
+
+        // Обработчик изменения значений в полях part_price
+    $(document).on('input', 'input[id^="part_price_"]', function() {
+        calculateTotalCostPrice();
+    });
+
+    $(document).on('input', 'input[id^="new_part_price"]', function() {
+        calculateTotalCostPrice();
+    });
+
+    // Удаление кейса себестоимости
+    $(document).on('click', '.delete-case-button', function () {
+        var caseIdForDelete = $(this).data('case-id')
+        var params = `case_id=${caseIdForDelete}`
+
+        // Запрос окна подтверждения удаления
+        $.ajax({
+            type: "GET",
+            url: urlForDelCase,
+            data: params,
+            dataType: "json",
+            success: function (response) {
+                var modalForConfirmDeletHtml = response.confirm_delete_case_modal_html
+                $('.main_wrapper').prepend(modalForConfirmDeletHtml);
+
+                // Открываем новый modal
+                $('#confirmDeleteCaseModal').modal('show')
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+    // Получение формы создания нового кейса себестоимости
+    $(document).on('click', '#AddCostPriceCaseButton', function () {
+        var urlForAddCostPriceCase = $(this).data('add-case-url')
+            var serviceRequestId = $(this).data('service-request-id')
+            var params = `query_param=add_case&ServiceRequestId=${serviceRequestId}`
+    
+            $.ajax({
+                type: "GET",
+                url: urlForAddCostPriceCase,
+                data: params,
+                dataType: "json",
+                success: function (response) {
+                    var AddCostCaseHtml = response.add_cost_case_html
+                    $('.modal-body-add-cost-price-case').html(AddCostCaseHtml)
+                    $('#addCostPriceCaseModal').modal('show');
+                }
+            });
+    })
+        
 });

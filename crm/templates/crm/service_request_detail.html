@@ -6,11 +6,8 @@
 {% block content %}
 
 <!-- Offcanvas for cost price cases -->
-<div class="offcanvas offcanvas-bottom h-100" 
-tabindex="-1" 
-id="CalculateCostPriceOffcanvas" 
-aria-labelledby="CalculateCostPriceOffcanvasLabel">
-</div>
+
+
 <!-- /Offcanvas for cost cases -->
 
 <!-- Modal for add cost price case -->
@@ -174,5 +171,8 @@ aria-hidden="true">
 {% endblock %}
 
 {% block scripts %}
+<script>
+    var currentServiceRequestId = {{ service_request.id }}
+</script>
 <script src="{% static 'crm/js/service-request-detail.js' %}"></script>
 {% endblock %}

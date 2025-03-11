@@ -165,10 +165,8 @@ class ServiceRequestDetailView(View):
         if service_request.manager != request.user:
             return redirect(reverse("crm:dashboard"))
 
-        if service_request.total_price > service_request.cost_price:
-            profit = f"{str(service_request.total_price - service_request.cost_price)} ₽"
-        else:
-            profit = "Неизвестно"
+
+        profit = f"{str(service_request.total_price - service_request.cost_price)} ₽"
 
         context = {
             "service_request": service_request,

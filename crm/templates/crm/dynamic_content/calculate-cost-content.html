@@ -1,16 +1,4 @@
-{% load static %}
-<div class="offcanvas offcanvas-bottom h-100" 
-tabindex="-1" 
-id="CalculateCostPriceOffcanvas" 
-aria-labelledby="CalculateCostPriceOffcanvasLabel">
-<div class="container-md container-fluid mt-3">
-  <div class="offcanvas-header ps-0 py-0">
-    <h4>Кейсы себестоимости для заявки.</h4>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <hr class="hr mt-0">
-
-  <div class="cost-price-cases-container">
+<div class="cost-price-cases-container">
     
     <table class="table rounded-table cost-price-cases-table {% if cost_price_cases.count < 1 %}d-none{% endif %}">
       <thead>
@@ -48,15 +36,3 @@ aria-labelledby="CalculateCostPriceOffcanvasLabel">
     </button>
    
   </div>
-</div>
-<script>
-  var urlForChangeCurrentCase = "{% url 'crm:ajax_change_current_cost_price_case' %}"
-  var urlForDelCase = "{% url 'crm:ajax_delete_cost_price_case' %}"
-</script>
-
-
-
-<script src="{% static 'crm/js/calculate-cost-price.js' %}"></script>
-</div>
-
-

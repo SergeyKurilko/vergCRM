@@ -3,6 +3,8 @@ var newPartItemCounter = 1;
 var existing_parts_have_been_modified = false;
 var hasChanges = false;
 
+var partsForDeleteSet = new Set();
+
 // Функция включения режима редактирования
 function offOnEditMode() {
     if (!editMode) {
@@ -112,7 +114,7 @@ function toggleReadonlyCaseTitleInput () {
     }
 }
 
-// Функция для подсчета суммы
+// Функция для подсчета суммы в cost price case detail
 function calculateTotalCostPrice() {
     let total = 0;
     console.log("Считаем цену")
@@ -143,41 +145,14 @@ function checkTotalPriceChanges() {
     return currentCaseTotalPrice != parseInt(realTotalPrice, 10)
 }
 
-// Обработчик нажатия кнопки включения режима редактирования
-$(document).on('click', '#OnEditModeBtn', function() {
-    offOnEditMode();
-});
-
-// Обработчик нажатия кнопки выключения режима редактирования
-$(document).on('click', '#CancelEditCostPriceCaseButton', function() {
-    if (!hasChanges) {
-        offOnEditMode();
-    } else {
-        $('#confirmCancelChangesModal').modal('show');
-        $('.cost-price-case-detail-modal-content').css('opacity', 0.4)
-        console.log("Были изменения. Нужно предупредить пользователя")
-    }
-    
-});
 
 // Обработчик события закрытия модального окна подтверждения отмены внесения изменений
 $('#confirmCancelChangesModal').on('hidden.bs.modal', function () {
     $('.cost-price-case-detail-modal-content').css("opacity", "1");
 });
 
-
-
 // Инициализация суммы при загрузке страницы
 calculateTotalCostPrice();
-
-// Обработчик изменения значений в полях part_price
-$(document).on('input', 'input[id^="part_price_"]', function() {
-    calculateTotalCostPrice();
-});
-
-$(document).on('input', 'input[id^="new_part_price"]', function() {
-    calculateTotalCostPrice();
-});
 
 // Обработчик нажатия кнопки "редактировать" для parts inputs
 $('.editPartItem').click(function (e) { 
@@ -207,13 +182,12 @@ $(document).on('click', '.delete-new-part-button', function() {
 });
 
 
-// Отправка формы для изменения cost price case
+// Отправка формы для редактирования cost price case
 $('#detailCostPriceCaseForm').submit(function (e) { 
     e.preventDefault();
     
     // Получаем данные формы в виде массива
     let formData = $(this).serializeArray();
-    console.log("formData " + formData)
 
     // Добавляем новый параметр
     formData.push({
@@ -228,6 +202,10 @@ $('#detailCostPriceCaseForm').submit(function (e) {
         name: "total_price_has_been_changed",
         value: checkTotalPriceChanges(),
     });
+    formData.push({
+       name: "for_delete_ids",
+       value: Array.from(partsForDeleteSet)
+    });
 
     // Преобразуем массив обратно в строку запроса
     let serializedData = $.param(formData);
@@ -239,17 +217,62 @@ $('#detailCostPriceCaseForm').submit(function (e) {
         dataType: "json",
         success: function (response) {
             var caseId = response.case_id
-            $('#costPriceDetailModal').remove();
-            $('.modal-backdrop').remove();
-            $(`#LinkForCase${caseId}`).trigger('click')
+            var urlForUpdateContent = response.url_for_update_cost_price_list
+            var elementForUpdateContent = $('.cost-price-cases-container')
+            var caseIsCurrent = response.case_is_current
+            var currentTotalCost = response.current_cost_price
+            var currentTotalPrice = $('.current-total-price-placeholder').html().slice(0, -2)
+            $('#costPriceDetailModal').modal('hide');
+
+            contentUpdate(
+                url=urlForUpdateContent, 
+                element=elementForUpdateContent, 
+                params=`?ServiceRequestId=${currentServiceRequestId}`
+            )
+            showToast("Кейс себестоимости обновлен")
+            if (caseIsCurrent) {
+                // Если был обновлен выбранный кейс, то корректируем стоимость в карточке заявки
+                $('.request-current-cost').html(`${currentTotalCost} ₽`)
+                // Рассчет новой атуальной прибыли
+                var currentProfit = parseInt(currentTotalPrice, 10) - parseInt(currentTotalCost)
+                $('.request-profit-placeholder').html(`${currentProfit} ₽`)
+            };
         },
         error: function (response) {
             var errorMessage = response.responseJSON['message'];
             showAlertToast(errorMessage);
         }
-    });
-    
+    });  
 });
 
 
 
+// Пометка на ужаление существующих parts
+$('.delete-cost-part-button').click(function (e) { 
+    e.preventDefault();
+    var idForDelete = $(this).data('part-id')
+
+    if (!partsForDeleteSet.has(idForDelete)) {
+        partsForDeleteSet.add(idForDelete);
+        $(this).val('отмена');
+        $(`.part-item_${idForDelete}`).addClass('marked-for-deletion-part')
+        $(`input[name="part_title_${idForDelete}"]`).attr('name', `del_part_${idForDelete}`)
+
+        // Вычитаем из общей суммы себестоимости помеченный на удаление part
+
+        var nowTotalPrice = parseInt($('.total_cost_price_val').text(), 10)
+        var thisPrice = parseInt($(`input[name="part_price_${idForDelete}"]`).val(), 10)
+        $('.total_cost_price_val').html(`${nowTotalPrice - thisPrice}`)
+
+    } else {
+        partsForDeleteSet.delete(idForDelete);
+        $(this).val('удалить');
+        $(`.part-item_${idForDelete}`).removeClass('marked-for-deletion-part')
+        $(`input[name="del_part_${idForDelete}"]`).attr('name', `part_title_${idForDelete}`)
+
+        var nowTotalPrice = parseInt($('.total_cost_price_val').text(), 10)
+        var thisPrice = parseInt($(`input[name="part_price_${idForDelete}"]`).val(), 10)
+        $('.total_cost_price_val').html(`${nowTotalPrice + thisPrice}`)
+    }
+    console.log("Список ids для удаления: " + Array.from(partsForDeleteSet))
+});

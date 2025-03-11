@@ -73,3 +73,20 @@ function showAlertToast(message) {
     // Показываем toast
     toast.show();
 }
+
+// Обновление контента через ajax
+function contentUpdate(url, element, params) {
+    if (!params) {
+        params = ""
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url + params,
+        dataType: "json",
+        success: function (response) {
+            var newContent = response.new_content
+            element.replaceWith(newContent)
+        }
+    });
+}

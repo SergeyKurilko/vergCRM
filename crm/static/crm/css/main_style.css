@@ -384,4 +384,10 @@ select option:hover {
     border-radius: 5px;
 }
 
+.marked-for-deletion-part {
+    background-color: red !important;
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
 /* ========================== /Cost Price Case Detail Section Rules ================================ */

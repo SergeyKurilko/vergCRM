@@ -116,7 +116,7 @@ class CostPriceCase(models.Model):
     )
     current = models.BooleanField(
         verbose_name="Актуальный",
-        default=True
+        default=False
     )
     service_request = models.ForeignKey(
         to="ServiceRequest",
@@ -126,7 +126,7 @@ class CostPriceCase(models.Model):
     )
 
     def __str__(self):
-        return f"Кейс себестоимости для заявки {self.service_request.id}. Прайс: {self.sum}. Выбран: {self.current}"
+        return f"{self.pk} Кейс себестоимости для заявки {self.service_request.id}. Прайс: {self.sum}. Выбран: {self.current}"
 
     class Meta:
         verbose_name = "Кейс себестоимости"
