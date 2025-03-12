@@ -474,7 +474,6 @@ class CostPriceCaseDetailView(View):
         Редактирование кейса
         """
         query_dict = request.POST
-        print(query_dict)
 
         # Ожидаемые ключи
         required_keys = {'case_title', 'cost_price_id',
@@ -503,12 +502,13 @@ class CostPriceCaseDetailView(View):
                 "Что-то пошло не так. Перезагрузите страницу."
             )
 
+        # Проверка списка помеченных на удаление PartOfCostPriceCase и их удаление
         if len(for_delete_ids) > 0:
-            deleted_parts = PartOfCostPriceCase.objects.filter(
+            PartOfCostPriceCase.objects.filter(
                 id__in=for_delete_ids.split(',')
             ).delete()
 
-
+        # Проверка флага изменения общей стоимости для ServiceRequest и CostPriceCase
         if total_price_has_been_changed == "true":
             cost_price_case.sum = int(total_cost_price)
             ServiceRequest.objects.filter(
@@ -529,7 +529,7 @@ class CostPriceCaseDetailView(View):
                 id__in=modified_parts_ids
             )
 
-            # Обновляем значения в полях title и price
+            # Обновляем значения в полях title и price у измененных PartOfCostPriceCase
             for part in modified_parts:
                 part_id = part.id
                 part.title = query_dict[f"part_title_{part_id}"]
@@ -570,3 +570,66 @@ class CostPriceCaseDetailView(View):
                 "current_cost_price": cost_price_case.sum
             }
         )
+
+
+@method_decorator(staff_required, "dispatch")
+class GetTaskListForServiceRequest(View):
+    """Получение списка задач"""
+    def get(self, request: HttpRequest) -> JsonResponse:
+        service_request_id = request.GET.get("service_request_id")
+
+        if not service_request_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        # Поиск объекта ServiceRequest
+        try:
+            service_request = ServiceRequest.objects.get(
+                id=service_request_id
+            )
+        except ServiceRequest.DoesNotExist:
+            return json_response.not_found_error(
+                "Заявка не найдена"
+            )
+
+        # Получение списка задач для заявки
+        tasks = service_request.tasks.all()
+
+        context = {
+            "tasks": tasks
+        }
+
+        offcanvas_with_all_tasks_html = render_to_string(
+            template_name="crm/incl/tasks-list-for-request-offcanvas.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "offcanvas_with_all_tasks_html": offcanvas_with_all_tasks_html
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

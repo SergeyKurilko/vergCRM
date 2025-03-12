@@ -8,7 +8,7 @@ from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
                             AddAddressForServiceRequest, AjaxChangeTotalPriceForServiceRequest,
                             GetHtmlForCalculateCostPrice, UpdateListOfCostPriceCases,
                             AddCostPriceCaseView, ChangeCurrentCostCaseView,
-                            DeleteCostCaseView, CostPriceCaseDetailView)
+                            DeleteCostCaseView, CostPriceCaseDetailView, GetTaskListForServiceRequest)
 
 app_name = "crm"
 
@@ -76,6 +76,9 @@ ajax_urlpatterns = [
     path("ajax/cost-price-case-detail",
          CostPriceCaseDetailView.as_view(),
          name="ajax_cost-price-case-detail"),
+    path("ajax/task-list-for-request",
+         GetTaskListForServiceRequest.as_view(),
+         name="task_list_for_request")
 ]
 
 urlpatterns += ajax_urlpatterns

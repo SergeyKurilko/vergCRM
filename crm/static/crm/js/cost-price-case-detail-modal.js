@@ -261,9 +261,11 @@ $('.delete-cost-part-button').click(function (e) {
         // Вычитаем из общей суммы себестоимости помеченный на удаление part
 
         var nowTotalPrice = parseInt($('.total_cost_price_val').text(), 10)
-        var thisPrice = parseInt($(`input[name="part_price_${idForDelete}"]`).val(), 10)
-        $('.total_cost_price_val').html(`${nowTotalPrice - thisPrice}`)
-
+        var thisPartPrice = parseInt($(`input[name="part_price_${idForDelete}"]`).val(), 10)
+        var profitPrice = nowTotalPrice - thisPartPrice
+        $('.total_cost_price_val').html(profitPrice)
+        $('#total_cost_price').val(profitPrice);
+        $(`#edit_part_btn_${idForDelete}`).addClass('d-none')
     } else {
         partsForDeleteSet.delete(idForDelete);
         $(this).val('удалить');
@@ -271,8 +273,10 @@ $('.delete-cost-part-button').click(function (e) {
         $(`input[name="del_part_${idForDelete}"]`).attr('name', `part_title_${idForDelete}`)
 
         var nowTotalPrice = parseInt($('.total_cost_price_val').text(), 10)
-        var thisPrice = parseInt($(`input[name="part_price_${idForDelete}"]`).val(), 10)
-        $('.total_cost_price_val').html(`${nowTotalPrice + thisPrice}`)
+        var thisPartPrice = parseInt($(`input[name="part_price_${idForDelete}"]`).val(), 10)
+        var profitPrice = nowTotalPrice + thisPartPrice
+        $('.total_cost_price_val').html(profitPrice)
+        $('#total_cost_price').val(profitPrice);
+        $(`#edit_part_btn_${idForDelete}`).removeClass('d-none')
     }
-    console.log("Список ids для удаления: " + Array.from(partsForDeleteSet))
 });

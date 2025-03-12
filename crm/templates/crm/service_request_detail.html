@@ -52,45 +52,69 @@ aria-hidden="true">
 
             <hr class="hr">
 
-            <!-- Адрес -->
-            <h5 class="card-title">Адрес <i class="bi bi-geo-alt"></i>:</h5>
-            <div class="service_request-address">
-                {% if service_request.address %}
-                <div class="service-request-adress-placeholder mb-1">{{ service_request.address }}</div>
-                <div class="add-address-form d-none">
-                    <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="service-request" value="{{ service_request.id }}">
-                        <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
-                        <div style="color: red" class="add-adress-error-place mt-2"></div>
-                        <div class="confirm-add-address-buttons d-flex flex-row">
-                            <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
-                            <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
-                        </div>
-                    </form>
-                </div>
-                <a href="" id="RequestDetailAddAdressButton" class="change-address-button">Изменить адрес</a>
-                {% else %}
-                <span class="address-missing-alert-placeholder" style="color: red">Адрес пока не добавлен</span> 
-                <div class="service-request-adress-placeholder mb-1"></div>
-                <div class="add-address-form d-none">
-                    <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="service-request" value="{{ service_request.id }}">
-                        <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
-                        <div style="color: red" class="add-adress-error-place mt-2"></div>
-                        <div class="confirm-add-address-buttons d-flex flex-row">
-                            <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
-                            <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Start Row -->
+            <div class="row">
 
-                <button id="RequestDetailAddAdressButton" type="button" class="border-0 verg-button-1 mt-2">Добавить адрес</button>
-                <a href="" id="RequestDetailAddAdressButton" class="d-none change-address-button">Изменить адрес</a>
-                {% endif %}
+                <!-- Адрес col-->
+                <div class="col-md-9 col-12">
+                <h5 class="card-title">Адрес <i class="bi bi-geo-alt"></i>:</h5>
+                <div class="service_request-address">
+                    {% if service_request.address %}
+                    <div class="service-request-adress-placeholder mb-1">{{ service_request.address }}</div>
+                    <div class="add-address-form d-none">
+                        <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="service-request" value="{{ service_request.id }}">
+                            <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
+                            <div style="color: red" class="add-adress-error-place mt-2"></div>
+                            <div class="confirm-add-address-buttons d-flex flex-row">
+                                <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                                <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <a href="" id="RequestDetailAddAdressButton" class="change-address-button">Изменить адрес</a>
+                    {% else %}
+                    <span class="address-missing-alert-placeholder" style="color: red">Адрес пока не добавлен</span> 
+                    <div class="service-request-adress-placeholder mb-1"></div>
+                    <div class="add-address-form d-none">
+                        <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="service-request" value="{{ service_request.id }}">
+                            <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
+                            <div style="color: red" class="add-adress-error-place mt-2"></div>
+                            <div class="confirm-add-address-buttons d-flex flex-row">
+                                <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                                <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <button id="RequestDetailAddAdressButton" type="button" class="border-0 verg-button-1 mt-2">Добавить адрес</button>
+                    <a href="" id="RequestDetailAddAdressButton" class="d-none change-address-button">Изменить адрес</a>
+                    {% endif %}
+                </div>
+                </div>
+                <!-- / Адрес col-->
+
+                <div class="d-md-none d-block">
+                    <hr class="hr my-3 px-1">
+                </div>
+                
+                
+                <!-- Add Task col -->
+                 <div class="col-md-3 col-12 d-flex justify-content-md-end pe-4 py-2">
+                    <div class="">
+                        <h5 class="card-title text-md-end">Задачи <i class="bi bi-list-task"></i></h5>
+
+                        <div class="">
+                            <button data-get-tasks-url="{% url 'crm:task_list_for_request' %}" id="getTasksForRequest" class="verg-button-1 border-0" style="height: 44px !important;">Задачи для заявки</button>
+                        </div>
+                    </div>
+                 </div>
+                 <!-- /Add Task col -->
             </div>
-            <!-- / Адрес -->
+            <!-- End Row -->
             
             <hr class="hr">
 
@@ -141,7 +165,12 @@ aria-hidden="true">
             <hr class="hr">
             <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>
 
-            <div class="notes-container">
+            <button 
+            class="verg-button-1 mt-2 border-0" 
+            data-bs-toggle="modal" 
+            data-bs-target="#addNewNoteModal">Добавить заметку</button>
+
+            <div class="notes-container mt-3">
                 {% for note in service_request.notes.all %}
                     <div id="note_{{ note.id }}" class="note-for-service-request">
                         <span class="text-muted">{{ note.created_at }}</span> <hr class="hr mt-1 mb-2">
@@ -149,15 +178,12 @@ aria-hidden="true">
                         
                     </div>
                 {% empty %}
-                    <div class="">
+                    <div class="no-notes">
                         <span class="mt-2 d-block">У этой заявки пока нет заметок.</span>
                     </div>
                 {% endfor %}
             </div>
-            <button 
-            class="verg-button-1 mt-2 border-0" 
-            data-bs-toggle="modal" 
-            data-bs-target="#addNewNoteModal">Добавить заметку</button>
+            
             
         </div>
     </div>

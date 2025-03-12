@@ -135,6 +135,9 @@ $(document).ready(function () {
                 // Закрываем модальное окно
                 $('#addNewNoteModal').modal('hide');
 
+                // Убираем сообщение о том, что у заявки нет заметок
+                $('.no-notes').remove()
+
                 // Форматируем дату
                 const isoDate = newNoteCreatedAt;
                 const date = new Date(isoDate);
@@ -327,6 +330,37 @@ $(document).ready(function () {
                     $('#addCostPriceCaseModal').modal('show');
                 }
             });
+    })
+
+    // Получение всех задач для заявки
+    $('#getTasksForRequest').click(function (e) { 
+        e.preventDefault();
+        var urlForAjax = $(this).data('get-tasks-url')
+
+        $.ajax({
+            type: "GET",
+            data: {"service_request_id": currentServiceRequestId},
+            url: urlForAjax,
+            dataType: "json",
+            success: function (response) {
+                var htmlAllTaskListOffcanvas = response.offcanvas_with_all_tasks_html
+
+                // Вставляем полученный html с offcanvas в main_wrapper
+                $('.main_wrapper').prepend(htmlAllTaskListOffcanvas);
+
+                // Открываем полученный offcanvas
+                $('#offcanvasAllTaskList').offcanvas('show')
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+    });
+
+    // При закрытии offcanvas со списком задач - удаление всего offcanvas
+    $(document).on('hidden.bs.offcanvas', '#offcanvasAllTaskList', function () {
+        $('#offcanvasAllTaskList').remove();
     })
         
 });

@@ -181,6 +181,8 @@ class NoteForServiceRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True,
                                       verbose_name="Дата и время изменения")
 
+
+
     def __str__(self):
         return f"Заметка №{self.id} к заявке №{self.service_request}."
 
@@ -238,6 +240,11 @@ class Task(models.Model):
                                       verbose_name="Дата создания")
 
     is_completed = models.BooleanField(default=False, verbose_name="Выполнено")
+    reminder = models.BooleanField(default=False, verbose_name="Напоминание")
+    expired = models.BooleanField(default=False, verbose_name="Просрочена")
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         verbose_name = "Задача"

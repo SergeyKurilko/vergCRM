@@ -50,6 +50,7 @@ function showToast(message) {
     var toastEl = document.getElementById('backendMessageToast');
     var toast = new bootstrap.Toast(toastEl);
     toast.hide();
+    
 
     // Наполняем toast текстом и добавляем стили
     $('#backendMessageToast').removeClass('alert_toast').addClass('success_toast')
@@ -80,12 +81,20 @@ function contentUpdate(url, element, params) {
         params = ""
     }
 
+    // Перед отправкой запроса показываем Loader
+    var loader = $('.loader');
+    var overlay = $('.l-overlay');
+    loader.css({"display":"block"});
+    overlay.css({"display":"block"});
+
     $.ajax({
         type: "GET",
         url: url + params,
         dataType: "json",
         success: function (response) {
             var newContent = response.new_content
+            loader.css({"display":"none"});
+            overlay.css({"display":"none"});
             element.replaceWith(newContent)
         }
     });
