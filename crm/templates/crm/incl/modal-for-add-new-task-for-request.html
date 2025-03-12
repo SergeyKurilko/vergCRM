@@ -1,0 +1,24 @@
+<div class="modal fade" id="addTaskForRequestModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTaskForRequestModalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskForRequestModalLabel">Новая задача для заявки</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="" method="post">
+                <input type="hidden" name="manager_id" value="{{manager_id}}">
+                <input type="hidden" name="service_request_id" value="{{service_request_id}}">
+                <input name="title" type="text" class="form-control" placeholder="название задачи">
+                <textarea class="form-control" name="text" id="" placeholder="описание задачи"></textarea>
+                <label for="reminderCheck">Сделать намопинание</label>
+                <input type="checkbox" name="reminder" id="reminderCheck">
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Understood</button>
+        </div>
+      </div>
+    </div>
+</div>

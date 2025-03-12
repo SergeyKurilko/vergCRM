@@ -32,7 +32,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    pass
+    list_editable = ['is_completed', 'reminder',
+                     'expired']
+    list_display = ['id', 'title', 'is_completed', 'reminder',
+                     'expired', 'created_at',
+                     'must_be_completed_by']
+    list_display_links = ['id', 'title']
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):

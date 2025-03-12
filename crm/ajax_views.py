@@ -577,7 +577,9 @@ class GetTaskListForServiceRequest(View):
     """Получение списка задач"""
     def get(self, request: HttpRequest) -> JsonResponse:
         service_request_id = request.GET.get("service_request_id")
+        filter_by = request.GET.get("filter_by")
 
+        # Проверка номера заявки (в любом сценарии)
         if not service_request_id:
             return json_response.validation_error(
                 "Что-то пошло не так. Перезагрузите страницу."
@@ -593,23 +595,86 @@ class GetTaskListForServiceRequest(View):
                 "Заявка не найдена"
             )
 
-        # Получение списка задач для заявки
-        tasks = service_request.tasks.all()
+        # Если в параметрах запроса нет фильтра
+        if not filter_by:
+            # Получение списка задач для заявки без фильтров (основной список)
+            tasks = service_request.tasks.all().exclude(is_completed=True)
+            context = {
+                "tasks": tasks
+            }
 
-        context = {
-            "tasks": tasks
-        }
+            # Контент для добавления нового offcanvas со списком задач
+            offcanvas_with_all_tasks_html = render_to_string(
+                template_name="crm/incl/tasks-list-for-request-offcanvas.html",
+                request=request,
+                context=context
+            )
+            return JsonResponse({
+                "success": True,
+                "offcanvas_with_all_tasks_html": offcanvas_with_all_tasks_html
+            })
 
-        offcanvas_with_all_tasks_html = render_to_string(
-            template_name="crm/incl/tasks-list-for-request-offcanvas.html",
-            request=request,
-            context=context
-        )
+        # Если в параметрах запроса есть фильтр
+        else:
+            # Получение списка с фильтрацией
+            allowed_filters = {'all', 'expired',  'is_completed'}
 
-        return JsonResponse({
-            "success": True,
-            "offcanvas_with_all_tasks_html": offcanvas_with_all_tasks_html
-        })
+            # Проверка допустимого параметра фильтрации
+            if filter_by not in allowed_filters:
+                return json_response.validation_error(
+                    "Недопустимый фильтр"
+                )
+            else:
+                if filter_by != 'all':
+                    # Формируем словарь фильрации
+                    filter_dict = {filter_by: True}
+                    tasks = service_request.tasks.filter(
+                        **filter_dict
+                    )
+                else:
+                    tasks = service_request.tasks.all()
+
+                context = {
+                    "tasks": tasks,
+                    "filtered_by": filter_by
+                }
+
+                # Формирование контента для замены в offcanvas со списком задач
+                tasks_html_for_update = render_to_string(
+                    template_name="crm/dynamic_content/update-task-list-for-request.html",
+                    context=context,
+                    request=request
+                )
+
+                return JsonResponse({
+                    "success": True,
+                    "new_content": tasks_html_for_update
+                })
+
+@method_decorator(staff_required, name="dispatch")
+class AddNewTaskForServiceRequest(View):
+    def get(self, request):
+        """Получение окна для создания новой задачи"""
+        service_request_id = request.GET.get("service_request_id")
+
+        if not service_request_id:
+            return json_response.validation_error(
+                "Некорректный запрос"
+            )
+        if ServiceRequest.objects.filter(id=service_request_id).exists():
+            context = {
+                "manager_id": request.user.id,
+                "service_request_id": service_request_id
+            }
+            new_content = render_to_string(
+                    template_name="crm/incl/modal-for-add-new-task-for-request.html",
+                    context=context,
+                    request=request
+            )
+            return JsonResponse({
+                "success": True,
+                "new_content": new_content
+            })
 
 
 

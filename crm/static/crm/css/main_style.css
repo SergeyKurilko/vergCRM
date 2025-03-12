@@ -338,7 +338,8 @@ select option:hover {
     padding-bottom: 25px;
 }
 
-#CalculateCostPriceOffcanvas .container-md {
+#CalculateCostPriceOffcanvas .container-md,
+#offcanvasAllTaskList {
     background-color: #ddebefee;
     padding: 20px;
     border-radius: 5px;

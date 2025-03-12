@@ -362,5 +362,39 @@ $(document).ready(function () {
     $(document).on('hidden.bs.offcanvas', '#offcanvasAllTaskList', function () {
         $('#offcanvasAllTaskList').remove();
     })
-        
+
+    // Переключение фильтров в списке задач
+    $(document).on('click', '.task-list-filter-button', function () {
+        var urlForGetTaskList = $(this).data('url-for-tasks');
+        var filterData = $(this).data('filter-by');
+        contentUpdate(
+            url=urlForGetTaskList,
+            element=$('.task-list-for-service-request-container'),
+            params=`?service_request_id=${currentServiceRequestId}&filter_by=${filterData}`
+        )
+    })
+
+    // Получение модального окна для создания новой задачи для заявки
+    $(document).on('click', '#addNewTaskForRequestButton', function () {
+        var urlForGetContent = $(this).data('url-for-add-task')
+
+        $.ajax({
+            type: "GET",
+            url: urlForGetContent,
+            data: {"service_request_id": currentServiceRequestId},
+            dataType: "json",
+            success: function (response) {
+                var newContent = response.new_content
+
+                $('.main_wrapper').prepend(newContent);
+                $('#addTaskForRequestModal').modal('show');
+            }
+        });
+    });
+
+    // При закрытии модального окна для создания новой задачи, удаляем окно целиком из DOM
+    $(document).on('hidden.bs.modal', '#addTaskForRequestModal', function (e) {
+        console.log("Модальное окно закрыто")
+        $('#addTaskForRequestModal').remove();
+      })
 });
