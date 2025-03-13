@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    
+    
     // Добавление адреса для заявки
     $('#RequestDetailAddAdressButton').click(function (e) { 
         e.preventDefault();
@@ -369,7 +371,7 @@ $(document).ready(function () {
         var filterData = $(this).data('filter-by');
         contentUpdate(
             url=urlForGetTaskList,
-            element=$('.task-list-for-service-request-container'),
+            element=$('.task-list-for-service-request-offcanvas-body'),
             params=`?service_request_id=${currentServiceRequestId}&filter_by=${filterData}`
         )
     })
@@ -393,8 +395,42 @@ $(document).ready(function () {
     });
 
     // При закрытии модального окна для создания новой задачи, удаляем окно целиком из DOM
+    // Так же удаляем инициированные скрипты в этом окне для flatpickr
     $(document).on('hidden.bs.modal', '#addTaskForRequestModal', function (e) {
-        console.log("Модальное окно закрыто")
         $('#addTaskForRequestModal').remove();
-      })
+        $('.datetime-flatpickr-script').remove();
+        $('.flatpickr-calendar').remove();
+    });
+
+    // Отслеживание открытия taskDetail
+    $(document).on('click', '.taskDetailLink', function (e) {
+        e.preventDefault();
+        var task_id = $(this).data('task-id')
+        var urlForGetTaskDetailModal = $(this).attr('href')
+
+        $.ajax({
+            type: "GET",
+            url: `${urlForGetTaskDetailModal}?task_id=${task_id}`,
+            dataType: "json",
+            success: function (response) {
+                var newContent = response.new_content
+
+                $('.main_wrapper').prepend(newContent);
+                $('#TaskForRequestDetailModal').modal('show');
+            }
+        });
+    });  
+
+    // При закрытии модального окна с task detail удаляем его из DOM,
+    // Так же удаляем инициированные им скрипты для flatpickr
+    $(document).on('hidden.bs.modal', '#TaskForRequestDetailModal', function (e) {
+        $('#TaskForRequestDetailModal').remove();
+        $('.datetime-flatpickr-script').remove();
+        $('.flatpickr-calendar').remove();
+    });
+
+    // При закрытии модального окна с подтверждением удаления task for request? удаляем его из DOM
+    $(document).on('hidden.bs.modal', '#confirmDeleteTaskModal', function (e) {
+        $('#confirmDeleteTaskModal').remove();
+    });
 });

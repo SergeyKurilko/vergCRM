@@ -1,20 +1,16 @@
-from pprint import pprint
-import json
-
-
-from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse, HttpRequest
 from django.views import View
+from datetime import datetime
 
 
 
 from crm.views import staff_required
 from crm.models import (Service, Client, ServiceRequest,
                         NoteForServiceRequest, CostPriceCase,
-                        PartOfCostPriceCase)
+                        PartOfCostPriceCase, Task)
 
 
 class JsonResponses:
@@ -34,6 +30,13 @@ class JsonResponses:
             "error": True,
             "message": message
         }, status=404)
+
+    @staticmethod
+    def manager_forbidden(message: str):
+        return JsonResponse({
+            "error": True,
+            "message": message
+        }, status=403)
 
 json_response = JsonResponses()
 
@@ -600,7 +603,8 @@ class GetTaskListForServiceRequest(View):
             # Получение списка задач для заявки без фильтров (основной список)
             tasks = service_request.tasks.all().exclude(is_completed=True)
             context = {
-                "tasks": tasks
+                "tasks": tasks,
+                "filtered_query": False
             }
 
             # Контент для добавления нового offcanvas со списком задач
@@ -611,7 +615,7 @@ class GetTaskListForServiceRequest(View):
             )
             return JsonResponse({
                 "success": True,
-                "offcanvas_with_all_tasks_html": offcanvas_with_all_tasks_html
+                "offcanvas_with_all_tasks_html": offcanvas_with_all_tasks_html,
             })
 
         # Если в параметрах запроса есть фильтр
@@ -636,7 +640,8 @@ class GetTaskListForServiceRequest(View):
 
                 context = {
                     "tasks": tasks,
-                    "filtered_by": filter_by
+                    "filtered_by": filter_by,
+                    "filtered_query": True
                 }
 
                 # Формирование контента для замены в offcanvas со списком задач
@@ -648,7 +653,7 @@ class GetTaskListForServiceRequest(View):
 
                 return JsonResponse({
                     "success": True,
-                    "new_content": tasks_html_for_update
+                    "new_content": tasks_html_for_update,
                 })
 
 @method_decorator(staff_required, name="dispatch")
@@ -676,18 +681,213 @@ class AddNewTaskForServiceRequest(View):
                 "new_content": new_content
             })
 
+    def post(self, request):
+        """Создание новой задачи для заявки"""
+        data = request.POST
+        required_fields = {
+            "manager_id", "service_request_id",
+            "title", "text", "must_be_completed_by"
+        }
+        # Проверка наличия всех обязательных полей
+        if not required_fields.issubset(set(data.keys())):
+            return json_response.validation_error(
+                message="Что-то пошло не так. Перезагрузите страницу"
+            )
+
+        # Извлечение данных из тела запроса
+        manager_id = data.get("manager_id")
+        service_request_id = data.get("service_request_id")
+        title = data.get("title")
+        text = data.get("text")
+        must_be_completed_by = data.get("must_be_completed_by")
+        reminder = data.get("reminder")
+
+        if not manager_id or not service_request_id:
+            return json_response.validation_error(
+                "Expected manager_id and service_request_id"
+            )
+
+        if (not title or not text) or (len(title) < 5 or len(text) < 5):
+            return json_response.validation_error(
+                "Название и текст должны быть не короче 5 симв."
+            )
+
+        # Проверка наличия и длины даты
+        if not must_be_completed_by or len(must_be_completed_by) < 16:
+            return json_response.validation_error(
+                "Вы не указали дату."
+            )
+
+        # Преобразуем строку must_be_completed_by в datetime
+        try:
+            must_be_completed_by = datetime.strptime(must_be_completed_by, '%d.%m.%Y %H:%M')
+        except ValueError:
+            # Обработка ошибки, если формат неверный
+            return json_response.validation_error(
+                "Неверный формат даты"
+            )
+
+        # Включен ли toggle напоминания у задачи
+        task_reminder = True if reminder else False
+
+        new_task = Task.objects.create(
+            title=title,
+            text=text,
+            service_request_id=service_request_id,
+            manager_id=manager_id,
+            must_be_completed_by=must_be_completed_by,
+            reminder=task_reminder
+        )
+
+        return JsonResponse({
+            "success": True,
+            "url_for_update_content": reverse("crm:task_list_for_request")
+        })
 
 
+@method_decorator(staff_required, name="dispatch")
+class TaskForRequestDetailView(View):
+    def get(self, request):
+        """Получение модального окна с детальным описанием задачи"""
+        task_id = request.GET.get("task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        context = {
+            "task": task
+        }
+
+        new_content = render_to_string(
+            template_name="crm/incl/modal-for-task-for-request-detail.html",
+            context=context,
+            request=request
+        )
+        return JsonResponse({
+            "success": True,
+            "new_content": new_content
+        })
+
+    def post(self, request: HttpRequest):
+        data = request.POST
+        print(data)
+        required_fields = {
+            "manager_id", "task_id",
+            "title", "text", "must_be_completed_by"
+        }
+
+        # Извлечение данных из тела запроса
+        manager_id = data.get("manager_id")
+        task_id = data.get("task_id")
+        title = data.get("title")
+        text = data.get("text")
+        must_be_completed_by = data.get("must_be_completed_by")
+        reminder = data.get("reminder")
+
+        if not request.user.id == int(manager_id):
+            return json_response.manager_forbidden(
+                message="Клиент не привязан к менеджеру"
+            )
+
+        # Проверка наличия всех обязательных полей
+        if not required_fields.issubset(set(data.keys())):
+            return json_response.validation_error(
+                message="Что-то пошло не так. Перезагрузите страницу"
+            )
+
+        if (not title or not text) or (len(title) < 5 or len(text) < 5):
+            return json_response.validation_error(
+                "Название и текст должны быть не короче 5 симв."
+            )
+
+        # Проверка наличия и длины даты
+        if not must_be_completed_by or len(must_be_completed_by) < 16:
+            return json_response.validation_error(
+                "Вы не указали дату."
+            )
+
+        # Ищем задачу для обновления
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                message="Задача не найдена."
+            )
+
+        # Преобразуем строку must_be_completed_by в datetime
+        try:
+            must_be_completed_by = datetime.strptime(must_be_completed_by, '%d.%m.%Y %H:%M')
+        except ValueError:
+            # Обработка ошибки, если формат неверный
+            return json_response.validation_error(
+                "Неверный формат даты"
+            )
+
+        # Включен ли toggle напоминания у задачи
+        task_reminder = True if reminder else False
+        print(f"task_reminder: {task_reminder}")
 
 
+        task.title=title
+        task.text=text
+        task.must_be_completed_by=must_be_completed_by
+        task.reminder=task_reminder
 
+        task.save()
 
+        return JsonResponse({
+            "success": True,
+            "url_for_update_content": reverse("crm:task_list_for_request")
+        })
 
+class DeleteTaskForRequestView(View):
+    def get(self, request):
+        task_id = request.GET.get("task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
 
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
 
+        if task.manager.id != request.user.id:
+            return json_response.manager_forbidden(
+                "Менеджер не привязан к задаче."
+            )
 
+        context = {
+            "task": task
+        }
 
+        new_content = render_to_string(
+            template_name="crm/incl/confirm-delete-task.html",
+            request=request,
+            context=context
+        )
 
+        return JsonResponse({
+            "success": True,
+            "new_content": new_content
+        })
+
+    def delete(self, request):
+        task_id = request.GET.get("task_id")
+        print(f"task_id: {task_id}")
+        return JsonResponse({
+            "success": True
+        })
 
 
 

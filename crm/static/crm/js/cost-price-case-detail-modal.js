@@ -247,7 +247,7 @@ $('#detailCostPriceCaseForm').submit(function (e) {
 
 
 
-// Пометка на ужаление существующих parts
+// Пометка на удаление существующих parts
 $('.delete-cost-part-button').click(function (e) { 
     e.preventDefault();
     var idForDelete = $(this).data('part-id')

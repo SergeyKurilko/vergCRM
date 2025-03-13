@@ -182,7 +182,6 @@ input::-webkit-inner-spin-button {
     border: 1px solid rgb(94, 255, 0) !important;
 }
 
-
 /* ========================== / Buttons Rules ================================ */
 
 .nav-link, .navbar-brand {
@@ -231,14 +230,14 @@ select option:hover {
 }
 
 .alert_toast {
-    position: fixed;  /* Фиксированное позиционирование */
+    position: fixed;  
     bottom: 15px;
-    right: 20px;      /* Отступ справа */
-    z-index: 1050;    /* Убедитесь, что toast поверх других элементов */
-    min-width: 250px; /* Минимальная ширина */
+    right: 20px;      
+    z-index: 1050;    
+    min-width: 250px; 
     background-color: rgb(255, 47, 47);
     color: var(--ver-g-white-text);
-    border-radius: 5px; /* Скругление углов */
+    border-radius: 5px; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
     font-weight: 600;
 }
@@ -289,13 +288,19 @@ select option:hover {
 
 /* ========================== Service Requests List Section Rules ================================ */
 
-.service_request-detail-link {
+.service_request-detail-link, 
+.taskDetailLink, 
+.change-address-button, 
+.get-case-detail-modal {
     text-decoration: none;
     color: var(--ver-g-text-color);
     transition: all 0.3s;
 }
 
-.service_request-detail-link:hover {
+.service_request-detail-link:hover, 
+.taskDetailLink:hover,
+.change-address-button:hover,
+.get-case-detail-modal:hover {
     color: var(--orange-accent-color) !important;
 }
 
@@ -355,6 +360,10 @@ select option:hover {
     color: red;
 }
 
+.change-address-button {
+  font-weight: 500;
+}
+
 
 
 @keyframes waveEffect {
@@ -392,6 +401,8 @@ select option:hover {
 }
 
 /* ========================== /Cost Price Case Detail Section Rules ================================ */
+
+/* ========================== Loader Rules ================================ */
 
 .l-overlay {
   position: fixed; /* Покрывает весь экран */
@@ -596,4 +607,56 @@ select option:hover {
       transform: rotateY(0deg);
     }
   }
-  
+
+/* ========================== /Loader Rules ================================ */
+
+/* ========================== Checkbox-1 Rules ================================ */
+
+.check-slider-1 {
+  background-color: red;
+  border-radius: 100px;
+  padding: 1px;
+  margin: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  align-items: center;
+  position: relative;
+  display: block;
+  width: 51px;
+  height: 29px;
+  box-shadow: rgba(0, 0, 0, 0.62) 0px 0px 5px inset,
+    rgba(0, 0, 0, 0.21) 0px 0px 0px 24px inset, #22cc3f 0px 0px 0px 0px inset,
+    rgba(224, 224, 224, 0.45) 0px 1px 0px 0px;
+}
+
+.check-slider-1::after {
+  content: "";
+  display: flex;
+  top: 2.3px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  background-color: #e3e3e3;
+  border-radius: 200px;
+  position: absolute;
+  box-shadow: transparent 0px 0px 0px 2px, rgba(0, 0, 0, 0.3) 0px 6px 6px;
+  transition: left 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  will-change: left, background-color;
+}
+
+.switch-1 input[type="checkbox"]:checked + .check-slider-1 {
+  box-shadow: rgba(0, 0, 0, 0.62) 0px 0px 5px inset,
+    #22cc3f 0px 0px 0px 2px inset, #22cc3f 0px 0px 0px 24px inset,
+    rgba(224, 224, 224, 0.45) 0px 1px 0px 0px;
+}
+
+.switch-1 input[type="checkbox"]:checked + .check-slider-1::after {
+  left: 24px;
+}
+
+.switch-1 input[type="checkbox"] {
+  display: none;
+}
+
+/* ========================== /Checkbox-1 Rules ================================ */

@@ -1,0 +1,59 @@
+{% load static %}
+
+<script class="datetime-flatpickr-script">
+  // Инициализация flatpickr для форм
+flatpickr('.flatpickr', {
+    enableTime: true, 
+    dateFormat: "d.m.Y H:i",
+    time_24hr: true,
+    locale: "ru",
+    minDate: new Date(),
+});
+</script>
+
+
+<div class="modal fade" id="TaskForRequestDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="TaskForRequestDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="TaskForRequestDetailModalLabel">{{ task.title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <input type="hidden" name="reminder_status" value="{% if task.reminder %}ON{% else %}OFF{% endif %}">
+        <div class="modal-body">
+            <form id="updateTaskForRequest" action="{% url 'crm:task_for_request_detail' %}" method="post">
+                {% csrf_token %}
+                {% if task.expired %}<h5 style="color: red">Задача просрочена</h5>{% endif %}
+                {% if task.is_completed %}<h5 style="color: green">Задача выполнена</h5>{% endif %}
+                <input type="hidden" name="manager_id" value="{{ task.manager.id }}" required>
+                <input type="hidden" name="task_id" value="{{ task.id }}" required>
+                <input minlength="5" maxlength="50" name="title" type="text" class="form-control mb-2" value="{{ task.title }}" required readonly>
+                <textarea minlength="5" rows="5" class="form-control" name="text" id="" required readonly>{{ task.text }}</textarea>
+                <hr class="hr mb-2">
+                {% if task.reminder %}<h5>Напоминание включено</h5>{% else %}<h5>Напоминание выключено</h5>{% endif %}
+                <label class="switch-1 d-flex align-items-center justify-content-start d-none"><h5>Включить напоминание</h5>
+                    <input name="reminder" type="checkbox" />
+                    <span class="check-slider-1 ms-4"></span>
+                </label>
+                <hr class="hr mt-2">
+                <h5>Срок выполнения:</h5>
+                <h5>до {{ task.must_be_completed_by }}</h5>
+                <div required class="datetime-for-task-container d-flex flex-column align-items-start justify-content-end d-none">
+                    <label for="must_be_completed_by"><h5>Новая дата</h5></label>
+                    <input required type="datetime-local" name="must_be_completed_by" id="must_be_completed_by" class="flatpickr w-50 form-control" placeholder="выбрать дату">
+                </div>
+                <div style="color: red; font-weight: 600;" class="update-task-error-place mt-2"></div>
+                <hr class="hr">
+                <button type="submit" class="verg-button-green save-task-changes d-none">Сохранить изменения</button>
+                <button type="button" class="btn btn-secondary cancel-task-changes d-none" data-bs-dismiss="modal">Отменить</button>
+            </form>
+            <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
+
+            <hr class="hr delete-task-hr d-none">
+            <button data-delete-url="{% url 'crm:delete_task_for_request' %}" data-task-id="{{task.id}}" id="deleteTask" class="verg-button-danger d-none">Удалить задачу</button>
+
+        </div>
+      </div>
+    </div>
+    <script src="{% static 'crm/js/task-for-request-detail.js' %}"></script>
+</div>

@@ -5,8 +5,16 @@
     <h5 id="offcanvasRightLabel">Задачи</h5>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
-  <div class="offcanvas-body">
-    {% if tasks.count == 0 %} <h4 class="no-tasks">У заявки пока нет задач.</h4>{% endif %}
+  <div class="offcanvas-body task-list-for-service-request-offcanvas-body">
+    {% if tasks.count == 0 %} 
+    <h4 class="no-tasks">У заявки пока нет задач.</h4>
+    <button data-url-for-add-task="{% url 'crm:add_task_for_request' %}" class="verg-button-1 border-0" type="button" id="addNewTaskForRequestButton">
+        Новая задача &nbsp;
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"></path>
+        </svg>
+    </button>
+    {% endif %}
 
     <div class="container-fliud task-list-for-service-request-container {% if tasks.count == 0 %}d-none{% endif %}">
         <div class="task-list-filter-buttons">
@@ -27,7 +35,7 @@
             </button>
         </div>
         <div class="add-new-task-for-request-buttons mt-2">
-            <button data-url-for-add-task="{% url 'crm:get_modal_for_add_task_for_request' %}" class="verg-button-1 border-0" type="button" id="addNewTaskForRequestButton">
+            <button data-url-for-add-task="{% url 'crm:add_task_for_request' %}" class="verg-button-1 border-0" type="button" id="addNewTaskForRequestButton">
                 Новая задача &nbsp;
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"></path>
@@ -47,7 +55,7 @@
             <tbody>
             {% for task in tasks %}  
             <tr>
-                <td>{{task.title}}</td>
+                <td><a class="taskDetailLink" data-task-id="{{ task.id }}" href="{% url 'crm:task_for_request_detail' %}">{{task.title}}</a></td>
                 <td>{{task.must_be_completed_by}}</td>
                 <td>
                     {% if task.is_completed %}
