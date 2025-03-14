@@ -1,5 +1,7 @@
+{% load static %}
+
 <div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" aria-labelledby="confirmDeleteTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="confirmDeleteTaskModalLabel">Подтвердите удаление</h5>
@@ -9,11 +11,12 @@
           <h5>Вы действительно хотите удалить эту задачу?</h5>
           <hr class="hr">
           <div class="">
-            <h5>Информация о кейсе:</h5>
+            <h5>Информация о задаче:</h5>
             Название: <b>{{ task.title }}</b> <br>
+            Текст: <b>{{ task.text }}</b> <br>
           </div>
         </div>
-        <form action="{% url 'crm:delete_task_for_request' %}" method="delete" id="finalDeleteTaskForm">
+        <form action="{% url 'crm:delete_task_for_request' %}" method="post" id="finalDeleteTaskForm">
             {% csrf_token %}
             <input type="hidden" name="delete_task_id" value="{{ task.id }}">
             <div class="modal-footer">
@@ -21,7 +24,7 @@
                 <button type="button" class="verg-button-danger border-0" data-bs-dismiss="modal">Отменить удаление <i class="bi bi-x-circle"></i></button>
             </div>
         </form>
-
       </div>
     </div>
+    <script src="{% static 'crm/js/confirm-delete-task-for-request.js' %}"></script>
 </div>

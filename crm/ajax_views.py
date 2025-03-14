@@ -882,11 +882,33 @@ class DeleteTaskForRequestView(View):
             "new_content": new_content
         })
 
-    def delete(self, request):
-        task_id = request.GET.get("task_id")
-        print(f"task_id: {task_id}")
+    def post(self, request):
+        task_id = request.POST.get("delete_task_id")
+        if not task_id:
+            print("Нет параметра delete_task_id")
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            print("Не найдена задача")
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if request.user.id != task.manager.id:
+            print("Задача не принадлежит менеджеру")
+            return json_response.manager_forbidden(
+                "Задача не принадлежит менеджеру"
+            )
+
+        task.delete()
+
         return JsonResponse({
-            "success": True
+            "success": True,
+            "url_for_update_content": reverse("crm:task_list_for_request")
         })
 
 

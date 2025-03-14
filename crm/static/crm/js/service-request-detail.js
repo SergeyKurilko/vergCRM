@@ -424,13 +424,17 @@ $(document).ready(function () {
     // При закрытии модального окна с task detail удаляем его из DOM,
     // Так же удаляем инициированные им скрипты для flatpickr
     $(document).on('hidden.bs.modal', '#TaskForRequestDetailModal', function (e) {
+        console.log("Так же закрылось окно TaskForRequestDetailModal")
         $('#TaskForRequestDetailModal').remove();
         $('.datetime-flatpickr-script').remove();
         $('.flatpickr-calendar').remove();
     });
 
-    // При закрытии модального окна с подтверждением удаления task for request? удаляем его из DOM
+    // При закрытии модального окна с подтверждением удаления task for request удаляем его из DOM
+    // Так же убираем эффект у "родительского" модального окна
     $(document).on('hidden.bs.modal', '#confirmDeleteTaskModal', function (e) {
+        console.log("Отслежено закрытие modal для подтверждения удаления task")
+        $('#TaskForRequestDetailModal').css({"filter":"none"});
         $('#confirmDeleteTaskModal').remove();
     });
 });

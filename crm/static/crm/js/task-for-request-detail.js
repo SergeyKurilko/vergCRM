@@ -68,8 +68,9 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 var newContent = response.new_content
-                $('#TaskForRequestDetailModal').append(newContent);
+                $('#TaskForRequestDetailModal').after(newContent);
                 $('#confirmDeleteTaskModal').modal('show');
+                $('#TaskForRequestDetailModal').css({"filter":"blur(4px)"});
             },
             error: function (response) {
                 var errorMessage = response.responseJSON['message']
@@ -78,28 +79,5 @@ $(document).ready(function () {
         });
     });
 
-    // Подтверждение удаления
-    $('#finalDeleteTaskForm').submit(function (e) { 
-        e.preventDefault();
-        var csrfToken = $(this).find('input[name="csrfmiddlewaretoken"]').val();
-        var taskIdForFinalDelete = $(this).find('input[name="delete_task_id"]').val();
-
-        $.ajax({
-            type: "DELETE",
-            url: $(this).attr('action') + `?task_id=${taskIdForFinalDelete}`,
-            dataType: "json",
-            headers: {
-                'X-CSRFToken': csrfToken
-            },
-            success: function (response) {
-                $('#confirmDeleteTaskModal').modal('hide');
-                $('#TaskForRequestDetailModal').modal('hide')
-                showToast("Задача удалена");
-            },
-            error: function (response) {
-                var errorMessage = response.responseJSON['message'];
-                showAlertToast(errorMessage);
-            }
-        });
-    });
+    
 });
