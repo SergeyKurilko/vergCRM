@@ -1,7 +1,7 @@
 from django.urls import path
 from crm.views import (CrmLoginView, DashboardView, test,
                        user_logout_view, ServiceRequestsListView,
-                       ServiceRequestCreateView, ServiceRequestDetailView)
+                       ServiceRequestCreateView, ServiceRequestDetailView, ServiceRequestEditView)
 
 from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
                             AddNewServiceRequestAjaxView, AddNewNoteAjaxView,
@@ -33,6 +33,9 @@ urlpatterns = [
     path("service-request-detail/<int:service_request_id>/",
          ServiceRequestDetailView.as_view(),
          name="service_request_detail"),
+    path("service-request-detail/edit",
+         ServiceRequestEditView.as_view(),
+         name="service_request_edit"),
     path("test", test,
          name="test/")
 ]

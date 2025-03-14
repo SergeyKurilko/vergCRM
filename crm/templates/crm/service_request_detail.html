@@ -5,10 +5,6 @@
 
 {% block content %}
 
-<!-- Offcanvas for cost price cases -->
-
-
-<!-- /Offcanvas for cost cases -->
 
 <!-- Modal for add cost price case -->
 <div class="modal fade" 
@@ -38,10 +34,54 @@ aria-hidden="true">
 <div class="container-md container service-request-detail-container mt-3">
     <div class="card service-request-card">
         <div class="card-body p-4">
+            <!-- Client & properties row start -->
+            <div class="row align-items-center">
 
-            <h5 class="card-title">Клиент: <i>{{ service_request.client.name }}</i></h5>
-            <hr class="hr">
-            <h5 class="card-title">Услуга: <i>{{ service_request.service.title }}</i></h5>
+                <!-- Client col-->
+                <div class="col-md-9 col-12">
+                    <h5 class="card-title">Клиент:</h5>
+                    <div class="service_request-client">
+                        <div class="service-request-client-placeholder mb-1">{{ service_request.client.name }}</div>
+                    </div>
+                </div>
+                <!-- / Client col end-->
+
+                <div class="d-md-none d-block">
+                    <hr class="hr my-3 px-1">
+                </div>
+                
+                <!-- Properties col -->
+                 <div class="col-md-3 col-12 d-flex justify-content-md-end pe-4">
+                    <div class="">
+                        <h5 class="card-title text-md-end">Настройки <i class="bi bi-gear"></i></h5>
+
+                        <div class="properties-dropdown-place d-flex justify-content-end">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle verg-button-1 border-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Открыть настройки
+                                </button>
+                                <ul class="dropdown-menu verg-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                  <li><a class="dropdown-item verg-dropdown-item" href="{% url 'crm:service_request_edit' %}?service_request_id={{ service_request.id }}">
+                                        Редактировать заявку
+                                      </a>
+                                  </li>
+                                  <li>
+                                    <a class="dropdown-item verg-dropdown-item" href="#">
+                                        {% if service_request.status == "in_progress" %}Закрыть заявку
+                                        {% elif service_request.status == "completed" %}Возобновить заявку
+                                        {% endif %}
+                                    </a>
+                                  </li>
+                                  <li><hr class="dropdown-divider"></li>
+                                  <li><a class="dropdown-item delete-dropdown-item" href="#">Удалить заявку <i class="bi bi-x-circle"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                 <!-- /Add Task col -->
+            </div>
+            <!-- /Client & properties row end -->
             
             <hr class="hr">
 

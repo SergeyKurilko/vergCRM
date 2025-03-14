@@ -184,6 +184,37 @@ input::-webkit-inner-spin-button {
 
 /* ========================== / Buttons Rules ================================ */
 
+/* ========================== Dropdowns Rules ================================ */
+
+.verg-dropdown-menu {
+  background-color: var(--contrast-color);
+}
+
+.verg-dropdown-item {
+  background-color: var(--contrast-color);
+  color: var(--ver-g-white-text);
+  transition: 0.3s;
+}
+
+.verg-dropdown-item:hover {
+  background-color: var(--orange-accent-color);
+  color: var(--contrast-color);
+}
+
+.delete-dropdown-item {
+  color: red;
+  transition: 0.3s;
+}
+
+.delete-dropdown-item:hover {
+  background-color: rgb(201, 0, 0);
+  color: var(--ver-g-white-text) !important;
+}
+
+
+/* ========================== /Dropdowns Rules ================================ */
+
+
 .nav-link, .navbar-brand {
     transition: 0.3s;
 }
