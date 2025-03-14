@@ -61,10 +61,6 @@ aria-hidden="true">
                                   Открыть настройки
                                 </button>
                                 <ul class="dropdown-menu verg-dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                  <li><a class="dropdown-item verg-dropdown-item" href="{% url 'crm:service_request_edit' %}?service_request_id={{ service_request.id }}">
-                                        Редактировать заявку
-                                      </a>
-                                  </li>
                                   <li>
                                     <a class="dropdown-item verg-dropdown-item" href="#">
                                         {% if service_request.status == "in_progress" %}Закрыть заявку
@@ -73,7 +69,7 @@ aria-hidden="true">
                                     </a>
                                   </li>
                                   <li><hr class="dropdown-divider"></li>
-                                  <li><a class="dropdown-item delete-dropdown-item" href="#">Удалить заявку <i class="bi bi-x-circle"></i></a></li>
+                                  <li><a class="dropdown-item delete-dropdown-item delete-service-request-button" href="{% url 'crm:delete_service_request' %}">Удалить заявку <i class="bi bi-x-circle"></i></a></li>
                                 </ul>
                             </div>
                         </div>

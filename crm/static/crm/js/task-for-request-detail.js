@@ -56,7 +56,7 @@ $(document).ready(function () {
     });
 
     // Удаление задачи для заявки
-    // Запрос удаления
+    // Запрос окна подтверждения удаления
     $('#deleteTask').click(function (e) { 
         e.preventDefault();
         var urlForDelete = $(this).data('delete-url')

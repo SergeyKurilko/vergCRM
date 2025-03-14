@@ -433,8 +433,34 @@ $(document).ready(function () {
     // При закрытии модального окна с подтверждением удаления task for request удаляем его из DOM
     // Так же убираем эффект у "родительского" модального окна
     $(document).on('hidden.bs.modal', '#confirmDeleteTaskModal', function (e) {
-        console.log("Отслежено закрытие modal для подтверждения удаления task")
         $('#TaskForRequestDetailModal').css({"filter":"none"});
         $('#confirmDeleteTaskModal').remove();
+    });
+
+    // Получение модального окна для подтсерждения удаления заявки
+    $('.delete-service-request-button').click(function (e) { 
+        e.preventDefault();
+        var urlForGetConfirmDeleteRequestModal = $(this).attr('href')
+
+        $.ajax({
+            type: "GET",
+            url: `${urlForGetConfirmDeleteRequestModal}?service_request_id=${currentServiceRequestId}`,
+            dataType: "json",
+            success: function (response) {
+                var contentForConfirmDeleteModal = response.confirm_delete_modal
+                $('.main_wrapper').prepend(contentForConfirmDeleteModal)
+                $('#confirmDeleteServiceRequestModal').modal('show');
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+        
+    });
+
+    // При закрытии модального окна с подтверждением удаления заявки удаляем его из DOM
+    $(document).on('hidden.bs.modal', '#confirmDeleteServiceRequestModal', function (e) {
+        $('#confirmDeleteServiceRequestModal').remove();
     });
 });

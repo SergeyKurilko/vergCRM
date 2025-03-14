@@ -2,8 +2,10 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse, HttpRequest
+from django.db import models
 from django.views import View
 from datetime import datetime
+from crm.permissions import ElementPermission
 
 
 
@@ -73,6 +75,73 @@ class AddNewServiceAjaxView(View):
             "new_service_id": new_service.id
         }, status=201)
 
+@method_decorator(staff_required, "dispatch")
+class DeleteServiceRequest(ElementPermission, View):
+    """Удаление заявки"""
+    def get(self, request):
+        """Получение окна подтверждения удаления заявки"""
+        service_request_id = request.GET.get("service_request_id")
+        if not service_request_id:
+            return json_response.validation_error(
+                "Ожидается номер заявки."
+            )
+
+        try:
+            service_request = ServiceRequest.objects.get(id=service_request_id)
+        except ServiceRequest.DoesNotExist:
+            return json_response.not_found_error(
+                "Заявка не найдена"
+            )
+
+        if not self.verification_owner(request, service_request):
+            return json_response.manager_forbidden(
+                "Verification error"
+            )
+        context =  {
+            "service_request": service_request
+        }
+
+        confirm_delete_modal = render_to_string(
+            template_name="crm/incl/confirm-delete-service-request.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "confirm_delete_modal": confirm_delete_modal
+        })
+
+    def post(self, request):
+        """Подтверждение удаления заявки"""
+        service_request_id = request.POST.get("delete_service_request")
+        # Проверка тела на наличие service_request_id
+        if not service_request_id:
+            return json_response.validation_error(
+                "Ожидается номер заявки."
+            )
+
+        # Поиск заявки в БД
+        try:
+            service_request = ServiceRequest.objects.get(id=service_request_id)
+        except ServiceRequest.DoesNotExist:
+            return json_response.not_found_error(
+                "Заявка не найдена"
+            )
+
+        # Проверка прав на удаление
+        if not self.verification_owner(request, service_request):
+            return json_response.manager_forbidden(
+                "Verification error"
+            )
+
+        # service_request.delete()
+
+        # После удаления отправляем в скрипт ссылку на перенаправление к списку задач
+        return JsonResponse({
+            "success": True,
+            "url_for_redirect": reverse("crm:service_requests_list")
+        })
 
 @method_decorator(staff_required, "dispatch")
 class AddNewClientAjaxView(View):
@@ -203,7 +272,7 @@ class AddAddressForServiceRequest(View):
 
 
 @method_decorator(staff_required, "dispatch")
-class AjaxChangeTotalPriceForServiceRequest(View):
+class AjaxChangeTotalPriceForServiceRequest(ElementPermission, View):
     """
     Изменение общей стоимости для заявки.
     Ожидает ajax запрос из скрипта.
@@ -221,10 +290,17 @@ class AjaxChangeTotalPriceForServiceRequest(View):
                 message="Должно быть числом больше нуля."
             )
 
+        # Поиск заявки
         try:
             service_request = ServiceRequest.objects.get(id=service_id)
         except ServiceRequest.DoesNotExist:
             return json_response.not_found_error("Заявка не найдена")
+
+        # Проверка прав менеджера на изменение заявки
+        if not self.verification_owner(request, service_request):
+            return json_response.manager_forbidden(
+                "Verification error"
+            )
 
         new_profit = int(new_total_price) - service_request.cost_price
 
@@ -377,8 +453,6 @@ class ChangeCurrentCostCaseView(View):
         )
         .exclude(id=case_id)
         .update(current=False))
-
-
 
         return JsonResponse({
             "success": True,
@@ -832,8 +906,6 @@ class TaskForRequestDetailView(View):
 
         # Включен ли toggle напоминания у задачи
         task_reminder = True if reminder else False
-        print(f"task_reminder: {task_reminder}")
-
 
         task.title=title
         task.text=text
@@ -910,13 +982,3 @@ class DeleteTaskForRequestView(View):
             "success": True,
             "url_for_update_content": reverse("crm:task_list_for_request")
         })
-
-
-
-
-
-
-
-
-
-

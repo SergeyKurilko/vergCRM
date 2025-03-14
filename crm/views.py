@@ -25,17 +25,6 @@ def staff_required(view_func):
     return _wrapped_view
 
 
-
-def check_access_rights(user: User):
-    print("Проверка пользователя")
-    print(f"not user.is_staff: {not user.is_staff}")
-    print(f"not user.is_authenticated: {not user.is_authenticated}")
-    if not user.is_staff or not user.is_authenticated:
-        print("Все условия сработали")
-        return redirect('crm:login_page')
-
-
-
 class CrmLoginView(View):
     def get(self, request):
         # Если пользователь уже в системе, то перенаправляем в dashboard
@@ -174,30 +163,7 @@ class ServiceRequestDetailView(View):
         }
         return render(request, "crm/service_request_detail.html", context)
 
-@method_decorator(staff_required, "dispatch")
-class ServiceRequestEditView(View):
-    """Редактирование существующей заявки"""
-    def get(self, request):
-        service_request_id = request.GET.get('service_request_id')
-        if not service_request_id:
-            return redirect(reverse("crm:dashboard"))
 
-        service_request = get_object_or_404(
-            ServiceRequest, id=service_request_id
-        )
-
-        if service_request.manager.id != request.user.id:
-            return redirect(reverse("crm:dashboard"))
-
-        context = {
-            "service_request": service_request
-        }
-
-        return render(
-            request,
-            "crm/service-request-edit.html",
-            context
-        )
 
 
 

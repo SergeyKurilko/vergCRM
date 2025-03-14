@@ -1,7 +1,7 @@
 from django.urls import path
 from crm.views import (CrmLoginView, DashboardView, test,
                        user_logout_view, ServiceRequestsListView,
-                       ServiceRequestCreateView, ServiceRequestDetailView, ServiceRequestEditView)
+                       ServiceRequestCreateView, ServiceRequestDetailView)
 
 from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
                             AddNewServiceRequestAjaxView, AddNewNoteAjaxView,
@@ -9,7 +9,8 @@ from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
                             GetHtmlForCalculateCostPrice, UpdateListOfCostPriceCases,
                             AddCostPriceCaseView, ChangeCurrentCostCaseView,
                             DeleteCostCaseView, CostPriceCaseDetailView, GetTaskListForServiceRequest,
-                            AddNewTaskForServiceRequest, TaskForRequestDetailView, DeleteTaskForRequestView)
+                            AddNewTaskForServiceRequest, TaskForRequestDetailView, DeleteTaskForRequestView,
+                            DeleteServiceRequest)
 
 app_name = "crm"
 
@@ -33,9 +34,6 @@ urlpatterns = [
     path("service-request-detail/<int:service_request_id>/",
          ServiceRequestDetailView.as_view(),
          name="service_request_detail"),
-    path("service-request-detail/edit",
-         ServiceRequestEditView.as_view(),
-         name="service_request_edit"),
     path("test", test,
          name="test/")
 ]
@@ -91,7 +89,10 @@ ajax_urlpatterns = [
          name="task_for_request_detail"),
     path("ajax/delete-task-for-request",
          DeleteTaskForRequestView.as_view(),
-         name="delete_task_for_request")
+         name="delete_task_for_request"),
+    path("ajax/delete-service-request",
+         DeleteServiceRequest.as_view(),
+         name="delete_service_request")
 ]
 
 urlpatterns += ajax_urlpatterns
