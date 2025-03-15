@@ -322,7 +322,8 @@ select option:hover {
 .service_request-detail-link, 
 .taskDetailLink, 
 .change-address-button, 
-.get-case-detail-modal {
+.get-case-detail-modal,
+.client-detail-link {
     text-decoration: none;
     color: var(--ver-g-text-color);
     transition: all 0.3s;
@@ -331,7 +332,8 @@ select option:hover {
 .service_request-detail-link:hover, 
 .taskDetailLink:hover,
 .change-address-button:hover,
-.get-case-detail-modal:hover {
+.get-case-detail-modal:hover,
+.client-detail-link:hover {
     color: var(--orange-accent-color) !important;
 }
 

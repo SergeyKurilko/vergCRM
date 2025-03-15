@@ -1,0 +1,116 @@
+{% load static %}
+{% load humanize %}
+
+<div class="modal fade" id="ClientDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ClientDetailModalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ClientDetailModalLabel">{{ client.name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Modal body row -->
+             <div class="client-detail-row row">
+            <!-- Modal body col 1 -->
+              <div class="col-lg-6 col-12">
+                <form id="updateClientForm" action="{% url 'crm:client_update' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="manager_id" value="{{ client.manager.id }}" required>
+                    <input type="hidden" name="client_id" value="{{ client.id }}" required>
+
+                    <!-- ФИО клиента -->
+                    <label for="ClientNameInput" class="form-label mb-0">ФИО</label>
+                    <input class="form-control mb-3 text-muted" 
+                          type="text" 
+                          name="ClientName" 
+                          id="ClientNameInput" 
+                          placeholder="ФИО" 
+                          minlength="4"
+                          maxlength="255"
+                          required
+                          readonly
+                          value="{{ client.name }}">
+
+                    <!-- Телефон клиента -->
+                    <label for="ClientPhoneInput" class="form-label mb-0">Телефон</label>
+                    <input class="form-control mb-3 text-muted" 
+                            type="tel"
+                            name="ClientPhone" 
+                            id="ClientPhoneInput" 
+                            placeholder="Телефон" 
+                            minlength="15"
+                            maxlength="15"
+                            required
+                            readonly
+                            value="{{ client.phone }}">
+
+                    <!-- Whatsapp клиента -->
+                    <label for="ClientWhatsappInput" class="form-label mb-0">Whatsapp</label>
+                    <input class="form-control mb-3 text-muted" 
+                            type="tel"
+                            name="ClientWhatsapp" 
+                            id="ClientWhatsappInput" 
+                            placeholder="whatsapp" 
+                            minlength="15"
+                            maxlength="15",
+                            readonly
+                            value="{{ client.whatsapp }}">
+
+                    <!-- Telegram клиента -->
+                    <label for="ClientTelegramInput" class="form-label mb-0">Telegram</label>
+                    <input class="form-control mb-3 text-muted" 
+                            type="tel"
+                            name="ClientTelegram" 
+                            id="ClientTelegramInput" 
+                            placeholder="@telegram" 
+                            minlength="2"
+                            maxlength="55"
+                            readonly
+                            value="{{ client.telegram }}">
+
+                    <!-- email клиента -->
+                    <label for="ClientEmailInput" class="form-label mb-0">Email</label>
+                    <input class="form-control mb-3 text-muted" 
+                            type="email"
+                            name="ClientEmail" 
+                            id="ClientEmailInput" 
+                            placeholder="email" 
+                            minlength="2"
+                            maxlength="255"
+                            readonly
+                            value="{{ client.email }}">
+
+                    <div style="color: red; font-weight: 600;" class="update-client-error-place mt-1"></div>
+                  <div class="confirm-edit-client-buttons d-flex flex-row d-none">
+                      <button id="ConfirmEditClientButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                      <button type="button" class="border-0 verg-button-danger mt-2 ms-2" data-bs-dismiss="modal" aria-label="Отменить">Отменить <i class="bi bi-x-circle"></i></button>
+                  </div>
+
+                </form>
+              <button id="editClient" class="verg-button-1 border-0">Редактировать</button>
+
+              <hr class="hr delete-client-hr d-none">
+              <button data-delete-url="" data-task-id="{{task.id}}" id="deleteClient" class="verg-button-danger d-none">Удалить клиента</button>
+              </div>
+             <!-- Modal body col 1 end -->
+            
+            <!-- Modal body col 2 -->
+              <div class="col-lg-6 col-12">
+                <hr class="hr d-lg-none d-block">
+
+                <div class="client-statistics">
+                  <h6>Данные о заявках</h6>
+                    Всего заявок: {{ client.service_request_count }} <br>
+                    Ожидаемая прибыль: {{ total_profit|intcomma }} ₽
+                </div>
+              </div>
+            <!-- Modal body col 2 end-->
+            </div>
+            <!-- Modal body row end -->
+            
+
+        </div>
+      </div>
+    </div>
+    <script src="{% static 'crm/js/clients/dynamic-modals/client-detail-modal.js' %}"></script>
+</div>

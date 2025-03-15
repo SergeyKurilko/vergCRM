@@ -135,7 +135,7 @@ class DeleteServiceRequest(ElementPermission, View):
                 "Verification error"
             )
 
-        # service_request.delete()
+        service_request.delete()
 
         # После удаления отправляем в скрипт ссылку на перенаправление к списку задач
         return JsonResponse({
@@ -957,7 +957,6 @@ class DeleteTaskForRequestView(View):
     def post(self, request):
         task_id = request.POST.get("delete_task_id")
         if not task_id:
-            print("Нет параметра delete_task_id")
             return json_response.validation_error(
                 "Что-то пошло не так. Перезагрузите страницу."
             )
@@ -965,7 +964,6 @@ class DeleteTaskForRequestView(View):
         try:
             task = Task.objects.get(id=task_id)
         except Task.DoesNotExist:
-            print("Не найдена задача")
             return json_response.not_found_error(
                 "Задача не найдена"
             )

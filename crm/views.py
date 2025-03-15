@@ -1,17 +1,15 @@
 from pprint import pprint
-
 from django.db.models import F, Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
-from crm.models import ServiceRequest, Service, Client
 from functools import wraps
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
+
+from crm.models import ServiceRequest, Service, Client
 
 def staff_required(view_func):
     """

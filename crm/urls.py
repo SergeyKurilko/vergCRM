@@ -12,6 +12,8 @@ from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
                             AddNewTaskForServiceRequest, TaskForRequestDetailView, DeleteTaskForRequestView,
                             DeleteServiceRequest)
 
+from crm.clients_views import ClientListView, ClientDetailView, ClientUpdateView
+
 app_name = "crm"
 
 
@@ -36,6 +38,18 @@ urlpatterns = [
          name="service_request_detail"),
     path("test", test,
          name="test/")
+]
+
+clients_urlpatterns = [
+    path("my-clients/",
+         ClientListView.as_view(),
+         name="clients_list"),
+    path("ajax/client-detail",
+         ClientDetailView.as_view(),
+         name="client_detail"),
+    path("ajax/client-update",
+         ClientUpdateView.as_view(),
+         name="client_update")
 ]
 
 ajax_urlpatterns = [
@@ -96,3 +110,4 @@ ajax_urlpatterns = [
 ]
 
 urlpatterns += ajax_urlpatterns
+urlpatterns += clients_urlpatterns

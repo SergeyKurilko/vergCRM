@@ -7,7 +7,7 @@ class ElementPermission:
     @staticmethod
     def verification_owner(request: HttpRequest, obj):
         """
-        Проверка прав менеджера на удаление и изменение объекта
+        Проверка прав менеджера на CRUD объекта
         """
         user_id = request.user.id
         owner_id = obj.manager.id

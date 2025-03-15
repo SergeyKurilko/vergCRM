@@ -61,7 +61,7 @@ class ServiceRequest(models.Model):
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE,
-                               verbose_name="Клиент")
+                               verbose_name="Клиент", related_name="service_requests")
     address = models.TextField(verbose_name="Адрес", blank=True)
     description = models.TextField(verbose_name="Подробное описание заявки")
     cost_price = models.IntegerField(verbose_name="Общая себестоимость",
