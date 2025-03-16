@@ -15,6 +15,8 @@ from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
 from crm.clients_views import (ClientListView, ClientDetailView,
                                ClientUpdateView, ClientDeleteView)
 
+from crm.tasks_views import TaskListView
+
 app_name = "crm"
 
 
@@ -54,6 +56,12 @@ clients_urlpatterns = [
     path("ajax/client-delete",
          ClientDeleteView.as_view(),
          name="client_delete")
+]
+
+tasks_urlpatterns = [
+    path("my-tasks/",
+         TaskListView.as_view(),
+         name="tasks_list")
 ]
 
 ajax_urlpatterns = [
@@ -115,3 +123,4 @@ ajax_urlpatterns = [
 
 urlpatterns += ajax_urlpatterns
 urlpatterns += clients_urlpatterns
+urlpatterns += tasks_urlpatterns

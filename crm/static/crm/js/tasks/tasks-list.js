@@ -1,0 +1,1 @@
+console.log("Скрипт для tasks-list.html")

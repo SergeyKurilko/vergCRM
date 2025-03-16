@@ -1,10 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}Мои клиенты{% endblock %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container-md container-fluid service-requests-list-filters-container mt-3">
+        <a href="?status=all" type="button"
+            class="verg-button-1 position-relative {% if current_status == 'all' %}verg-button-1-active{% endif %}">
+            Все заявки
+        </a>
+        <a href="?status=in_progress" type="button"
+            class="verg-button-1 position-relative {% if current_status == 'in_progress' %}verg-button-1-active{% endif %}">
+            В работе
+        </a>
+        <a href="?status=completed" type="button"
+            class="verg-button-1 position-relative {% if current_status == 'completed' %}verg-button-1-active{% endif %}">
+            Завершенные
+        </a>
+        <a href="?status=canceled" type="button"
+            class="verg-button-1 position-relative {% if current_status == 'canceled' %}verg-button-1-active{% endif %}">
+            Отмененные
+        </a>
+</div>
+
+<div class="container-md container-fluid client-list-add-new-container mt-2">
+    <a href="" class="verg-button-1 add-new-task-button" type="button">
+        Задачу
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+        </svg>
+    </a>
+</div>
+
+<div class="container-md container-fluid clients-list-container mt-3">
+    <table class="table rounded-table">
+        <thead>
+          <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Заявка</th>
+            <th scope="col">Срок выполнения</th>
+            <th scope="col">Напоминание</th>
+            <th scope="col">Выполнена</th>
+            <th scope="col">Просрочена</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+          <tr class="task-tr-link" id="task-tr-{{ task.id }}">
+            <td>
+                <a title="открыть" 
+                class="task-detail-link"
+                href="">
+                {{ task.title }}
+                </a>
+            </td>
+            <td>{% if task.service_request %}<a href="">{{ task.service_request }}</a>{% else %}<span class="text-center">-</span>{% endif %}</td>
+            <td>{{ task.must_be_completed_by }}</td>
+            <td>{% if task.reminder %}Включено{% else %}<span class="text-center">-</span>{% endif %}</td>
+            <td>{% if task.is_completed %}Выполнена{% else %}Выполняется{% endif %}</td>
+            <td>{% if task.expired %}<span style="color: red">Просрочена</span>{% else %}<span class="text-center">-</span>{% endif %}</td>
+          </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container-md container-fluid paginator-container">
+    {% if tasks.paginator.num_pages > 1 %}
+    <div id="pagination" class="my-3 d-flex justify-content-center d-md-block">
+        {% for p in tasks.paginator.page_range %}
+            {% if tasks.number == p %}
+                <a class="paginator-link-active me-1" href="?page={{ p }}">{{ p }}</a>
+            {% else %}
+                <a class="paginator-link me-1" href="?page={{ p }}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if tasks.has_next %}
+            <a class="paginator-next-button" href="?page={{ task.next_page_number }}">
+                Далее
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'crm/js/tasks/tasks-list.js' %}"></script>
+{% endblock %}
