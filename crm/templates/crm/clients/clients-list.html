@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container-md container-fluid client-list-add-new-container mt-3">
-    <a href="" class="verg-button-1" type="button">
+    <a href="" class="verg-button-1 add-new-client-button" type="button">
         Добавить клиента &nbsp;
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
@@ -24,7 +24,7 @@
         </thead>
         <tbody>
             {% for client in clients %}
-          <tr class="client-tr-link">
+          <tr class="client-tr-link" id="client-tr-{{ client.id }}">
             <td>
                 <a title="открыть" 
                 class="client-detail-link" 
@@ -61,6 +61,88 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Modal for create new client -->
+{% load static %}
+
+
+<div class="modal fade" id="CreateClientModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="CreateClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="CreateClientModalLabel">Новый клиент</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+                <form id="CreateClientForm" action="{% url 'crm:ajax_add_new_client' %}" method="post">
+                    {% csrf_token %}
+                    <!-- ФИО клиента -->
+                    <label for="ClientNameInput" class="form-label mb-0">ФИО</label>
+                    <input class="form-control mb-3" 
+                          type="text" 
+                          name="ClientName" 
+                          id="ClientNameInput" 
+                          placeholder="ФИО" 
+                          minlength="4"
+                          maxlength="255"
+                          required>
+
+                    <!-- Телефон клиента -->
+                    <label for="ClientPhoneInput" class="form-label mb-0">Телефон</label>
+                    <input class="form-control mb-3" 
+                            type="tel"
+                            name="ClientPhone" 
+                            id="ClientPhoneInput" 
+                            placeholder="Телефон" 
+                            minlength="15"
+                            maxlength="15"
+                            required>
+
+                    <!-- Whatsapp клиента -->
+                    <label for="ClientWhatsappInput" class="form-label mb-0">Whatsapp</label>
+                    <input class="form-control mb-3" 
+                            type="tel"
+                            name="ClientWhatsapp" 
+                            id="ClientWhatsappInput" 
+                            placeholder="whatsapp" 
+                            minlength="15"
+                            maxlength="15">
+
+                    <!-- Telegram клиента -->
+                    <label for="ClientTelegramInput" class="form-label mb-0">Telegram</label>
+                    <input class="form-control mb-3 text-muted" 
+                            type="tel"
+                            name="ClientTelegram" 
+                            id="ClientTelegramInput" 
+                            placeholder="@telegram" 
+                            minlength="2"
+                            maxlength="55">
+
+                    <!-- email клиента -->
+                    <label for="ClientEmailInput" class="form-label mb-0">Email</label>
+                    <input class="form-control mb-3 text-muted" 
+                            type="email"
+                            name="ClientEmail" 
+                            id="ClientEmailInput" 
+                            placeholder="email" 
+                            minlength="2"
+                            maxlength="255">
+
+                    <div style="color: red; font-weight: 600;" class="create-client-error-place mt-1"></div>
+                  <div class="confirm-create-client-buttons d-flex flex-row">
+                      <button id="ConfirmCreateClientButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
+                      <button type="button" class="border-0 verg-button-danger mt-2 ms-2" data-bs-dismiss="modal" aria-label="Отменить">Отменить <i class="bi bi-x-circle"></i></button>
+                  </div>
+
+                </form>
+
+                
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal for create new client end -->
 {% endblock %}
 
 {% block scripts %}

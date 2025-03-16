@@ -77,6 +77,9 @@ function showAlertToast(message) {
     toast.show();
 }
 
+
+///////////////////////////////////////// /Обновление контента через ajax ////////////////////////////////////////
+
 // Обновление контента через ajax
 function contentUpdate(url, element, params) {
     if (!params) {
@@ -100,4 +103,27 @@ function contentUpdate(url, element, params) {
             element.replaceWith(newContent)
         }
     });
+}
+
+
+///////////////////////////////////////// /Показать verg-dots-loader ////////////////////////////////////////
+function showDotsLoader(elForHidden, off) {
+    // Если loader выключен
+    if (!off) {
+        // Клонируем элемент
+        var loader = $('.verg-dots-loader').first().clone();
+
+        loader.removeClass('d-none').insertAfter(elForHidden);
+
+        // Помечаем его активным
+        loader.addClass("active-dots-loader")
+    
+        // Размываем контент, на который будет помещен loader
+        // elForHidden.css({"filter": "blur(1.4px)", "z-index": "10"});
+        $('.l-overlay').css("display", "block");
+        
+    } else {
+        $(".active-dots-loader").remove();
+        $('.l-overlay').css("display", "none");
+    }
 }

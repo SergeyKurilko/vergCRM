@@ -90,7 +90,7 @@
               <button id="editClient" class="verg-button-1 border-0">Редактировать</button>
 
               <hr class="hr delete-client-hr d-none">
-              <button data-delete-url="" data-task-id="{{task.id}}" id="deleteClient" class="verg-button-danger d-none">Удалить клиента</button>
+              <button data-delete-url="{% url 'crm:client_delete' %}" data-client-id="{{client.id}}" id="deleteClient" class="verg-button-danger d-none">Удалить клиента</button>
               </div>
              <!-- Modal body col 1 end -->
             
@@ -100,7 +100,8 @@
 
                 <div class="client-statistics">
                   <h6>Данные о заявках</h6>
-                    Всего заявок: {{ client.service_request_count }} <br>
+                    Всего заявок: {% if all_service_request_quantity > 0 %}{{ all_service_request_quantity }}{% else %} 0{% endif %}<br>
+                    В работе: {% if client.active_service_request_count > 0 %}{{ client.active_service_request_count }}{% else %} 0 {% endif %}<br>
                     Ожидаемая прибыль: {{ total_profit|intcomma }} ₽
                 </div>
               </div>

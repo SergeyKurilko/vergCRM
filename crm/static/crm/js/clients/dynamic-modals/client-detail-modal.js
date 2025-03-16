@@ -1,37 +1,7 @@
 $(document).ready(function () {
     var editeMode = false
 
-    // Перенос поинтера на 3 позицию при клике по полю
-    $.fn.setCursorPosition = function(pos) {
-        if ($(this).get(0).setSelectionRange) {
-          $(this).get(0).setSelectionRange(pos, pos);
-        } else if ($(this).get(0).createTextRange) {
-          var range = $(this).get(0).createTextRange();
-          range.collapse(true);
-          range.moveEnd('character', pos);
-          range.moveStart('character', pos);
-          range.select();
-        }
-    };
-
-    // Маска для телефона и whatsapp
-    $("#ClientPhoneInput").click(function(){
-        $(this).setCursorPosition(3);
-        }).mask("+7(999) 999-9999");
     
-        $("#ClientWhatsappInput").click(function(){
-        $(this).setCursorPosition(3);
-            }).mask("+7(999) 999-9999");
-
-    $('input').click(function (e) { 
-        if (!editeMode) {
-            e.preventDefault();
-            $('#editClient').addClass("verg-button-1-active")
-            setTimeout(function() { 
-            $('#editClient').removeClass("verg-button-1-active")
-            }, 200);
-        }    
-    });
 
     // Редактирование карточки клиента
     $('#editClient').click(function (e) { 
@@ -41,6 +11,8 @@ $(document).ready(function () {
         $("#ClientWhatsappInput").removeAttr("readonly").removeClass("text-muted").addClass("border-success");
         $("#ClientTelegramInput").removeAttr("readonly").removeClass("text-muted").addClass("border-success");
         $("#ClientEmailInput").removeAttr("readonly").removeClass("text-muted").addClass("border-success");
+        $(".delete-client-hr").removeClass('d-none');
+        $("#deleteClient").removeClass('d-none');
 
         $(this).addClass("d-none")
 
@@ -64,5 +36,32 @@ $(document).ready(function () {
                 $('.update-client-error-place').text(errorMessage)   
             }
         });
+    });
+
+    // Получение окна подтверждения удаления клиента
+    $("#deleteClient").click(function (e) { 
+        e.preventDefault();
+        var urlForGetModal = $(this).data('delete-url')
+        var clientId = $(this).data('client-id')
+
+        $.ajax({
+            type: "GET",
+            url: `${urlForGetModal}?client_id=${clientId}`,
+            dataType: "json",
+            success: function (response) {
+                var modalHtml = response.modal_html
+
+                $('#ClientDetailModal').css("filter", "blur(1.4px)");
+
+                $('.main_wrapper').append(modalHtml)
+                $('#confirmDeleteClientModal').modal('show')
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON["message"]
+                showAlertToast(errorMessage)
+                
+            }
+        });
+        
     });
 });
