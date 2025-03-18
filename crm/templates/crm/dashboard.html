@@ -18,7 +18,7 @@
                 <a href="{% url 'crm:service_requests_list' %}?page=1" class="verg-button-1" type="button">Мои заявки</a>
             </div>
             <div class="my_tasks ms-3">
-                <a type="button" class="verg-button-1 position-relative">
+                <a href="{% url 'crm:tasks_list' %}" type="button" class="verg-button-1 position-relative">
                     Мои задачи
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         5

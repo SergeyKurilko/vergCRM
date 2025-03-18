@@ -252,3 +252,7 @@ class Task(models.Model):
         verbose_name_plural = "Задачи"
         ordering = ["-expired", "must_be_completed_by"]
 
+
+
+
+

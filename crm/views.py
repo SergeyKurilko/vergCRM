@@ -9,6 +9,7 @@ from functools import wraps
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
 
+
 from crm.models import ServiceRequest, Service, Client
 
 def staff_required(view_func):
