@@ -241,8 +241,12 @@ class Task(models.Model):
                                       verbose_name="Дата создания")
 
     is_completed = models.BooleanField(default=False, verbose_name="Выполнено")
-    reminder = models.BooleanField(default=False, verbose_name="Напоминание")
+    notifications = models.BooleanField(default=False, verbose_name="Оповещение")
     expired = models.BooleanField(default=False, verbose_name="Просрочена")
+
+    before_one_hour_deadline_notification = models.BooleanField(
+        default=False,
+        verbose_name="Оповещение за час о просрочке задачи было отправлено")
 
     def __str__(self):
         return self.title
@@ -252,6 +256,26 @@ class Task(models.Model):
         verbose_name_plural = "Задачи"
         ordering = ["-expired", "must_be_completed_by"]
 
+
+# class Reminder(models.Model):
+#     """
+#     Класс модели объектов reminder ("напоминание")
+#     """
+#     REMINDER_MODE_CHOICES = [
+#         ("daily", "Ежедневно"),
+#         ("weekly", "Еженедельно"),
+#         ("monthly", "Ежемесячно"),
+#         ("custom", "Кастомное")
+#     ]
+#     task = models.ForeignKey(
+#         to=Task,
+#         on_delete=models.CASCADE,
+#         related_name="reminders",
+#         verbose_name="Задача"
+#     )
+#     mode = models.CharField(
+#         choices=REMINDER_MODE_CHOICES
+#     )
 
 
 
