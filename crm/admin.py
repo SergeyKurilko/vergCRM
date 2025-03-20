@@ -35,9 +35,12 @@ class TaskAdmin(admin.ModelAdmin):
     list_editable = ['is_completed', 'notifications',
                      'expired']
     list_display = ['id', 'title', 'is_completed', 'notifications',
-                     'expired', 'created_at',
-                     'must_be_completed_by']
+                    'expired', 'created_at',
+                    'must_be_completed_by',
+                    'before_one_hour_deadline_notification',
+                    'before_one_workday_deadline_notification']
     list_display_links = ['id', 'title']
+
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):

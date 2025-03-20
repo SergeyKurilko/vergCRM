@@ -10,6 +10,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_id = models.CharField(max_length=15, verbose_name="telegram", blank=True)
     phone_number = models.CharField(max_length=15, verbose_name="телефон", blank=True)
+    email_notification = models.BooleanField(default=True, verbose_name="Оповещения на почту")
+    telegram_notification = models.BooleanField(default=True, verbose_name="Оповещения в телеграм")
+    day_off_notification = models.BooleanField(default=False, verbose_name="Оповещения по выходным")
 
     def __str__(self):
         return f"Профиль пользователя {self.user.username}"
@@ -247,6 +250,11 @@ class Task(models.Model):
     before_one_hour_deadline_notification = models.BooleanField(
         default=False,
         verbose_name="Оповещение за час о просрочке задачи было отправлено")
+
+    before_one_workday_deadline_notification = models.BooleanField(
+        default=False,
+        verbose_name="Оповещение за рабочий день до дедлайна было отправлено"
+    )
 
     def __str__(self):
         return self.title
