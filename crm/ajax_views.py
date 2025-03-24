@@ -774,7 +774,7 @@ class AddNewTaskForServiceRequest(View):
         title = data.get("title")
         text = data.get("text")
         must_be_completed_by = data.get("must_be_completed_by")
-        reminder = data.get("reminder")
+        notifications = data.get("notifications")
 
         if not manager_id or not service_request_id:
             return json_response.validation_error(
@@ -802,7 +802,7 @@ class AddNewTaskForServiceRequest(View):
             )
 
         # Включен ли toggle напоминания у задачи
-        task_reminder = True if reminder else False
+        task_notifications = True if notifications else False
 
         new_task = Task.objects.create(
             title=title,
@@ -810,7 +810,7 @@ class AddNewTaskForServiceRequest(View):
             service_request_id=service_request_id,
             manager_id=manager_id,
             must_be_completed_by=must_be_completed_by,
-            reminder=task_reminder
+            notifications=task_notifications
         )
 
         return JsonResponse({
@@ -850,6 +850,7 @@ class TaskForRequestDetailView(View):
         })
 
     def post(self, request: HttpRequest):
+        """"""
         data = request.POST
         print(data)
         required_fields = {
@@ -863,7 +864,7 @@ class TaskForRequestDetailView(View):
         title = data.get("title")
         text = data.get("text")
         must_be_completed_by = data.get("must_be_completed_by")
-        reminder = data.get("reminder")
+        notifications = data.get("notifications")
 
         if not request.user.id == int(manager_id):
             return json_response.manager_forbidden(
@@ -905,12 +906,12 @@ class TaskForRequestDetailView(View):
             )
 
         # Включен ли toggle напоминания у задачи
-        task_reminder = True if reminder else False
+        task_notifications = True if notifications else False
 
         task.title=title
         task.text=text
         task.must_be_completed_by=must_be_completed_by
-        task.reminder=task_reminder
+        task.notifications=task_notifications
 
         task.save()
 
@@ -969,7 +970,6 @@ class DeleteTaskForRequestView(View):
             )
 
         if request.user.id != task.manager.id:
-            print("Задача не принадлежит менеджеру")
             return json_response.manager_forbidden(
                 "Задача не принадлежит менеджеру"
             )

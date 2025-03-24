@@ -1,10 +1,10 @@
 $(document).ready(function () {
     var editMode = false
-    var reminder_status = $('input[name="reminder_status"]')
-    var reminder = $('input[name="reminder"]')
+    var notifications_status = $('input[name="notifications_status"]')
+    var notifications = $('input[name="notifications"]')
 
-    if (reminder_status.val() == "ON") {
-        reminder.prop('checked', true)
+    if (notifications_status.val() == "ON") {
+        notifications.prop('checked', true)
     }
     
     // Функция переключения в режим редактирования.
@@ -20,6 +20,8 @@ $(document).ready(function () {
         $('#deleteTask').removeClass('d-none');
         $('.delete-task-hr').removeClass('d-none');
         $('#editTaskForRequest').addClass('d-none');
+        $('.actual_notifications_status').addClass('d-none');
+        $('.actual_must_be_completed_by').addClass('d-none');
         }
     };
 

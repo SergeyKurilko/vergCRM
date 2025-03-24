@@ -245,7 +245,7 @@ class Task(models.Model):
 
 
     is_completed = models.BooleanField(default=False, verbose_name="Выполнено")
-    notifications = models.BooleanField(default=False, verbose_name="Оповещение")
+    notifications = models.BooleanField(default=False, verbose_name="Оповещение о сроке выполнения")
     expired = models.BooleanField(default=False, verbose_name="Просрочена")
 
     before_one_hour_deadline_notification = models.BooleanField(

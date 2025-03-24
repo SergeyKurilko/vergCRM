@@ -66,6 +66,8 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+
+
 /* ========================== Buttons Rules ================================ */
 
 .verg-button-danger {
@@ -792,7 +794,7 @@ select option:hover {
   background-color: red;
   border-radius: 100px;
   padding: 1px;
-  margin: 10px;
+  /* margin: 10px; */
   cursor: pointer;
   transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   align-items: center;
