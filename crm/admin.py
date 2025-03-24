@@ -2,7 +2,8 @@ from django.contrib import admin
 from crm.models import (Client, ServiceRequest, Comment,
                         ImageForServiceRequest, UserProfile,
                         Task, Service, NoteForServiceRequest,
-                        CostPriceCase, PartOfCostPriceCase)
+                        CostPriceCase, PartOfCostPriceCase,
+                        Reminder)
 
 
 @admin.register(Client)
@@ -59,4 +60,9 @@ class CostPriceCaseAdmin(admin.ModelAdmin):
 
 @admin.register(PartOfCostPriceCase)
 class PartOfCostPriceCaseAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Reminder)
+class ReminderAdmin(admin.ModelAdmin):
     pass

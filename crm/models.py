@@ -243,6 +243,7 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True,
                                       verbose_name="Дата создания")
 
+
     is_completed = models.BooleanField(default=False, verbose_name="Выполнено")
     notifications = models.BooleanField(default=False, verbose_name="Оповещение")
     expired = models.BooleanField(default=False, verbose_name="Просрочена")
@@ -265,26 +266,44 @@ class Task(models.Model):
         ordering = ["-expired", "must_be_completed_by"]
 
 
-# class Reminder(models.Model):
-#     """
-#     Класс модели объектов reminder ("напоминание")
-#     """
-#     REMINDER_MODE_CHOICES = [
-#         ("daily", "Ежедневно"),
-#         ("weekly", "Еженедельно"),
-#         ("monthly", "Ежемесячно"),
-#         ("custom", "Кастомное")
-#     ]
-#     task = models.ForeignKey(
-#         to=Task,
-#         on_delete=models.CASCADE,
-#         related_name="reminders",
-#         verbose_name="Задача"
-#     )
-#     mode = models.CharField(
-#         choices=REMINDER_MODE_CHOICES
-#     )
+class Reminder(models.Model):
+    """
+    Класс модели объектов reminder ("напоминание для задачи")
+    """
+    REMINDER_MODE_CHOICES = [
+        ("daily", "Ежедневно"),
+        ("weekly", "Еженедельно"),
+        ("monthly", "Ежемесячно"),
+        ("custom", "Кастомное")
+    ]
+    task = models.ForeignKey(
+        to=Task,
+        on_delete=models.CASCADE,
+        related_name="reminders",
+        verbose_name="Задача"
+    )
+    mode = models.CharField(
+        choices=REMINDER_MODE_CHOICES, max_length=10
+    )
+    custom_days = models.JSONField(
+        verbose_name="Кастомные дни недели",
+        null=True,
+        blank=True,
+        help_text="Выбранные дни недели для кастомных напоминаний (например, ['mon', 'wed', 'fri'])"
+    )
+    custom_time = models.TimeField(
+        verbose_name="Кастомное время напоминания",
+        null=True,
+        blank=True,
+        help_text="Время для кастомных напоминаний"
+    )
 
+
+    is_active = models.BooleanField(default=True, verbose_name="Активно")
+    last_reminder_sent = models.DateTimeField(null=True, blank=True, verbose_name="Последнее отправленное напоминание")
+
+    def __str__(self):
+        return f"Напоминание для задачи {self.task.title} ({self.get_mode_display()})"
 
 
 

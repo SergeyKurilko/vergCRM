@@ -6,6 +6,8 @@ from .notifications_tasks import (one_hour_before_deadline_notification,
                                   notification_at_expired_task,
                                   one_workday_before_deadline_notification)
 
+
+
 def get_previous_workday(date):
     """
     Получение предыдущего рабочего дня. Для оповещений о просрочке задачи за сутки,
