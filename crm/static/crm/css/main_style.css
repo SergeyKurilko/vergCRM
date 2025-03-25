@@ -838,3 +838,192 @@ select option:hover {
 }
 
 /* ========================== /Checkbox-1 Rules ================================ */
+
+/* ========================== Checkbox verg-green-checkbox Rules ================================ */
+
+/* CSS (updated with faster focus ring transition) */
+.verg-green-checkbox-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 6px 6px 0;
+}
+
+.verg-green-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.verg-green-checkbox-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 32px;
+  transition: all 0.2s ease;
+}
+
+/* Checkbox box */
+.verg-green-checkbox-label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  border: 2px solid #ccc;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+/* Checkmark */
+.verg-green-checkbox-label:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  width: 8px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 3;
+}
+
+/* Checked state */
+.verg-green-checkbox-input:checked + .verg-green-checkbox-label:before {
+  background: linear-gradient(135deg, #34c759 0%, #2db54d 100%);
+  border-color: #2db54d;
+  overflow: hidden;
+}
+
+/* Shine effect */
+.verg-green-checkbox-label span.verg-green-checkbox-shine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.verg-green-checkbox-input:checked
+  + .verg-green-checkbox-label
+  span.verg-green-checkbox-shine:after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 20px;
+  height: 100px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  animation: shine 0.6s ease-in-out infinite;
+}
+
+/* Checkmark animation */
+.verg-green-checkbox-input:checked + .verg-green-checkbox-label:after {
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+}
+
+/* Hover effect */
+.verg-green-checkbox-container:hover .verg-green-checkbox-label:before {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+/* Text styling */
+.verg-green-checkbox-text {
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  transition: color 0.2s ease;
+  position: relative;
+  z-index: 4;
+  min-width: 200px;
+}
+
+.verg-green-checkbox-container:hover .verg-green-checkbox-text {
+  color: #2db54d;
+}
+
+/* Focus state with transition */
+.verg-green-checkbox-input:focus + .verg-green-checkbox-label:before {
+  outline: 2px solid #34c759;
+  outline-offset: 2px;
+  transition: outline 0.1s ease-in-out; /* Added fast transition for outline */
+}
+
+/* Ensure outline is initially off with transition readiness */
+.verg-green-checkbox-label:before {
+  outline: 0 solid transparent; /* Initial state for smooth transition */
+}
+
+/* Shine animation keyframes */
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  40% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* ========================== /Checkbox verg-green-checkbox Rules ================================ */
+
+
+/* ========================== Checkbox days checkbox Rules ================================ */
+
+.days-btn-container {
+  display: flex;
+  width: 300px;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 34px;
+}
+
+.day-btn {
+  display: none; /* Hide the original checkbox */
+}
+
+.day-label {
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #008cff;
+  cursor: pointer;
+  border: 2px solid #008cff;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+}
+
+/* Apply styles for the selected state */
+.day-btn:checked + .day-label {
+  background-color: #008cff;
+  background-image: linear-gradient(147deg, #00ccff 0%, #004cff 74%);
+  border: none;
+  color: white;
+}
+
+/* ========================== /Checkbox days checkbox Rules ================================ */

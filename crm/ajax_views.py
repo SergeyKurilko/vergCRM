@@ -758,6 +758,7 @@ class AddNewTaskForServiceRequest(View):
     def post(self, request):
         """Создание новой задачи для заявки"""
         data = request.POST
+        print(data)
         required_fields = {
             "manager_id", "service_request_id",
             "title", "text", "must_be_completed_by"
