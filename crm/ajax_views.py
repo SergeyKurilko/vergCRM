@@ -12,7 +12,7 @@ from crm.permissions import ElementPermission
 from crm.views import staff_required
 from crm.models import (Service, Client, ServiceRequest,
                         NoteForServiceRequest, CostPriceCase,
-                        PartOfCostPriceCase, Task)
+                        PartOfCostPriceCase, Task, Reminder)
 
 
 class JsonResponses:
@@ -813,6 +813,16 @@ class AddNewTaskForServiceRequest(View):
             must_be_completed_by=must_be_completed_by,
             notifications=task_notifications
         )
+
+        reminder = data.POST.get("reminderMode")
+        if reminder and reminder == "daily":
+            Reminder.objects.create(
+                task=new_task,
+                mode="daily",
+
+            )
+
+
 
         return JsonResponse({
             "success": True,

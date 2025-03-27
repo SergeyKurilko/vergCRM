@@ -184,6 +184,12 @@ input::-webkit-inner-spin-button {
     border: 1px solid rgb(94, 255, 0) !important;
 }
 
+.delete-reminder-item-btn {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+}
+
 /* ========================== / Buttons Rules ================================ */
 
 /* ========================== Dropdowns Rules ================================ */
@@ -846,7 +852,6 @@ select option:hover {
   position: relative;
   display: inline-flex;
   align-items: center;
-  cursor: pointer;
   user-select: none;
   padding: 6px 6px 6px 0;
 }
@@ -864,6 +869,7 @@ select option:hover {
   align-items: center;
   padding-left: 32px;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 /* Checkbox box */
@@ -953,7 +959,7 @@ select option:hover {
   transition: color 0.2s ease;
   position: relative;
   z-index: 4;
-  min-width: 200px;
+  min-width: 225px;
 }
 
 .verg-green-checkbox-container:hover .verg-green-checkbox-text {
@@ -1006,9 +1012,9 @@ select option:hover {
   background-color: transparent;
   font-size: 13px;
   font-weight: 600;
-  color: #008cff;
+  color: #34c75980;
   cursor: pointer;
-  border: 2px solid #008cff;
+  border: 2px solid #34c75980;
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -1016,14 +1022,27 @@ select option:hover {
   align-items: center;
   justify-content: center;
   margin: 0 5px;
+  padding: 16px;
 }
 
 /* Apply styles for the selected state */
 .day-btn:checked + .day-label {
-  background-color: #008cff;
-  background-image: linear-gradient(147deg, #00ccff 0%, #004cff 74%);
+  background-color: #34c759;
+  background-image: linear-gradient(87deg, rgba(135,236,82,1) 3%, rgba(76,217,110,1) 99%);
   border: none;
   color: white;
 }
 
 /* ========================== /Checkbox days checkbox Rules ================================ */
+
+/* ========================== Reminder item rules ================================ */
+
+.reminder-item .card-body {
+  background-color: #c4ff9414;
+  position: relative;
+}
+
+
+
+
+/* ========================== /Reminder item rules ================================ */

@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    
-    
+
+
     // Добавление адреса для заявки
-    $('#RequestDetailAddAdressButton').click(function (e) { 
+    $('#RequestDetailAddAdressButton').click(function (e) {
         e.preventDefault();
         var RequestDetailAddAdressButton = $(this)
-         
+
         // Убираем кнопку добавления адреса
         RequestDetailAddAdressButton.addClass('d-none')
 
@@ -15,7 +15,7 @@ $(document).ready(function () {
         $('#RequestDetailAddAdressInput').focus();
 
         // Отмена изменения адреса
-        $('#CancelAddAddressButton').click(function (e) { 
+        $('#CancelAddAddressButton').click(function (e) {
             e.preventDefault();
             $('#RequestDetailAddAdressInput').val('')
             $('.add-address-form').addClass('d-none');
@@ -24,11 +24,11 @@ $(document).ready(function () {
         });
 
         // Сохранение нового адреса
-        $('#AddAddressForm').submit(function (e) { 
+        $('#AddAddressForm').submit(function (e) {
             e.preventDefault();
 
             var newAddressCsrfToken = $('input[name=csrfmiddlewaretoken]').val()
-            
+
             $.ajax({
                 type: "POST",
                 url: $(this).attr('action'),
@@ -46,7 +46,7 @@ $(document).ready(function () {
                     $('.add-adress-error-place').text('');
                     $('.change-address-button').removeClass('d-none')
                     showToast("Адрес изменен")
-                    
+
                 },
                 error: function (response) {
                     var errorMessage = response.responseJSON['message']
@@ -58,7 +58,7 @@ $(document).ready(function () {
     });
 
     // Созранение новой стоимости заявки
-    $('#initialChangeTotalPriceButton').click(function (e) { 
+    $('#initialChangeTotalPriceButton').click(function (e) {
         e.preventDefault();
 
         $('.current-total-price-placeholder').addClass('d-none');
@@ -66,7 +66,7 @@ $(document).ready(function () {
         $(this).removeClass('verg-button-1').addClass('verg-button-1-disabled');
         $('#newTotalPriceInput').focus();
 
-        $('#CancelTotalPriceButton').click(function (e) { 
+        $('#CancelTotalPriceButton').click(function (e) {
             e.preventDefault();
             $('#newTotalPriceInput').val('');
             $('.current-total-price-placeholder').removeClass('d-none');
@@ -74,11 +74,11 @@ $(document).ready(function () {
             $('#initialChangeTotalPriceButton').addClass('verg-button-1').removeClass('verg-button-1-disabled');
         });
 
-        $('#changeTotalPriceForm').submit(function (e) { 
+        $('#changeTotalPriceForm').submit(function (e) {
             e.preventDefault();
 
             var newPriceCsrfToken = $('input[name=csrfmiddlewaretoken]').val()
-            
+
             $.ajax({
                 type: "POST",
                 url: $(this).attr('action'),
@@ -99,7 +99,7 @@ $(document).ready(function () {
                     $('.request-profit-placeholder').text(newProfit)
 
                     showToast("Стоимость обновлена")
-                    
+
                 },
                 error: function (response) {
                     var errorMessage = response.responseJSON['message']
@@ -108,16 +108,16 @@ $(document).ready(function () {
             });
 
         });
-        
+
     });
 
 
     // Сохранение новой заметки для заявки
-    $('#addNewNoteForm').submit(function (e) { 
+    $('#addNewNoteForm').submit(function (e) {
         e.preventDefault();
 
         var newNoteCsrfToken = $('input[name=csrfmiddlewaretoken]').val()
-        
+
         $.ajax({
             type: "POST",
             url: $(this).attr('action'),
@@ -130,7 +130,7 @@ $(document).ready(function () {
                 var newNoteId = response.new_note_id
                 var newNoteText = response.new_note_text
                 var newNoteCreatedAt = response.new_note_created_at
-                
+
                 // Очистим поля формы
                 $('textarea[name=note_text]').val('')
 
@@ -150,7 +150,7 @@ $(document).ready(function () {
                     hour: '2-digit',
                     minute: '2-digit',
                 });
-                
+
                 // Создаем html новой заметки в список
                 var newNoteHtml = `
                 <div id="note_${newNoteId}" class="note-for-service-request">
@@ -161,7 +161,7 @@ $(document).ready(function () {
                 // Вставляем новую заметку вверх списка .notes-container
                 $('.notes-container').prepend(newNoteHtml);
 
-            
+
                 $(`#note_${newNoteId}`).addClass('wave-effect');
 
                 // Добавляем небольшую задержку перед прокруткой
@@ -183,7 +183,7 @@ $(document).ready(function () {
     });
 
     // Вызов окна calculate-cost-price-offcanvas и вставка в него контента
-    $('#callCulateCostPriceOffcanvasButton').click(function (e) { 
+    $('#callCulateCostPriceOffcanvasButton').click(function (e) {
         e.preventDefault();
         var urlForCallOffcanvas = $(this).data('call-offcanvas-url')
         var serviceRequestId = $(this).data('service-request-id')
@@ -203,7 +203,7 @@ $(document).ready(function () {
                 // Открываем offcanvas после наполнения
                 $('#CalculateCostPriceOffcanvas').offcanvas('toggle')
             }
-        });    
+        });
     });
 
 
@@ -213,12 +213,12 @@ $(document).ready(function () {
         let total = 0;
         console.log("Считаем цену")
 
-        $('input[id^="part_price_"]').each(function() {
+        $('input[id^="part_price_"]').each(function () {
             let value = parseInt($(this).val()) || 0;
             total += value;
         });
 
-        $('input[id^="new_part_price_"]').each(function() {
+        $('input[id^="new_part_price_"]').each(function () {
             let value = parseInt($(this).val()) || 0;
             total += value;
         });
@@ -256,21 +256,21 @@ $(document).ready(function () {
         e.preventDefault();
         var linkForGetModal = $(this).attr('href')
         getCostPriceCaseModal(linkForGetModal)
-        }
+    }
     )
 
     // Обработчик события закрытия modal
-    $(document).on('hidden.bs.modal', '#costPriceDetailModal', function(){
+    $(document).on('hidden.bs.modal', '#costPriceDetailModal', function () {
         $('#costPriceDetailModal').remove(); // При закрытии, удаляем элемент
-      });
+    });
 
     // Обработчик нажатия кнопки включения режима редактирования
-    $(document).on('click', '#OnEditModeBtn', function() {
+    $(document).on('click', '#OnEditModeBtn', function () {
         offOnEditMode();
     });
 
     // Обработчик нажатия кнопки выключения режима редактирования
-    $(document).on('click', '#CancelEditCostPriceCaseButton', function() {
+    $(document).on('click', '#CancelEditCostPriceCaseButton', function () {
         if (!hasChanges) {
             offOnEditMode();
         } else {
@@ -278,15 +278,15 @@ $(document).ready(function () {
             $('.cost-price-case-detail-modal-content').css('opacity', 0.4)
             console.log("Были изменения. Нужно предупредить пользователя")
         }
-        
+
     });
 
-        // Обработчик изменения значений в полях part_price
-    $(document).on('input', 'input[id^="part_price_"]', function() {
+    // Обработчик изменения значений в полях part_price
+    $(document).on('input', 'input[id^="part_price_"]', function () {
         calculateTotalCostPrice();
     });
 
-    $(document).on('input', 'input[id^="new_part_price"]', function() {
+    $(document).on('input', 'input[id^="new_part_price"]', function () {
         calculateTotalCostPrice();
     });
 
@@ -318,30 +318,30 @@ $(document).ready(function () {
     // Получение формы создания нового кейса себестоимости
     $(document).on('click', '#AddCostPriceCaseButton', function () {
         var urlForAddCostPriceCase = $(this).data('add-case-url')
-            var serviceRequestId = $(this).data('service-request-id')
-            var params = `query_param=add_case&ServiceRequestId=${serviceRequestId}`
-    
-            $.ajax({
-                type: "GET",
-                url: urlForAddCostPriceCase,
-                data: params,
-                dataType: "json",
-                success: function (response) {
-                    var AddCostCaseHtml = response.add_cost_case_html
-                    $('.modal-body-add-cost-price-case').html(AddCostCaseHtml)
-                    $('#addCostPriceCaseModal').modal('show');
-                }
-            });
+        var serviceRequestId = $(this).data('service-request-id')
+        var params = `query_param=add_case&ServiceRequestId=${serviceRequestId}`
+
+        $.ajax({
+            type: "GET",
+            url: urlForAddCostPriceCase,
+            data: params,
+            dataType: "json",
+            success: function (response) {
+                var AddCostCaseHtml = response.add_cost_case_html
+                $('.modal-body-add-cost-price-case').html(AddCostCaseHtml)
+                $('#addCostPriceCaseModal').modal('show');
+            }
+        });
     })
 
     // Получение всех задач для заявки
-    $('#getTasksForRequest').click(function (e) { 
+    $('#getTasksForRequest').click(function (e) {
         e.preventDefault();
         var urlForAjax = $(this).data('get-tasks-url')
 
         $.ajax({
             type: "GET",
-            data: {"service_request_id": currentServiceRequestId},
+            data: { "service_request_id": currentServiceRequestId },
             url: urlForAjax,
             dataType: "json",
             success: function (response) {
@@ -370,9 +370,9 @@ $(document).ready(function () {
         var urlForGetTaskList = $(this).data('url-for-tasks');
         var filterData = $(this).data('filter-by');
         contentUpdate(
-            url=urlForGetTaskList,
-            element=$('.task-list-for-service-request-offcanvas-body'),
-            params=`?service_request_id=${currentServiceRequestId}&filter_by=${filterData}`
+            url = urlForGetTaskList,
+            element = $('.task-list-for-service-request-offcanvas-body'),
+            params = `?service_request_id=${currentServiceRequestId}&filter_by=${filterData}`
         )
     })
 
@@ -383,7 +383,7 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             url: urlForGetContent,
-            data: {"service_request_id": currentServiceRequestId},
+            data: { "service_request_id": currentServiceRequestId },
             dataType: "json",
             success: function (response) {
                 var newContent = response.new_content
@@ -419,7 +419,7 @@ $(document).ready(function () {
                 $('#TaskForRequestDetailModal').modal('show');
             }
         });
-    });  
+    });
 
     // При закрытии модального окна с task detail удаляем его из DOM,
     // Так же удаляем инициированные им скрипты для flatpickr
@@ -433,12 +433,12 @@ $(document).ready(function () {
     // При закрытии модального окна с подтверждением удаления task for request удаляем его из DOM
     // Так же убираем эффект у "родительского" модального окна
     $(document).on('hidden.bs.modal', '#confirmDeleteTaskModal', function (e) {
-        $('#TaskForRequestDetailModal').css({"filter":"none"});
+        $('#TaskForRequestDetailModal').css({ "filter": "none" });
         $('#confirmDeleteTaskModal').remove();
     });
 
     // Получение модального окна для подтсерждения удаления заявки
-    $('.delete-service-request-button').click(function (e) { 
+    $('.delete-service-request-button').click(function (e) {
         e.preventDefault();
         var urlForGetConfirmDeleteRequestModal = $(this).attr('href')
 
@@ -456,11 +456,33 @@ $(document).ready(function () {
                 showAlertToast(errorMessage);
             }
         });
-        
+
     });
 
     // При закрытии модального окна с подтверждением удаления заявки удаляем его из DOM
     $(document).on('hidden.bs.modal', '#confirmDeleteServiceRequestModal', function (e) {
         $('#confirmDeleteServiceRequestModal').remove();
     });
+
+
+    // Добавление напоминаний в задачах
+    $(document).on("change", '[class^="verg-green-checkbox-input"]', function () {
+        var currentReminderModeId = this.getAttribute("id")
+        var currentReminderNumber = currentReminderModeId.split('-')[1]
+
+        if ($(this).hasClass('recurring-inputs') && $(this).prop("checked", true)) {
+            $(`.recurring-reminder-params-${currentReminderNumber}`).removeClass('d-none')
+        } else {
+            $(`.recurring-reminder-params-${currentReminderNumber}`).addClass('d-none')
+            $(`.day-btn-for-${currentReminderNumber}`).prop("checked", false)
+        }
+    });
+    
+    $(document).on('click', '.delete-reminder-item-btn', function (e) {
+        var reminderNumber = $(this).data('reminder-item')
+        $(`#reminderItem-${reminderNumber}`).remove();
+    })
+
+    // Добавление напоминаний в задачах - end
+
 });

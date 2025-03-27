@@ -1,0 +1,93 @@
+<div class="reminder-item mb-3" id="reminderItem-{{ current_reminder_number }}">
+  <div class="card card-body">
+    <!-- Select reminder mode -->
+    <h6>Укажите тип напоминания о задаче</h6>
+    
+
+    <div class="verg-green-checkbox-container">
+      <input class="verg-green-checkbox-input" name="reminderMode-{{ current_reminder_number }}" 
+        id="onceReminderModeCheckInput-{{ current_reminder_number }}" type="radio"
+        value="once">
+      <label class="verg-green-checkbox-label" for="onceReminderModeCheckInput-{{ current_reminder_number }}">
+        <span class="verg-green-checkbox-text me-2">Разовое напоминание</span>
+        <div style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Разовое напоминание в конкретный день и время.">
+          <i class="bi bi-info-circle"></i>
+        </div>
+      </label>
+    </div>
+
+    <div class="verg-green-checkbox-container">
+      <input class="verg-green-checkbox-input recurring-inputs" name="reminderMode-{{ current_reminder_number }}" 
+        id="recurringReminderModeCheckInput-{{ current_reminder_number }}" type="radio"
+        value="recurring">
+      <label class="verg-green-checkbox-label" for="recurringReminderModeCheckInput-{{ current_reminder_number }}">
+        <span class="verg-green-checkbox-text me-2">Повторяющееся напоминание</span>
+        <div style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Повторяющееся напоминание в выбранные дни и время.">
+          <i class="bi bi-info-circle"></i>
+        </div>
+      </label>
+    </div>
+    <!-- Select reminder mode end-->
+
+    <!-- Select days and time for recurring reminder -->
+    <div class="recurring-reminder-params-{{ current_reminder_number }} d-none">
+      <h6 class="my-2">Выберете дни недели</h6>
+      <div class="days-btn-container my-3">
+        <input name="monday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="monday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label ms-0" 
+        for="monday-{{ current_reminder_number }}">Пон.</label>
+
+        <input name="tuesday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="tuesday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label" 
+        for="tuesday-{{ current_reminder_number }}">Вт.</label>
+
+        <input name="wednesday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="wednesday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label" 
+        for="wednesday-{{ current_reminder_number }}">Ср.</label>
+
+        <input name="thursday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="thursday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label" 
+        for="thursday-{{ current_reminder_number }}">Чт.</label>
+
+        <input name="friday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="friday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label" 
+        for="friday-{{ current_reminder_number }}">Пт.</label>
+
+        <input name="saturday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="saturday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label" 
+        for="saturday-{{ current_reminder_number }}">Сб.</label>
+
+        <input name="sunday-{{ current_reminder_number }}" 
+        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        id="sunday-{{ current_reminder_number }}" type="checkbox" checked="false">
+        <label class="day-label" 
+        for="sunday-{{ current_reminder_number }}">Вск.</label>
+      </div>
+
+      <h6 class="my-2">Выберете время напоминания</h6>
+      <input name="reminder_recurring_time" type="text" id="reminder-recurring-time" placeholder="Выберите время"
+        class="w-50 form-control flatpickr-input" readonly="readonly">
+    </div>
+
+    <!-- Select days and time for recurring reminder end-->
+    <button type="button" data-reminder-item="{{ current_reminder_number }}" 
+    class="verg-button-danger delete-reminder-item-btn px-4 border-0">
+    <i class="bi bi-trash3"></i>
+    </button>
+
+  </div>
+</div>

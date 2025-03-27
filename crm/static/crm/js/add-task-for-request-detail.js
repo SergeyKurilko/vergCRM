@@ -31,41 +31,50 @@ $(document).ready(function () {
     // При открытии документа все checkboxes с днями переключаем в checked=false
     $('.day-btn').prop('checked', false);
 
-    // Переключение чекбоксов с выбором reminder mode
-    var checkboxes = document.querySelectorAll('input[name^="reminderMode-"]');
-    var customReminderCheckbox = document.getElementById('customReminderModeCheckInput')
+    // var checkboxes = document.querySelectorAll('input[name="reminderMode"]');
+    // var customReminderCheckbox = document.getElementById('customReminderModeCheckInput')
 
-    checkboxes.forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            if (this.checked) {
-                // Если выбран customReminderCheckbox, показываем меню с выбором дней и времени.
-                if (this === customReminderCheckbox) {
-                    $('.custom-reminder-params').removeClass('d-none')
-                } else {
-                    $('.custom-reminder-params').addClass('d-none');
-                    $('.day-btn').prop('checked', false);
-                }
-                // Снимаем выделение с остальных
-                checkboxes.forEach(function (otherCheckbox) {
-                    if (otherCheckbox !== checkbox) {
-                        otherCheckbox.checked = false;
-                    }
-                });
-            } 
-            // else {
-            //     // Если нужно запретить снятие выделения (обязательный выбор), можно раскомментировать:
-            //     // this.checked = true;
-            // }
+    // checkboxes.forEach(function (checkbox) {
+    //     checkbox.addEventListener('change', function () {
+    //         if (this === customReminderCheckbox) {
+    //             $('.custom-reminder-params').removeClass('d-none')
+    //         } else {
+    //             $('.custom-reminder-params').addClass('d-none');
+    //             $('.day-btn').prop('checked', false);
+    //         }
+    //     })
+    // })
+
+    var currentReminderNumber = 1
+
+    // Получение карточки для 
+    $('#add-card-for-reminder-btn').click(function (e) {
+        e.preventDefault();
+        var urlForGetContent = $(this).data('url-for-new-reminder-card')
+
+        $.ajax({
+            type: "GET",
+            url: urlForGetContent,
+            data: `reminder_number=${currentReminderNumber}`,
+            dataType: "json",
+            success: function (response) {
+                var new_reminder_card = response.new_reminder_card
+                $('.add_reminder_placeholder').append(new_reminder_card);
+                $(`.day-btn-for-${currentReminderNumber}`).prop('checked', false);
+                currentReminderNumber += 1
+            }
         });
     });
 
-    // // Отслеживание нажатия customReminderModeCheckInput
-    // var customReminderCheckbox = document.getElementById('customReminderModeCheckInput')
-    // customReminderCheckbox.addEventListener('change', function () {
-    //     if (this.checked) {
-    //         console.log("Нажат режим кастомной напоминалки")
-    //     }
-    // })
 
+
+
+    // $(document).on("change", '[id^="recurringReminderModeCheckInput-"]', function () {
+    //     var currentReminderModeId = this.getAttribute("id")
+    //     var currentReminderNumber = currentReminderModeId.split('-')[1]
+    //     console.log("Выбран тип напоминания для формы № " + currentReminderNumber)
+    //     console.log("Будем убирать d-none у объекта с классом: " + `recurring-reminder-params-${currentReminderNumber}`)
+    //     $(`.recurring-reminder-params-${currentReminderNumber}`).removeClass('d-none')
+    // });
 
 });

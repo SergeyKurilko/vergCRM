@@ -11,6 +11,15 @@ flatpickr('.flatpickr', {
 });
 </script>
 
+<script>
+  flatpickr("#reminder-custom-time", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: true
+  });
+</script>
+
 
 <div class="modal fade" id="addTaskForRequestModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTaskForRequestModalModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -28,7 +37,6 @@ flatpickr('.flatpickr', {
                 <textarea minlength="5" rows="5" class="form-control" name="text" id="" placeholder="описание задачи" required></textarea>
                 <hr class="hr mb-2">
                 <div required class="datetime-for-task-container d-flex flex-column align-items-start justify-content-end">
-                <!-- <label for="must_be_completed_by"><h5>Срок выполнения</h5></label> -->
                 <div class="d-flex">
                   <h6 class="me-2">Срок выполнения задачи</h6>
                   <div style="cursor:help" 
@@ -51,119 +59,30 @@ flatpickr('.flatpickr', {
                     </div>
                 </div>
                 <label class="switch-1 d-flex align-items-center justify-content-start">
-                    <!-- <h5>Включить напоминание</h5> -->
                     <div class="">Выключить</div> 
                     <input name="notifications" type="checkbox" />
                     <span class="check-slider-1 mx-2"></span>
                     <div class="">Включить</div> 
                 </label>
                 <hr class="hr mb-2">
+                
                 <!-- Добавление напоминания -->
-                <div class="add_reminder_placeholder">
-                  <div class="add_reminder_title d-flex">
-                    <h6 class="me-2">Напоминание</h6>
-                    <div class="" style="cursor:help" 
-                    data-bs-toggle="tooltip" 
-                    data-bs-placement="top" 
-                    title="Напоминания для задачи.">
-                    <i class="bi bi-info-circle"></i>
-                  </div>
-                  </div>
-                  <div class="add_reminder_body">
-                    <button class="verg-button-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReminders" aria-expanded="false" aria-controls="collapseExample">
-                      Настроить напоминание <i class="bi bi-bell"></i>
-                    </button>
-                  </div>
-                  <div class="collapse mt-2" id="collapseReminders">
-                    <div class="card card-body">
-
-                      <!-- Select reminder mode -->
-                      <h6>Укажите тип напоминания о задаче</h6>
-                      <div class="verg-green-checkbox-container">
-                        <input class="verg-green-checkbox-input" name="reminderMode-daily" id="dailyReminderModeCheckInput" type="checkbox" />
-                        <label class="verg-green-checkbox-label" for="dailyReminderModeCheckInput">
-                          <span class="verg-green-checkbox-text me-2">Напоминать раз в день</span>
-                          <div style="cursor:help" 
-                            data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="Получать напоминания о задаче каждый день.">
-                              <i class="bi bi-info-circle"></i>
-                          </div>
-                        </label>
-                      </div>
-
-                      <div class="verg-green-checkbox-container">
-                        <input class="verg-green-checkbox-input" name="reminderMode-weekly" id="weelklyReminderModeCheckInput" type="checkbox" />
-                        <label class="verg-green-checkbox-label" for="weelklyReminderModeCheckInput">
-                          <span class="verg-green-checkbox-text me-2">Напоминать раз в неделю</span>
-                          <div style="cursor:help" 
-                            data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="Получать напоминания о задаче раз в неделю.">
-                              <i class="bi bi-info-circle"></i>
-                          </div>
-                        </label>
-                      </div>
-
-                      <div class="verg-green-checkbox-container">
-                        <input class="verg-green-checkbox-input" name="reminderMode-monthly" id="monthlyReminderModeCheckInput" type="checkbox" />
-                        <label class="verg-green-checkbox-label" for="monthlyReminderModeCheckInput">
-                          <span class="verg-green-checkbox-text me-2">Напоминать раз в месяц</span>
-                          <div style="cursor:help" 
-                            data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="Получать напоминания о задаче раз в месяц.">
-                              <i class="bi bi-info-circle"></i>
-                          </div>
-                        </label>
-                      </div>
-
-                      <div class="verg-green-checkbox-container">
-                        <input class="verg-green-checkbox-input" name="reminderMode-custom" id="customReminderModeCheckInput" type="checkbox" />
-                        <label class="verg-green-checkbox-label" for="customReminderModeCheckInput">
-                          <span class="verg-green-checkbox-text me-2">Персональные настройки</span>
-                          <div style="cursor:help" 
-                            data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="Персональные настройки напоминания.">
-                              <i class="bi bi-info-circle"></i>
-                          </div>
-                        </label>
-                      </div>
-                      <!-- Select reminder mode end-->
-
-                      <!-- Select days and time for custom reminder -->
-                      <div class="custom-reminder-params d-none">
-                        <h6>Тут персональные настройки. Выбор дней и времени</h6>
-                        <div class="days-btn-container">
-                          <input name="monday" class="day-btn" id="monday" type="checkbox" checked="false" />
-                          <label class="day-label" for="monday">Пон.</label>
-                        
-                          <input name="tuesday" class="day-btn" id="tuesday" type="checkbox" checked="false" />
-                          <label class="day-label" for="tuesday">Вт.</label>
-                        
-                          <input name="wednesday" class="day-btn" id="wednesday" type="checkbox" checked="false" />
-                          <label class="day-label" for="wednesday">Ср.</label>
-                        
-                          <input name="thursday" class="day-btn" id="thursday" type="checkbox" checked="false" />
-                          <label class="day-label" for="thursday">Чт.</label>
-                        
-                          <input name="friday" class="day-btn" id="friday" type="checkbox" checked="false" />
-                          <label class="day-label" for="friday">Пт.</label>
-                        
-                          <input name="saturday" class="day-btn" id="saturday" type="checkbox" checked="false" />
-                          <label class="day-label" for="saturday">Сб.</label>
-
-                          <input name="sunday" class="day-btn" id="sunday" type="checkbox" checked="false" />
-                          <label class="day-label" for="sunday">Вск.</label>
-                        </div>
-                      </div>  
-                         
-                      <!-- Select days and time for custom reminder end-->
-
-                    </div>
-                  </div>
+                <div class="add_reminder_title d-flex">
+                  <h6 class="me-2">Напоминание</h6>
+                  <div class="" style="cursor:help" 
+                  data-bs-toggle="tooltip" 
+                  data-bs-placement="top" 
+                  title="Напоминания для задачи.">
+                  <i class="bi bi-info-circle"></i></div>
                 </div>
+
+                <div class="add_reminder_placeholder">
+                  
+                </div>
+
+                <button id="add-card-for-reminder-btn" class="verg-button-1 border-0" type="button" data-url-for-new-reminder-card="{% url 'crm:add_new_reminder_card' %}">
+                  Добавить напоминание <i class="bi bi-bell"></i>
+                </button>
                 <!-- Добавление напоминания end-->
 
                 <div style="color: red; font-weight: 600;" class="new-task-error-place mt-2"></div>

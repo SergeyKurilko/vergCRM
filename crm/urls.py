@@ -15,6 +15,8 @@ from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
 from crm.clients_views import (ClientListView, ClientDetailView,
                                ClientUpdateView, ClientDeleteView)
 
+from crm.reminders_views import GetContentForNewReminder
+
 from crm.tasks_views import TaskListView
 
 app_name = "crm"
@@ -118,7 +120,10 @@ ajax_urlpatterns = [
          name="delete_task_for_request"),
     path("ajax/delete-service-request",
          DeleteServiceRequest.as_view(),
-         name="delete_service_request")
+         name="delete_service_request"),
+    path("ajax/ajax-add-new-reminder-card",
+         GetContentForNewReminder.as_view(),
+         name="add_new_reminder_card")
 ]
 
 urlpatterns += ajax_urlpatterns
