@@ -28,23 +28,6 @@ $(document).ready(function () {
 
     });
 
-    // При открытии документа все checkboxes с днями переключаем в checked=false
-    $('.day-btn').prop('checked', false);
-
-    // var checkboxes = document.querySelectorAll('input[name="reminderMode"]');
-    // var customReminderCheckbox = document.getElementById('customReminderModeCheckInput')
-
-    // checkboxes.forEach(function (checkbox) {
-    //     checkbox.addEventListener('change', function () {
-    //         if (this === customReminderCheckbox) {
-    //             $('.custom-reminder-params').removeClass('d-none')
-    //         } else {
-    //             $('.custom-reminder-params').addClass('d-none');
-    //             $('.day-btn').prop('checked', false);
-    //         }
-    //     })
-    // })
-
     var currentReminderNumber = 1
 
     // Получение карточки для 
@@ -65,16 +48,5 @@ $(document).ready(function () {
             }
         });
     });
-
-
-
-
-    // $(document).on("change", '[id^="recurringReminderModeCheckInput-"]', function () {
-    //     var currentReminderModeId = this.getAttribute("id")
-    //     var currentReminderNumber = currentReminderModeId.split('-')[1]
-    //     console.log("Выбран тип напоминания для формы № " + currentReminderNumber)
-    //     console.log("Будем убирать d-none у объекта с классом: " + `recurring-reminder-params-${currentReminderNumber}`)
-    //     $(`.recurring-reminder-params-${currentReminderNumber}`).removeClass('d-none')
-    // });
 
 });

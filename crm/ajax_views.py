@@ -1,3 +1,5 @@
+import json
+
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -814,13 +816,66 @@ class AddNewTaskForServiceRequest(View):
             notifications=task_notifications
         )
 
-        reminder = data.POST.get("reminderMode")
-        if reminder and reminder == "daily":
-            Reminder.objects.create(
-                task=new_task,
-                mode="daily",
+        # Поиск reminders
+        new_reminders = []
+        for key, value in data.items():
+            if key.startswith('reminderMode-'):
+                index = key.split("-")[1]
 
-            )
+                # Если это разовый reminder
+                if value == 'once':
+                    # Извлекаем reminder_once_datetime и преобразуем строку scheduled_datetime в datetime
+                    try:
+                        scheduled_datetime = (
+                            datetime.strptime(data.get(f"reminder_once_datetime-{index}"), '%d.%m.%Y %H:%M'))
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+                    once_reminder = Reminder(
+                        task=new_task,
+                        mode='once',
+                        scheduled_datetime=scheduled_datetime
+                    )
+                    new_reminders.append(once_reminder)
+
+                # Если это recurring reminder
+                elif value == "recurring":
+                    # Извлекаем time и преобразуем в корректный datetime.time
+                    time_str = data.get(f"reminder_recurring_time-{index}")
+                    time_obj = datetime.strptime(time_str, '%H:%M').time()
+                    recurring_days = []
+                    day_mapping = {
+                        'mon': 'mon',
+                        'tue': 'tue',
+                        'wed': 'wed',
+                        'thu': 'thu',
+                        'fri': 'fri',
+                        'sat': 'sat',
+                        'sun': 'sun'
+                    }
+
+                    for day_key, day_value in data.items():
+                        if (day_key.startswith(
+                                tuple(day_mapping.keys())) and
+                                day_key.endswith(f"-{index}")
+                        ):
+                            day_name = day_key.split("-")[0]
+                            recurring_days.append(day_name)
+
+                    recurring_reminder = Reminder(
+                        task=new_task,
+                        mode='recurring',
+                        recurring_time=time_obj,
+                        recurring_days=json.dumps(recurring_days)
+                    )
+                    new_reminders.append(recurring_reminder)
+
+
+        Reminder.objects.bulk_create(new_reminders)
+
+
 
 
 

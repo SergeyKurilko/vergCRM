@@ -466,18 +466,28 @@ $(document).ready(function () {
 
 
     // Добавление напоминаний в задачах
+    `
+    <div class="once-reminder-params-1 mb-2">
+      <h6 class="my-2">Выберете время дату и время напоминания</h6>
+      <input name="reminder_once_datetime-1" type="text" id="reminder-once-datetime-1" placeholder="Выберите время" class="w-50 form-control flatpickr-input" readonly="readonly" required="">
+    </div>
+    `
+
     $(document).on("change", '[class^="verg-green-checkbox-input"]', function () {
         var currentReminderModeId = this.getAttribute("id")
         var currentReminderNumber = currentReminderModeId.split('-')[1]
+        
 
         if ($(this).hasClass('recurring-inputs') && $(this).prop("checked", true)) {
             $(`.recurring-reminder-params-${currentReminderNumber}`).removeClass('d-none')
-        } else {
-            $(`.recurring-reminder-params-${currentReminderNumber}`).addClass('d-none')
-            $(`.day-btn-for-${currentReminderNumber}`).prop("checked", false)
+            $(`.once-reminder-params-${currentReminderNumber}`).addClass('d-none');
+        } else if ($(this).hasClass('once-inputs') && $(this).prop("checked", true)) {
+            $(`.recurring-reminder-params-${currentReminderNumber}`).addClass('d-none');
+            $(`.day-btn-for-${currentReminderNumber}`).prop("checked", false);
+            $(`.once-reminder-params-${currentReminderNumber}`).removeClass('d-none');
         }
     });
-    
+
     $(document).on('click', '.delete-reminder-item-btn', function (e) {
         var reminderNumber = $(this).data('reminder-item')
         $(`#reminderItem-${reminderNumber}`).remove();
