@@ -395,12 +395,14 @@ $(document).ready(function () {
     });
 
     // При закрытии модального окна для создания новой задачи, удаляем окно целиком из DOM
-    // Так же удаляем инициированные скрипты в этом окне для flatpickr
+    // Так же удаляем инициированные tempus-dominus-widget ы
     $(document).on('hidden.bs.modal', '#addTaskForRequestModal', function (e) {
         $('#addTaskForRequestModal').remove();
         $('.datetime-flatpickr-script').remove();
-        $('.flatpickr-calendar').remove();
+        $('.tempus-dominus-widget').remove();
     });
+
+    
 
     // Отслеживание открытия taskDetail
     $(document).on('click', '.taskDetailLink', function (e) {
@@ -422,12 +424,12 @@ $(document).ready(function () {
     });
 
     // При закрытии модального окна с task detail удаляем его из DOM,
-    // Так же удаляем инициированные им скрипты для flatpickr
+    // Так же удаляем инициированные им tempus-dominus-widget's
     $(document).on('hidden.bs.modal', '#TaskForRequestDetailModal', function (e) {
         console.log("Так же закрылось окно TaskForRequestDetailModal")
         $('#TaskForRequestDetailModal').remove();
         $('.datetime-flatpickr-script').remove();
-        $('.flatpickr-calendar').remove();
+        $('.tempus-dominus-widget').remove();
     });
 
     // При закрытии модального окна с подтверждением удаления task for request удаляем его из DOM
@@ -437,7 +439,7 @@ $(document).ready(function () {
         $('#confirmDeleteTaskModal').remove();
     });
 
-    // Получение модального окна для подтсерждения удаления заявки
+    // Получение модального окна для подтверждения удаления заявки
     $('.delete-service-request-button').click(function (e) {
         e.preventDefault();
         var urlForGetConfirmDeleteRequestModal = $(this).attr('href')
@@ -466,13 +468,6 @@ $(document).ready(function () {
 
 
     // Добавление напоминаний в задачах
-    `
-    <div class="once-reminder-params-1 mb-2">
-      <h6 class="my-2">Выберете время дату и время напоминания</h6>
-      <input name="reminder_once_datetime-1" type="text" id="reminder-once-datetime-1" placeholder="Выберите время" class="w-50 form-control flatpickr-input" readonly="readonly" required="">
-    </div>
-    `
-
     $(document).on("change", '[class^="verg-green-checkbox-input"]', function () {
         var currentReminderModeId = this.getAttribute("id")
         var currentReminderNumber = currentReminderModeId.split('-')[1]
@@ -481,18 +476,96 @@ $(document).ready(function () {
         if ($(this).hasClass('recurring-inputs') && $(this).prop("checked", true)) {
             $(`.recurring-reminder-params-${currentReminderNumber}`).removeClass('d-none')
             $(`.once-reminder-params-${currentReminderNumber}`).addClass('d-none');
+            $(`input[name="reminder_once_datetime-${currentReminderNumber}"]`).val('');
         } else if ($(this).hasClass('once-inputs') && $(this).prop("checked", true)) {
             $(`.recurring-reminder-params-${currentReminderNumber}`).addClass('d-none');
             $(`.day-btn-for-${currentReminderNumber}`).prop("checked", false);
+            $(`input[name="reminder_recurring_time-${currentReminderNumber}"]`).val('');
             $(`.once-reminder-params-${currentReminderNumber}`).removeClass('d-none');
         }
     });
 
+    // Удаление карточки нового
     $(document).on('click', '.delete-reminder-item-btn', function (e) {
         var reminderNumber = $(this).data('reminder-item')
         $(`#reminderItem-${reminderNumber}`).remove();
     })
-
     // Добавление напоминаний в задачах - end
+
+    // Валидация полей напоминания
+    
+
+    // Показ сообщения об ошибке
+    function showError(element, message) {
+        let errorElement = element.next('.error-message');
+        if (!errorElement.length) {
+            errorElement = $(`<div class="error-message text-danger mt-1">${message}</div>`);
+            element.after(errorElement);
+        }
+        element.addClass('is-invalid');
+    }
+
+    // Скрытие сообщения об ошибке
+    function hideError(element) {
+        element.next('.error-message').remove();
+        element.removeClass('is-invalid');
+    }
+
+    // Валидация при изменении полей
+    $(document).on('change', '[id^="onceReminderModeCheckInput-"], [id^="recurringReminderModeCheckInput-"]', function () {
+        const reminderId = $(this).attr('id').split('-')[1];
+        validateReminderBlock(reminderId);
+    });
+
+    $(document).on('change', '[id^="reminder-once-datetime-"], [id^="reminder-recurring-time-"]', function () {
+        const reminderId = $(this).attr('id').split('-')[3]; // Получаем ID из ID поля
+        console.log("Отследили дату")
+        validateReminderBlock(reminderId);
+    });
+
+    $(document).on('change', '[class^="day-btn-for-"]', function () {
+        const reminderId = $(this).attr('class').split('day-btn-for-')[1].split(' ')[0];
+        console.log("Нажал день какой-то")
+        validateReminderBlock(reminderId);
+    });
+
+
+    
+
+    // Валидация конкретного блока напоминания
+    function validateReminderBlock(reminderId) {
+        // Сбрасываем все ошибки в блоке
+        $(`#reminderItem-${reminderId} .is-invalid`).removeClass('is-invalid');
+        $(`#reminderItem-${reminderId} .error-message`).remove();
+
+        // Проверка разового напоминания
+        if ($(`#onceReminderModeCheckInput-${reminderId}`).is(':checked')) {
+            const datetimeInput = $(`#reminder-once-datetime-${reminderId}`);
+            if (!datetimeInput.val()) {
+                showError(datetimeInput, 'Укажите дату и время для разового напоминания');
+            }
+        }
+
+        // Проверка повторяющегося напоминания
+        if ($(`#recurringReminderModeCheckInput-${reminderId}`).is(':checked')) {
+            const timeInput = $(`#reminder-recurring-time-${reminderId}`);
+            let hasDaysChecked = false;
+
+            $(`.day-btn-for-${reminderId}`).each(function () {
+                if ($(this).is(':checked')) {
+                    hasDaysChecked = true;
+                    return false;
+                }
+            });
+
+            if (!timeInput.val()) {
+                showError(timeInput, 'Укажите время для повторяющегося напоминания');
+            }
+
+            if (!hasDaysChecked) {
+                showError($(`#reminderItem-${reminderId} .days-btn-container`), 'Выберите хотя бы один день');
+            }
+        }
+    }
 
 });

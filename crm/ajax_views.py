@@ -7,6 +7,8 @@ from django.http import JsonResponse, HttpRequest
 from django.db import models
 from django.views import View
 from datetime import datetime
+
+from crm.json_responses import JsonResponses as json_response
 from crm.permissions import ElementPermission
 
 
@@ -16,33 +18,6 @@ from crm.models import (Service, Client, ServiceRequest,
                         NoteForServiceRequest, CostPriceCase,
                         PartOfCostPriceCase, Task, Reminder)
 
-
-class JsonResponses:
-    """
-    Типовые ответы для ajax запросов с клиентской стороны.
-    """
-    @staticmethod
-    def validation_error(message: str):
-        return JsonResponse({
-            "error": True,
-            "message": message
-        }, status=422)
-
-    @staticmethod
-    def not_found_error(message: str):
-        return JsonResponse({
-            "error": True,
-            "message": message
-        }, status=404)
-
-    @staticmethod
-    def manager_forbidden(message: str):
-        return JsonResponse({
-            "error": True,
-            "message": message
-        }, status=403)
-
-json_response = JsonResponses()
 
 
 
@@ -843,8 +818,15 @@ class AddNewTaskForServiceRequest(View):
                 # Если это recurring reminder
                 elif value == "recurring":
                     # Извлекаем time и преобразуем в корректный datetime.time
-                    time_str = data.get(f"reminder_recurring_time-{index}")
-                    time_obj = datetime.strptime(time_str, '%H:%M').time()
+                    try:
+                        time_str = data.get(f"reminder_recurring_time-{index}")
+                        time_obj = datetime.strptime(time_str, '%H:%M').time()
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+
                     recurring_days = []
                     day_mapping = {
                         'mon': 'mon',
@@ -868,15 +850,11 @@ class AddNewTaskForServiceRequest(View):
                         task=new_task,
                         mode='recurring',
                         recurring_time=time_obj,
-                        recurring_days=json.dumps(recurring_days)
+                        recurring_days=recurring_days
                     )
                     new_reminders.append(recurring_reminder)
 
-
         Reminder.objects.bulk_create(new_reminders)
-
-
-
 
 
         return JsonResponse({

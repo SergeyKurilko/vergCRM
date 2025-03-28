@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+    // Отправка формы для создания задачи и напоминаний
     $('#addNewTaskForRequest').submit(function (e) {
         e.preventDefault();
 
@@ -30,7 +32,7 @@ $(document).ready(function () {
 
     var currentReminderNumber = 1
 
-    // Получение карточки для 
+    // Получение карточки для нового напоминания
     $('#add-card-for-reminder-btn').click(function (e) {
         e.preventDefault();
         var urlForGetContent = $(this).data('url-for-new-reminder-card')
@@ -48,5 +50,4 @@ $(document).ready(function () {
             }
         });
     });
-
 });

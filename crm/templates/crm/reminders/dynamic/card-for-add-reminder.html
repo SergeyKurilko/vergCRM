@@ -1,20 +1,110 @@
 <script>
-flatpickr('#reminder-once-datetime-{{ current_reminder_number }}', {
-    enableTime: true, 
-    dateFormat: "d.m.Y H:i",
-    time_24hr: true,
-    locale: "ru",
-    minDate: new Date(),
-});
-</script>
+  // Полный выбор даты и времени
+  new tempusDominus.TempusDominus(
+    document.getElementById('reminder-once-datetime-{{ current_reminder_number }}'),
+    {
+      localization: {
+        locale: 'ru',
+        format: 'dd.MM.yyyy HH:mm',  // Формат как в Flatpickr
+        hourCycle: 'h23',             // 24-часовой формат
+        today: 'Перейти к сегодняшней дате',
+        clear: 'Очистить',
+        close: 'Ok',
+        selectMonth: 'Выбрать месяц',
+        previousMonth: 'Предыдущий месяц',
+        nextMonth: 'Следующий месяц',
+        selectYear: 'Выбрать год',
+        previousYear: 'Предыдущий год',
+        nextYear: 'Следующий год',
+        selectDecade: 'Выбрать десятилетие',
+        previousDecade: 'Предыдущее десятилетие',
+        nextDecade: 'Следующее десятилетие',
+        previousCentury: 'Предыдущий век',
+        nextCentury: 'Следующий век',
+        pickHour: 'Выбрать час',
+        incrementHour: 'Увеличить час',
+        decrementHour: 'Уменьшить час',
+        pickMinute: 'Выбрать минуты',
+        incrementMinute: 'Увеличить минуты',
+        decrementMinute: 'Уменьшить минуты',
+        pickSecond: 'Выбрать секунды',
+        incrementSecond: 'Увеличить секунды',
+        decrementSecond: 'Уменьшить секунды',
+        toggleMeridiem: 'Переключить AM/PM',
+        selectTime: 'Выбрать время',
+        selectDate: 'Выбрать дату'
+      },
+      display: {
+        components: {
+          calendar: true,    // Включает всю календарную часть
+          date: true,
+          month: true,
+          year: true,
+          hours: true,
+          minutes: true,
+          seconds: false     // Секунды не нужны
+        },
+      
+        buttons: {
+          // today: true,       // Кнопка "Сегодня"
+          clear: true,       // Кнопка "Очистить"
+          close: true,        // Кнопка "Закрыть"
+        },
+        theme: 'auto',
+        icons: {
+          time: 'bi bi-clock',       // Иконка времени
+          date: 'bi bi-calendar3',   // Иконка даты
+          up: 'bi bi-chevron-up',    // Стрелка вверх
+          down: 'bi bi-chevron-down', // Стрелка вниз
+          clear: 'bi bi-trash3',
+          close: 'bi bi-check',
+          previous: 'bi bi-chevron-left',
+          next: 'bi bi-chevron-right',
+        }
+      },
+      restrictions: {
+        minDate: new Date()
+      },
+    }
+  );
 
-<script>
-  flatpickr("#reminder-recurring-time-{{ current_reminder_number }}", {
-      enableTime: true,
-      noCalendar: true,
-      dateFormat: "H:i",
-      time_24hr: true
-  });
+  new tempusDominus.TempusDominus(
+  document.getElementById('reminder-recurring-time-{{ current_reminder_number }}'),
+  {
+    localization: {
+      format: 'HH:mm',
+      locale: 'ru',
+      hourCycle: 'h23',
+      clear: 'Очистить',
+      close: 'Ok',
+    },
+    display: {
+      components: {
+        calendar: false,
+        date: false,
+        month: false,
+        year: false,
+        hours: true,
+        minutes: true,
+        seconds: false
+      },
+      buttons: {
+        today: false,
+        clear: true,
+        close: true
+      },
+      icons: {
+        time: 'bi bi-clock',       // Иконка времени
+        up: 'bi bi-chevron-up',    // Стрелка вверх
+        down: 'bi bi-chevron-down', // Стрелка вниз
+        clear: 'bi bi-trash3',
+        close: 'bi bi-check',
+        previous: 'bi bi-chevron-left',
+        next: 'bi bi-chevron-right',
+      }
+    }
+  }
+);
 </script>
 
 <div class="reminder-item mb-3" id="reminderItem-{{ current_reminder_number }}">
@@ -39,7 +129,7 @@ flatpickr('#reminder-once-datetime-{{ current_reminder_number }}', {
     <!-- Select datetime for once reminder -->
     <div class="once-reminder-params-{{ current_reminder_number }} d-none mb-2">
       <h6 class="my-2">Выберете время дату и время напоминания</h6>
-      <input name="reminder_once_datetime-{{ current_reminder_number }}" type="text" id="reminder-once-datetime-{{ current_reminder_number }}" placeholder="Выберите время"
+      <input name="reminder_once_datetime-{{ current_reminder_number }}" type="text" id="reminder-once-datetime-{{ current_reminder_number }}" placeholder="Выберите дату и время"
         class="w-50 form-control flatpickr-input" readonly="readonly" required>
     </div>
     <!-- Select datetime for once reminder -->
@@ -63,43 +153,43 @@ flatpickr('#reminder-once-datetime-{{ current_reminder_number }}', {
       <h6 class="my-2">Выберете дни недели</h6>
       <div class="days-btn-container my-3">
         <input name="mon-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="monday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label ms-0" 
         for="monday-{{ current_reminder_number }}">Пон.</label>
 
         <input name="tue-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="tuesday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label" 
         for="tuesday-{{ current_reminder_number }}">Вт.</label>
 
         <input name="wed-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="wednesday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label" 
         for="wednesday-{{ current_reminder_number }}">Ср.</label>
 
         <input name="thu-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="thursday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label" 
         for="thursday-{{ current_reminder_number }}">Чт.</label>
 
         <input name="fri-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="friday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label" 
         for="friday-{{ current_reminder_number }}">Пт.</label>
 
         <input name="sat-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="saturday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label" 
         for="saturday-{{ current_reminder_number }}">Сб.</label>
 
         <input name="sun-{{ current_reminder_number }}" 
-        class="day-btn day-btn-for-{{ current_reminder_number }}" 
+        class="day-btn-for-{{ current_reminder_number }} day-btn" 
         id="sunday-{{ current_reminder_number }}" type="checkbox" checked="false">
         <label class="day-label" 
         for="sunday-{{ current_reminder_number }}">Вск.</label>
@@ -107,7 +197,7 @@ flatpickr('#reminder-once-datetime-{{ current_reminder_number }}', {
 
       <h6 class="my-2">Выберете время напоминания</h6>
       <input name="reminder_recurring_time-{{ current_reminder_number }}" type="text" id="reminder-recurring-time-{{ current_reminder_number }}" placeholder="Выберите время"
-        class="w-50 form-control flatpickr-input" readonly="readonly">
+        class="w-50 form-control " readonly="readonly">
     </div>
 
     <!-- Select days and time for recurring reminder end-->

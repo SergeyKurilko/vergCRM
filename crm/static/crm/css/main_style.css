@@ -68,6 +68,9 @@ input::-webkit-inner-spin-button {
 
 
 
+
+
+
 /* ========================== Buttons Rules ================================ */
 
 .verg-button-danger {
@@ -425,6 +428,12 @@ select option:hover {
 /* Применяем анимацию к элементу */
 .wave-effect {
     animation: waveEffect 2s ease-in-out; /* Длительность анимации 2 секунды */
+}
+
+.delete-reminder-confirm-card {
+  position: absolute;
+  z-index: 8500;
+  right: 5px;
 }
 
 
