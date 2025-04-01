@@ -735,7 +735,6 @@ class AddNewTaskForServiceRequest(View):
     def post(self, request):
         """Создание новой задачи для заявки"""
         data = request.POST
-        print(data)
         required_fields = {
             "manager_id", "service_request_id",
             "title", "text", "must_be_completed_by"
@@ -894,9 +893,10 @@ class TaskForRequestDetailView(View):
         })
 
     def post(self, request: HttpRequest):
-        """"""
+        """
+        Изменение существующей задачи для заявки
+        """
         data = request.POST
-        print(data)
         required_fields = {
             "manager_id", "task_id",
             "title", "text", "must_be_completed_by"
@@ -958,6 +958,71 @@ class TaskForRequestDetailView(View):
         task.notifications=task_notifications
 
         task.save()
+
+        # Поиск добавленных reminders
+        new_reminders = []
+        for key, value in data.items():
+            if key.startswith('reminderMode-'):
+                index = key.split("-")[1]
+
+                # Если это разовый reminder
+                if value == 'once':
+                    # Извлекаем reminder_once_datetime и преобразуем строку scheduled_datetime в datetime
+                    try:
+                        scheduled_datetime = (
+                            datetime.strptime(data.get(f"reminder_once_datetime-{index}"), '%d.%m.%Y %H:%M'))
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+                    once_reminder = Reminder(
+                        task=task,
+                        mode='once',
+                        scheduled_datetime=scheduled_datetime
+                    )
+                    new_reminders.append(once_reminder)
+
+                # Если это recurring reminder
+                elif value == "recurring":
+                    # Извлекаем time и преобразуем в корректный datetime.time
+                    try:
+                        time_str = data.get(f"reminder_recurring_time-{index}")
+                        time_obj = datetime.strptime(time_str, '%H:%M').time()
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+
+                    recurring_days = []
+                    day_mapping = {
+                        'mon': 'mon',
+                        'tue': 'tue',
+                        'wed': 'wed',
+                        'thu': 'thu',
+                        'fri': 'fri',
+                        'sat': 'sat',
+                        'sun': 'sun'
+                    }
+
+                    for day_key, day_value in data.items():
+                        if (day_key.startswith(
+                                tuple(day_mapping.keys())) and
+                                day_key.endswith(f"-{index}")
+                        ):
+                            day_name = day_key.split("-")[0]
+                            recurring_days.append(day_name)
+
+                    recurring_reminder = Reminder(
+                        task=task,
+                        mode='recurring',
+                        recurring_time=time_obj,
+                        recurring_days=recurring_days
+                    )
+                    new_reminders.append(recurring_reminder)
+
+        Reminder.objects.bulk_create(new_reminders)
 
         return JsonResponse({
             "success": True,

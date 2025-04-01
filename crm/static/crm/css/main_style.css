@@ -262,7 +262,7 @@ select option:hover {
     position: fixed;  /* Фиксированное позиционирование */
     bottom: 15px;
     right: 20px;      /* Отступ справа */
-    z-index: 1050;    /* Убедитесь, что toast поверх других элементов */
+    z-index: 1055;    /* Убедитесь, что toast поверх других элементов */
     min-width: 250px; /* Минимальная ширина */
     background-color: greenyellow;
     color: var(--contrast-color);

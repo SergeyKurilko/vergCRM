@@ -395,14 +395,15 @@ $(document).ready(function () {
     });
 
     // При закрытии модального окна для создания новой задачи, удаляем окно целиком из DOM
-    // Так же удаляем инициированные tempus-dominus-widget ы
+    // Так же удаляем инициированные tempus-dominus-widget ы и datetime-tempus-script's
     $(document).on('hidden.bs.modal', '#addTaskForRequestModal', function (e) {
         $('#addTaskForRequestModal').remove();
         $('.datetime-flatpickr-script').remove();
         $('.tempus-dominus-widget').remove();
+        $('.datetime-tempus-script').remove();
     });
 
-    
+
 
     // Отслеживание открытия taskDetail
     $(document).on('click', '.taskDetailLink', function (e) {
@@ -424,12 +425,13 @@ $(document).ready(function () {
     });
 
     // При закрытии модального окна с task detail удаляем его из DOM,
-    // Так же удаляем инициированные им tempus-dominus-widget's
+    // Так же удаляем инициированные им tempus-dominus-widget's и datetime-tempus-script's
     $(document).on('hidden.bs.modal', '#TaskForRequestDetailModal', function (e) {
         console.log("Так же закрылось окно TaskForRequestDetailModal")
         $('#TaskForRequestDetailModal').remove();
         $('.datetime-flatpickr-script').remove();
         $('.tempus-dominus-widget').remove();
+        $('.datetime-tempus-script').remove();
     });
 
     // При закрытии модального окна с подтверждением удаления task for request удаляем его из DOM
@@ -471,7 +473,7 @@ $(document).ready(function () {
     $(document).on("change", '[class^="verg-green-checkbox-input"]', function () {
         var currentReminderModeId = this.getAttribute("id")
         var currentReminderNumber = currentReminderModeId.split('-')[1]
-        
+
 
         if ($(this).hasClass('recurring-inputs') && $(this).prop("checked", true)) {
             $(`.recurring-reminder-params-${currentReminderNumber}`).removeClass('d-none')
@@ -492,80 +494,6 @@ $(document).ready(function () {
     })
     // Добавление напоминаний в задачах - end
 
-    // Валидация полей напоминания
     
-
-    // Показ сообщения об ошибке
-    function showError(element, message) {
-        let errorElement = element.next('.error-message');
-        if (!errorElement.length) {
-            errorElement = $(`<div class="error-message text-danger mt-1">${message}</div>`);
-            element.after(errorElement);
-        }
-        element.addClass('is-invalid');
-    }
-
-    // Скрытие сообщения об ошибке
-    function hideError(element) {
-        element.next('.error-message').remove();
-        element.removeClass('is-invalid');
-    }
-
-    // Валидация при изменении полей
-    $(document).on('change', '[id^="onceReminderModeCheckInput-"], [id^="recurringReminderModeCheckInput-"]', function () {
-        const reminderId = $(this).attr('id').split('-')[1];
-        validateReminderBlock(reminderId);
-    });
-
-    $(document).on('change', '[id^="reminder-once-datetime-"], [id^="reminder-recurring-time-"]', function () {
-        const reminderId = $(this).attr('id').split('-')[3]; // Получаем ID из ID поля
-        console.log("Отследили дату")
-        validateReminderBlock(reminderId);
-    });
-
-    $(document).on('change', '[class^="day-btn-for-"]', function () {
-        const reminderId = $(this).attr('class').split('day-btn-for-')[1].split(' ')[0];
-        console.log("Нажал день какой-то")
-        validateReminderBlock(reminderId);
-    });
-
-
-    
-
-    // Валидация конкретного блока напоминания
-    function validateReminderBlock(reminderId) {
-        // Сбрасываем все ошибки в блоке
-        $(`#reminderItem-${reminderId} .is-invalid`).removeClass('is-invalid');
-        $(`#reminderItem-${reminderId} .error-message`).remove();
-
-        // Проверка разового напоминания
-        if ($(`#onceReminderModeCheckInput-${reminderId}`).is(':checked')) {
-            const datetimeInput = $(`#reminder-once-datetime-${reminderId}`);
-            if (!datetimeInput.val()) {
-                showError(datetimeInput, 'Укажите дату и время для разового напоминания');
-            }
-        }
-
-        // Проверка повторяющегося напоминания
-        if ($(`#recurringReminderModeCheckInput-${reminderId}`).is(':checked')) {
-            const timeInput = $(`#reminder-recurring-time-${reminderId}`);
-            let hasDaysChecked = false;
-
-            $(`.day-btn-for-${reminderId}`).each(function () {
-                if ($(this).is(':checked')) {
-                    hasDaysChecked = true;
-                    return false;
-                }
-            });
-
-            if (!timeInput.val()) {
-                showError(timeInput, 'Укажите время для повторяющегося напоминания');
-            }
-
-            if (!hasDaysChecked) {
-                showError($(`#reminderItem-${reminderId} .days-btn-container`), 'Выберите хотя бы один день');
-            }
-        }
-    }
 
 });
