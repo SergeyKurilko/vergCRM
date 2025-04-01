@@ -6,34 +6,12 @@
 {% block content %}
 
 
-<!-- Modal for add cost price case -->
-<div class="modal fade" 
-id="addCostPriceCaseModal" 
-tabindex="-1" 
-aria-labelledby="addCostPriceCaseModalLabel" 
-aria-hidden="true">
-<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addCostPriceCaseModalLabel">Новый кейс себестоимости</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body modal-body-add-cost-price-case">
-        ...
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /Modal for add cost price case -->
-
-<div class="container-md container service-request-detail-container mt-3">
+<div class="container-md container task-detail-container mt-3">
     <div class="card service-request-card">
         <div class="card-body p-4">
-            <div class="card-title text-center"><h4>Заявка № {{ service_request.id }} ({{ service_request.get_status_display }})</h4></div>
-            <hr class="hr">
+            <div class="card-title text-center"><h4>{{ task.title }}</h4></div>
             <!-- Client & properties row start -->
             <div class="row align-items-center">
-
                 <!-- Client col-->
                 <div class="col-md-9 col-12">
                     <h5 class="card-title">Клиент:</h5>
@@ -222,16 +200,8 @@ aria-hidden="true">
     </div>
 </div>
 
-
-
-{% include 'crm/incl/modal_for_add_new_note.html' %}
-
-
 {% endblock %}
 
 {% block scripts %}
-<script>
-    var currentServiceRequestId = {{ service_request.id }}
-</script>
-<script src="{% static 'crm/js/service-request-detail.js' %}"></script>
+<script src="{% static 'crm/js/tasks/task-detail.js' %}"></script>
 {% endblock %}

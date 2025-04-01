@@ -94,7 +94,7 @@
           <input type="hidden" name="task_id" value="{{ task.id }}" required>
           <input minlength="5" maxlength="50" name="title" type="text" class="form-control mb-2"
             value="{{ task.title }}" required readonly>
-          <textarea minlength="5" rows="5" class="form-control" name="text" id="" required
+          <textarea minlength="5" rows="7" class="form-control" name="text" id="" required
             readonly>{{ task.text }}</textarea>
           <hr class="hr mb-2">
           <!-- Срок выполнения задачи -->
@@ -212,7 +212,11 @@
           <button type="button" class="btn btn-secondary cancel-task-changes d-none"
             data-bs-dismiss="modal">Отменить</button>
         </form>
-        <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
+        <div class="d-flex justify-content-between">
+          <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
+          <a href="{{ task.get_absolute_url }}" type="button" target="_blank" class="verg-button-1 border-0">Открыть в отдельном окне</a>
+        </div>
+        
 
         <hr class="hr delete-task-hr d-none">
         <button data-delete-url="{% url 'crm:delete_task_for_request' %}" data-task-id="{{task.id}}" id="deleteTask"

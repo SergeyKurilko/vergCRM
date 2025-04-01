@@ -102,6 +102,7 @@ class ServiceRequest(models.Model):
         ordering = ["-updated_at"]
 
 
+
 class CostPriceCase(models.Model):
     """
     Кейс себестоимости
@@ -252,6 +253,9 @@ class Task(models.Model):
         default=False,
         verbose_name="Оповещение за рабочий день до дедлайна было отправлено"
     )
+
+    def get_absolute_url(self):
+        return reverse("crm:task_detail", kwargs={"task_id": self.id})
 
     def __str__(self):
         return self.title
