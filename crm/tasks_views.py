@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
@@ -8,7 +10,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.db.models import Count, Sum, F, Q
 
-from crm.models import Task
+from crm.models import Task, Reminder
 from crm.responses import json_response
 from crm.views import staff_required
 from crm.permissions import ElementPermission
@@ -21,9 +23,9 @@ class BaseTaskView(ElementPermission):
 
         Args:
            request (WSGIRequest): объект запроса WSGIRequest.
-           request_method (str): метод запроса "GET" или "POST". По-умолчанию "GET"
+           task_id (int): id задачи
         Returns:
-            Task | JsonResponse: Объект Task или JsonResponse с ошибкой.
+            Task | HttpResponse: Объект Task или HttpResponse с ошибкой.
         """
 
         try:
@@ -36,13 +38,25 @@ class BaseTaskView(ElementPermission):
 
         return task
 
+    def check_task_form(self, request) -> dict | JsonResponse:
+        """
+        Проверка обязательных полей у формы для создания или изменения существующей task
+
+        Args:
+           request (WSGIRequest): объект запроса WSGIRequest.
+        Returns:
+            dict | HttpResponse: Словарь с параметрами для распаковки или JsonResponse с ошибкой.
+        """
+        # TODO: описать метод. Использовать для TaskUpdateView и TaskCreateView
+        pass
+
+
 
 @method_decorator(staff_required, "dispatch")
 class TaskListView(View):
     """
     Получение списка задач
     """
-
     def get(self, request):
         """
         Получает request, возвращает render tasks-list.html
@@ -75,7 +89,7 @@ class TaskDetailView(BaseTaskView, View):
         Args:
            request (WSGIRequest): объект запроса WSGIRequest.
         Returns:
-            Task | JsonResponse: Объект Task или JsonResponse с ошибкой.
+            Task | HttpResponse: Объект Task или HttpResponse с ошибкой.
         """
         task = self.get_task(request, task_id=task_id)
 
@@ -157,4 +171,143 @@ class TaskDeleteView(View):
             "success": True,
             "url_for_redirect": reverse("crm:tasks_list")
         }, status=200)
+
+
+@method_decorator(staff_required, "dispatch")
+class TaskUpdateView(BaseTaskView, View):
+    def post(self, request):
+        """
+        Редактирование задачи (на отдельной странице)
+        """
+        data = request.POST
+        required_fields = {
+            "manager_id", "task_id",
+            "title", "text", "must_be_completed_by"
+        }
+
+        # Извлечение данных из тела запроса
+        manager_id = data.get("manager_id")
+        task_id = data.get("task_id")
+        title = data.get("title")
+        text = data.get("text")
+        must_be_completed_by = data.get("must_be_completed_by")
+        notifications = data.get("notifications")
+
+        if not request.user.id == int(manager_id):
+            return json_response.manager_forbidden(
+                message="Клиент не привязан к менеджеру"
+            )
+
+        # Проверка наличия всех обязательных полей
+        if not required_fields.issubset(set(data.keys())):
+            return json_response.validation_error(
+                message="Что-то пошло не так. Перезагрузите страницу"
+            )
+
+        if (not title or not text) or (len(title) < 5 or len(text) < 5):
+            return json_response.validation_error(
+                "Название и текст должны быть не короче 5 симв."
+            )
+
+        # Проверка наличия и длины даты
+        if not must_be_completed_by or len(must_be_completed_by) < 16:
+            return json_response.validation_error(
+                "Вы не указали дату."
+            )
+
+        # Ищем задачу для обновления
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                message="Задача не найдена."
+            )
+
+        # Преобразуем строку must_be_completed_by в datetime
+        try:
+            must_be_completed_by = datetime.strptime(must_be_completed_by, '%d.%m.%Y %H:%M')
+        except ValueError:
+            # Обработка ошибки, если формат неверный
+            return json_response.validation_error(
+                "Неверный формат даты"
+            )
+
+        # Включен ли toggle напоминания у задачи
+        task_notifications = True if notifications else False
+
+        task.title = title
+        task.text = text
+        task.must_be_completed_by = must_be_completed_by
+        task.notifications = task_notifications
+
+        task.save()
+
+        # Поиск добавленных reminders
+        new_reminders = []
+        for key, value in data.items():
+            if key.startswith('reminderMode-'):
+                index = key.split("-")[1]
+
+                # Если это разовый reminder
+                if value == 'once':
+                    # Извлекаем reminder_once_datetime и преобразуем строку scheduled_datetime в datetime
+                    try:
+                        scheduled_datetime = (
+                            datetime.strptime(data.get(f"reminder_once_datetime-{index}"), '%d.%m.%Y %H:%M'))
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+                    once_reminder = Reminder(
+                        task=task,
+                        mode='once',
+                        scheduled_datetime=scheduled_datetime
+                    )
+                    new_reminders.append(once_reminder)
+
+                # Если это recurring reminder
+                elif value == "recurring":
+                    # Извлекаем time и преобразуем в корректный datetime.time
+                    try:
+                        time_str = data.get(f"reminder_recurring_time-{index}")
+                        time_obj = datetime.strptime(time_str, '%H:%M').time()
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+
+                    recurring_days = []
+                    day_mapping = {
+                        'mon': 'mon',
+                        'tue': 'tue',
+                        'wed': 'wed',
+                        'thu': 'thu',
+                        'fri': 'fri',
+                        'sat': 'sat',
+                        'sun': 'sun'
+                    }
+
+                    for day_key, day_value in data.items():
+                        if (day_key.startswith(
+                                tuple(day_mapping.keys())) and
+                                day_key.endswith(f"-{index}")
+                        ):
+                            day_name = day_key.split("-")[0]
+                            recurring_days.append(day_name)
+
+                    recurring_reminder = Reminder(
+                        task=task,
+                        mode='recurring',
+                        recurring_time=time_obj,
+                        recurring_days=recurring_days
+                    )
+                    new_reminders.append(recurring_reminder)
+
+        Reminder.objects.bulk_create(new_reminders)
+
+        return JsonResponse({
+            "success": True,
+        })
 

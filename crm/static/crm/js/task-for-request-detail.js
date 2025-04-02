@@ -85,7 +85,6 @@ $(document).ready(function () {
     //******************************************Напоимнания*******************************************//
     function initTempusEventHandlers() {
         $('[id^="reminder-once-datetime-"], [id^="reminder-recurring-time-"]').off('change.tempus').on('change.tempus', function() {
-            console.log("Дата изменена");
             validateReminderBlock($(this).attr('id').split('-')[3]);
         });
     }
@@ -134,21 +133,18 @@ $(document).ready(function () {
     // Событие выбора типа напоминания
     $(document).on('change', '[id^="onceReminderModeCheckInput-"], [id^="recurringReminderModeCheckInput-"]', function () {
         const reminderId = $(this).attr('id').split('-')[1];
-        console.log("Что-то отследили")
         validateReminderBlock(reminderId);
     });
 
     // Событие изменения поля с date picker или datetime picker
     $(document).on('change', '[id^="reminder-once-datetime-"], [id^="reminder-recurring-time-"]', function () {
         const reminderId = $(this).attr('id').split('-')[3]; // Получаем ID из ID поля
-        console.log("Выбран календарь")
         validateReminderBlock(reminderId);
     });
 
     // Событие выбора дня (дней) для recurring reminder
     $(document).on('change', '[class^="day-btn-for-"]', function () {
         const reminderId = $(this).attr('class').split('day-btn-for-')[1].split(' ')[0];
-        console.log("Выбран день!")
         validateReminderBlock(reminderId);
     });
 
@@ -191,7 +187,6 @@ $(document).ready(function () {
     // Удаление reminder
     $('.confirm-delete-reminder').click(function (e) { 
         e.preventDefault();
-        console.log("Отслежено намерение удалить")
 
         var urlForDeleteReminder = $(this).data('url-for-delete-reminder')
         var reminerId = $(this).data('delete-existing-reminder')

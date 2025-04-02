@@ -187,7 +187,6 @@ $(document).ready(function () {
         e.preventDefault();
         var urlForCallOffcanvas = $(this).data('call-offcanvas-url')
         var serviceRequestId = $(this).data('service-request-id')
-        console.log("Отправлять будем сюда: " + urlForCallOffcanvas)
         var params = `query_param=get_cases&ServiceRequestId=${serviceRequestId}`
 
         $.ajax({
@@ -211,7 +210,6 @@ $(document).ready(function () {
     // Функция для подсчета суммы в cost price case detail
     function calculateTotalCostPrice() {
         let total = 0;
-        console.log("Считаем цену")
 
         $('input[id^="part_price_"]').each(function () {
             let value = parseInt($(this).val()) || 0;
@@ -276,7 +274,6 @@ $(document).ready(function () {
         } else {
             $('#confirmCancelChangesModal').modal('show');
             $('.cost-price-case-detail-modal-content').css('opacity', 0.4)
-            console.log("Были изменения. Нужно предупредить пользователя")
         }
 
     });
@@ -427,7 +424,6 @@ $(document).ready(function () {
     // При закрытии модального окна с task detail удаляем его из DOM,
     // Так же удаляем инициированные им tempus-dominus-widget's и datetime-tempus-script's
     $(document).on('hidden.bs.modal', '#TaskForRequestDetailModal', function (e) {
-        console.log("Так же закрылось окно TaskForRequestDetailModal")
         $('#TaskForRequestDetailModal').remove();
         $('.datetime-flatpickr-script').remove();
         $('.tempus-dominus-widget').remove();
@@ -487,7 +483,7 @@ $(document).ready(function () {
         }
     });
 
-    // Удаление карточки нового
+    // Удаление карточки с формой для нового напоминания
     $(document).on('click', '.delete-reminder-item-btn', function (e) {
         var reminderNumber = $(this).data('reminder-item')
         $(`#reminderItem-${reminderNumber}`).remove();
