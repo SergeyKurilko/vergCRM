@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.db.models import Count, Sum, F, Q
@@ -88,3 +89,72 @@ class TaskDetailView(BaseTaskView, View):
             template_name='crm/tasks/task-detail.html',
             context={"task": task}
         )
+
+@method_decorator(staff_required, "dispatch")
+class TaskDeleteView(View):
+    def get(self, request):
+        """
+        Получение модального окна для удаления задачи (на отдельной странице)
+        """
+        task_id = request.GET.get("task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if task.manager.id != request.user.id:
+            return json_response.manager_forbidden(
+                "Менеджер не привязан к задаче."
+            )
+
+        context = {
+            "task": task
+        }
+
+        new_content = render_to_string(
+            template_name="crm/tasks/dynamic_modals/confirm-delete-task-modal.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "new_content": new_content
+        })
+
+    def post(self, request):
+        """
+        Удаление задачи (на отдельной странице)
+        """
+        task_id = request.POST.get("delete_task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if request.user.id != task.manager.id:
+            return json_response.manager_forbidden(
+                "Задача не принадлежит менеджеру"
+            )
+
+        task.delete()
+
+        return JsonResponse({
+            "success": True,
+            "url_for_redirect": reverse("crm:tasks_list")
+        }, status=200)
+

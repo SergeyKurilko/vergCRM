@@ -1,199 +1,156 @@
 {% extends 'crm/base.html' %}
 {% load static %}
 
-{% block title %}Заявка №{{service_request.id}}{% endblock %}
+{% block title %}Задача №{{ task.id}} {% endblock %}
 
 {% block content %}
 
 
-<div class="container-md container task-detail-container mt-3">
-    <div class="card service-request-card">
+<div class="container-xl container-fluid task-detail-container mt-3">
+    <div class="card task-card">
         <div class="card-body p-4">
-            <div class="card-title text-center"><h4>{{ task.title }}</h4></div>
-            <!-- Client & properties row start -->
-            <div class="row align-items-center">
-                <!-- Client col-->
-                <div class="col-md-9 col-12">
-                    <h5 class="card-title">Клиент:</h5>
-                    <div class="service_request-client">
-                        <div class="service-request-client-placeholder mb-1">{{ service_request.client.name }}</div>
-                    </div>
-                </div>
-                <!-- / Client col end-->
-
-                <div class="d-md-none d-block">
-                    <hr class="hr my-3 px-1">
-                </div>
-                
-                <!-- Properties col -->
-                 <div class="col-md-3 col-12 d-flex justify-content-md-end pe-4">
-                    <div class="">
-                        <h5 class="card-title text-md-end">Настройки <i class="bi bi-gear"></i></h5>
-
-                        <div class="properties-dropdown-place d-flex justify-content-end">
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle verg-button-1 border-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                  Открыть настройки
-                                </button>
-                                <ul class="dropdown-menu verg-dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                  <li>
-                                    <a class="dropdown-item verg-dropdown-item" href="#">
-                                        {% if service_request.status == "in_progress" %}Закрыть заявку
-                                        {% elif service_request.status == "completed" %}Возобновить заявку
-                                        {% endif %}
-                                    </a>
-                                  </li>
-                                  <li><hr class="dropdown-divider"></li>
-                                  <li><a class="dropdown-item delete-dropdown-item delete-service-request-button" href="{% url 'crm:delete_service_request' %}">Удалить заявку <i class="bi bi-x-circle"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                 </div>
-                 <!-- /Add Task col -->
-            </div>
-            <!-- /Client & properties row end -->
+            <div class="card-title text-center"><h4>Задача: "{{ task.title }}"</h4></div>
             
             <hr class="hr">
+            <input type="hidden" name="notifications_status" value="{% if task.notifications %}ON{% else %}OFF{% endif %}">
 
-            <h5 class="card-title">Детали заказа:</h5>
-            <div class="service_request-description">
-                {{ service_request.description }}
-            </div>
+            <form id="updateTask" action="" method="post">
+                {% csrf_token %}
+                {% if task.expired %}<h5 style="color: red">Задача просрочена</h5>{% endif %}
+                {% if task.is_completed %}<h5 style="color: green">Задача выполнена</h5>{% endif %}
+                <input type="hidden" name="manager_id" value="{{ task.manager.id }}" required>
+                <input type="hidden" name="task_id" value="{{ task.id }}" required>
 
-            <hr class="hr">
-
-            <!-- Start Row -->
-            <div class="row">
-
-                <!-- Адрес col-->
-                <div class="col-md-9 col-12">
-                <h5 class="card-title">Адрес <i class="bi bi-geo-alt"></i>:</h5>
-                <div class="service_request-address">
-                    {% if service_request.address %}
-                    <div class="service-request-adress-placeholder mb-1">{{ service_request.address }}</div>
-                    <div class="add-address-form d-none">
-                        <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="service-request" value="{{ service_request.id }}">
-                            <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
-                            <div style="color: red" class="add-adress-error-place mt-2"></div>
-                            <div class="confirm-add-address-buttons d-flex flex-row">
-                                <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
-                                <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
-                            </div>
-                        </form>
-                    </div>
-                    <a href="" id="RequestDetailAddAdressButton" class="change-address-button">Изменить адрес</a>
-                    {% else %}
-                    <span class="address-missing-alert-placeholder" style="color: red">Адрес пока не добавлен</span> 
-                    <div class="service-request-adress-placeholder mb-1"></div>
-                    <div class="add-address-form d-none">
-                        <form id="AddAddressForm" action="{% url 'crm:ajax_add_new_address' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="service-request" value="{{ service_request.id }}">
-                            <textarea required name="address" minlength="5" maxlength="500" type="text" class="form-control" id="RequestDetailAddAdressInput" placeholder="Введите адрес"></textarea>
-                            <div style="color: red" class="add-adress-error-place mt-2"></div>
-                            <div class="confirm-add-address-buttons d-flex flex-row">
-                                <button id="ConfirmAddAddressButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
-                                <button id="CancelAddAddressButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <button id="RequestDetailAddAdressButton" type="button" class="border-0 verg-button-1 mt-2">Добавить адрес</button>
-                    <a href="" id="RequestDetailAddAdressButton" class="d-none change-address-button">Изменить адрес</a>
+                <label for="taskTitle">Название задачи</label>
+                <input id="taskTitle" minlength="5" maxlength="50" name="title" type="text" class="form-control mb-2"
+                  value="{{ task.title }}" required readonly>
+                
+                  <label for="taskText">Текст задачи</label>
+                  <textarea id="taskText" minlength="5" rows="7" class="form-control" name="text" id="" required
+                  readonly>{{ task.text }}</textarea>
+                <hr class="hr mb-2">
+                <!-- Срок выполнения задачи -->
+                <div class="d-flex">
+                  <h6 class="me-2">Срок выполнения задачи.</h6>
+                  <div style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Дата и время выполнения задачи.">
+                    <i class="bi bi-info-circle"></i>
+                  </div>
+                </div>
+                <div class="actual_must_be_completed_by">
+                  Текущий срок выполнения задачи: <span style="color: green">до {{ task.must_be_completed_by|date:'d.m.Y H:i'}}</span>
+                </div>
+                <div required
+                  class="datetime-for-task-container d-flex flex-column align-items-start justify-content-end d-none">
+                  <label for="must_be_completed_by">
+                    <h6 class="mb-1">Изменить срок</h6>
+                  </label>
+                  <input autocomplete="off" required type="text" name="must_be_completed_by" id="must_be_completed_by"
+                    class="flatpickr w-50 form-control" placeholder="выбрать дату">
+                </div>
+                <!-- Срок выполнения задачи end-->
+                <hr class="hr mt-3 mb-2">
+      
+                <!-- Оповещение о сроках -->
+                <div class="d-flex">
+                  <h6 class="me-2">Оповещение о сроке выполнения</h6>
+                  <div style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Оповещение о сроках выполнения задачи (за день, за час, и в момент окончания срока исполнения).">
+                    <i class="bi bi-info-circle"></i>
+                  </div>
+                </div>
+                <div class="actual_notifications_status">
+                  {% if task.notifications %}<span style="color: green">Включено</span>{% else %}<span
+                    style="color: red">Выключено</span>{% endif %}
+                </div>
+                <label class="switch-1 d-flex align-items-center justify-content-start d-none">
+                  <div class="">Выключить</div>
+                  <input name="notifications" type="checkbox" />
+                  <span class="check-slider-1 mx-2"></span>
+                  <div class="">Включить</div>
+                </label>
+                <!-- Оповещение о сроках end-->
+      
+                <hr class="hr mt-3 mb-2">
+      
+                <!-- Напоминания о задаче -->
+                <div class="d-flex">
+                  <h6 class="me-2">Напоминания</h6>
+                  <div style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="top" title="Напоминания для задачи.">
+                    <i class="bi bi-info-circle"></i>
+                  </div>
+                </div>
+                {% for reminder in task.reminders.all %}
+                <div class="existing-reminder d-flex align-items-center justify-content-between my-1" id="reminder{{ reminder.id }}">
+                  <div class="reminder_info">
+                    {{ forloop.counter }}. <b>{{ reminder.get_mode_display }}.</b>
+                    {% if reminder.mode == 'once' %}
+                    Дата и время напоминания: <span style="color: green">{{ reminder.scheduled_datetime|date:'d.m.Y в H:i' }}</span>
+                    {% elif reminder.mode == 'recurring' %}
+                    Дни:<span style="color: green"> 
+                    {% for day in reminder.recurring_days %}
+                        {% if day == 'mon' %}Пн
+                        {% elif day == 'tue' %}Вт
+                        {% elif day == 'wed' %}Ср
+                        {% elif day == 'thu' %}Чт
+                        {% elif day == 'fri' %}Пт
+                        {% elif day == 'sat' %}Сб
+                        {% elif day == 'sun' %}Вс
+                        {% endif %}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                    в {{ reminder.recurring_time|time:'H:i' }}
                     {% endif %}
-                </div>
-                </div>
-                <!-- / Адрес col-->
-
-                <div class="d-md-none d-block">
-                    <hr class="hr my-3 px-1">
-                </div>
-                
-                
-                <!-- Add Task col -->
-                 <div class="col-md-3 col-12 d-flex justify-content-md-end pe-4">
-                    <div class="">
-                        <h5 class="card-title text-md-end">Задачи <i class="bi bi-list-task"></i></h5>
-
-                        <div class="">
-                            <button data-get-tasks-url="{% url 'crm:task_list_for_request' %}" id="getTasksForRequest" class="verg-button-1 border-0" style="height: 44px !important;">Задачи для заявки</button>
-                        </div>
+                    </span> 
+                  </div>
+                  <div class="reminder-deleter-button">
+                    <button type="button" class="verg-button-danger px-3 py-1 border-0" data-bs-toggle="collapse" data-bs-target="#confirmDeleteReminderCollapse-{{ reminder.id }}" aria-expanded="false" aria-controls="confirmDeleteReminderCollapse-{{ reminder.id }}">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                    <div class="collapse mt-1" id="confirmDeleteReminderCollapse-{{ reminder.id }}">
+                      <div class="card card-body delete-reminder-confirm-card">
+                        <h6>Удалить напоминание?</h6>
+                        <button data-url-for-delete-reminder="{% url 'crm:delete_reminder' %}" data-delete-existing-reminder="{{ reminder.id }}" class="confirm-delete-reminder verg-button-danger px-4 border-0" type="button">Да, удалить</button>
+                      </div>
                     </div>
-                 </div>
-                 <!-- /Add Task col -->
-            </div>
-            <!-- End Row -->
-            
-            <hr class="hr">
-
-            <!-- Финансы -->
-            <h5 class="card-title">Расчет стоимости <i class="bi bi-cash-stack"></i>:</h5>
-            <div class="coast-price-container">
-                <table class="table table-bordered">
-                    <tr>
-                        <td>Себестоимость</td>
-                        <td><div class="request-current-cost">{{ service_request.cost_price }} ₽</div></td>
-                        <td class="w-25">
-                            <button class="verg-button-1 border-0 w-100 py-2" 
-                            data-call-offcanvas-url="{% url 'crm:ajax_calculate-cost-price' %}"
-                            data-service-request-id="{{ service_request.id }}"
-                            id="callCulateCostPriceOffcanvasButton"
-                            type="button">Рассчитать себестоимость</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Стоимость</td>
-                        <td>
-                            <span class="current-total-price-placeholder">{{ service_request.total_price }} ₽</span>
-                            <form class="d-none" action="{% url 'crm:ajax_change_request_total_price' %}" id="changeTotalPriceForm" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="service_id" value="{{ service_request.id }}">
-                                <input class="form-control" min="1" type="number" name="new_total_price" id="newTotalPriceInput" required placeholder="введите стоимость">
-                                <div style="color: red" class="total-price-error-place mt-2"></div>
-                                <div class="confirm-total-price-buttons d-flex flex-row">
-                                    <button id="ConfirmTotalPriceButton" type="submit" class="border-0 verg-button-green mt-2">Сохранить <i class="bi bi-check-circle"></i></button>
-                                    <button id="CancelTotalPriceButton" type="button" class="border-0 verg-button-danger mt-2 ms-2">Отменить <i class="bi bi-x-circle"></i></button>
-                                </div>
-                            </form>
-                        </td>
-                        <td class="w-25"><button id="initialChangeTotalPriceButton" class="verg-button-1 border-0 w-100" type="button">Изменить стоимость</button>
-                        </td>
-                        
-                    </tr>
-                    <tr>
-                        <td>Прибыль</td>
-                        <td><span class="request-profit-placeholder">{{ profit }}</span></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-
-            <!-- /Финансы -->
-
-            <hr class="hr">
-            <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>
-
-            <button 
-            class="verg-button-1 mt-2 border-0" 
-            data-bs-toggle="modal" 
-            data-bs-target="#addNewNoteModal">Добавить заметку</button>
-
-            <div class="notes-container mt-3">
-                {% for note in service_request.notes.all %}
-                    <div id="note_{{ note.id }}" class="note-for-service-request">
-                        <span class="text-muted">{{ note.created_at }}</span> <hr class="hr mt-1 mb-2">
-                        {{ note.text}} 
-                        
-                    </div>
+                  </div>
+                </div>
                 {% empty %}
-                    <div class="no-notes">
-                        <span class="mt-2 d-block">У этой заявки пока нет заметок.</span>
-                    </div>
+                У задачи нет напоминаний
                 {% endfor %}
-            </div>
+      
+      
+    
+                <div class="add-reminder-in-task-for-request-detail d-none">
+                  <hr class="hr mt-3 mb-3">
+                  <div class="add_reminder_placeholder">
+      
+                  </div>
+                  <button id="add-card-for-reminder-btn" class="verg-button-1 border-0" type="button"
+                    data-url-for-new-reminder-card="{% url 'crm:add_new_reminder_card' %}">
+                    Добавить напоминание <i class="bi bi-bell"></i>
+                  </button>
+                </div>
+      
+                <!-- Напоминания о задаче end -->
+      
+      
+                <!-- Срок выполнения задачи end-->
+      
+                <div style="color: red; font-weight: 600;" class="update-task-error-place mt-2"></div>
+                <hr class="hr">
+                <button type="submit" class="verg-button-green save-task-changes d-none">Сохранить изменения</button>
+                <button type="button" class="btn btn-secondary cancel-task-changes d-none"
+                  data-bs-dismiss="modal">Отменить</button>
+              </form>
+
+
+              <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
+                
+              
+      
+              <hr class="hr delete-task-hr d-none">
+              <button data-delete-url="{% url 'crm:task_delete' %}" data-task-id="{{task.id}}" id="deleteTask"
+                class="verg-button-danger d-none">Удалить задачу</button>
             
             
         </div>
@@ -204,4 +161,74 @@
 
 {% block scripts %}
 <script src="{% static 'crm/js/tasks/task-detail.js' %}"></script>
+<script class="datetime-tempus-script">
+    new tempusDominus.TempusDominus(
+      document.getElementById('must_be_completed_by'),
+      {
+        localization: {
+          locale: 'ru',
+          format: 'dd.MM.yyyy HH:mm',  // Формат как в Flatpickr
+          hourCycle: 'h23',             // 24-часовой формат
+          today: 'Перейти к сегодняшней дате',
+          clear: 'Очистить',
+          close: 'Ok',
+          selectMonth: 'Выбрать месяц',
+          previousMonth: 'Предыдущий месяц',
+          nextMonth: 'Следующий месяц',
+          selectYear: 'Выбрать год',
+          previousYear: 'Предыдущий год',
+          nextYear: 'Следующий год',
+          selectDecade: 'Выбрать десятилетие',
+          previousDecade: 'Предыдущее десятилетие',
+          nextDecade: 'Следующее десятилетие',
+          previousCentury: 'Предыдущий век',
+          nextCentury: 'Следующий век',
+          pickHour: 'Выбрать час',
+          incrementHour: 'Увеличить час',
+          decrementHour: 'Уменьшить час',
+          pickMinute: 'Выбрать минуты',
+          incrementMinute: 'Увеличить минуты',
+          decrementMinute: 'Уменьшить минуты',
+          pickSecond: 'Выбрать секунды',
+          incrementSecond: 'Увеличить секунды',
+          decrementSecond: 'Уменьшить секунды',
+          toggleMeridiem: 'Переключить AM/PM',
+          selectTime: 'Выбрать время',
+          selectDate: 'Выбрать дату'
+        },
+        display: {
+          components: {
+            calendar: true,    // Включает всю календарную часть
+            date: true,
+            month: true,
+            year: true,
+            hours: true,
+            minutes: true,
+            seconds: false     // Секунды не нужны
+          },
+  
+          buttons: {
+            // today: true,       // Кнопка "Сегодня"
+            clear: true,       // Кнопка "Очистить"
+            close: true,        // Кнопка "Закрыть"
+          },
+          theme: 'auto',
+          icons: {
+            time: 'bi bi-clock',       // Иконка времени
+            date: 'bi bi-calendar3',   // Иконка даты
+            up: 'bi bi-chevron-up',    // Стрелка вверх
+            down: 'bi bi-chevron-down', // Стрелка вниз
+            clear: 'bi bi-trash3',
+            close: 'bi bi-check',
+            previous: 'bi bi-chevron-left',
+            next: 'bi bi-chevron-right',
+          }
+        },
+        restrictions: {
+          minDate: new Date("{{ task.must_be_completed_by|date:'Y-m-d H:i' }}"), // Аналог minDate
+        },
+        defaultDate: new Date("{{ task.must_be_completed_by|date:'Y-m-d H:i' }}"), // Аналог defaultD
+      }
+    );
+</script>
 {% endblock %}

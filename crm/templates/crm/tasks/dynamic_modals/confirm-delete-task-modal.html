@@ -1,0 +1,30 @@
+{% load static %}
+
+<div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" aria-labelledby="confirmDeleteTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteTaskModalLabel">Подтвердите удаление</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>Вы действительно хотите удалить эту задачу?</h5>
+          <hr class="hr">
+          <div class="">
+            <h5>Информация о задаче:</h5>
+            <b>Название:</b> "{{ task.title }}" <br>
+            <b>Текст:</b> {{ task.text }}
+          </div>
+        </div>
+        <form action="{% url 'crm:task_delete' %}" method="post" id="finalDeleteTaskForm">
+            {% csrf_token %}
+            <input type="hidden" name="delete_task_id" value="{{ task.id }}">
+            <div class="modal-footer">
+                <button type="submit" class="verg-button-danger border-0">Да, я хочу удалить <i class="bi bi-check-circle"></i></button>
+                <button type="button" class="verg-button-green border-0" data-bs-dismiss="modal">Отменить удаление <i class="bi bi-x-circle"></i></button>
+            </div>
+        </form>
+      </div>
+    </div>
+    <script src="{% static 'crm/js/tasks/confirm-delete-task.js' %}"></script>
+</div>
