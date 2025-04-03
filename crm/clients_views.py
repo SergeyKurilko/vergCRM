@@ -78,10 +78,17 @@ class ClientListView(View):
         Получает request, возвращает render clients-list.html
         В контексте список клиентов пользователя.
         """
-        # TODO: Добавить поиск по имени и телефону
         clients = Client.objects.filter(
             manager=request.user
         )
+        # Проверка параметра поиска
+        search_query = request.GET.get("q")
+        if search_query:
+            clients = clients.filter(
+                Q(name__icontains=search_query)
+            )
+
+
         # Пагинация
         paginator = Paginator(clients, 10)
         page_number = request.GET.get('page')
@@ -89,6 +96,8 @@ class ClientListView(View):
 
         context = {
             "clients": page_obj,
+            "clients_count": clients.count(),
+            "search_query": search_query,
         }
 
         return render(request, "crm/clients/clients-list.html", context)
@@ -252,7 +261,7 @@ class ClientDeleteView(BaseClientView, View):
                            f"Количество заявок: {client.all_service_request_count}шт. "
                            f"Сначала удалите их, чтобы удалить клиента."
             }, status=403)
-        # client.delete()
+        client.delete()
 
         return JsonResponse({
             "success": True

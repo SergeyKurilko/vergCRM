@@ -5,15 +5,32 @@
 {% block content %}
 
 <div class="container-md container-fluid client-list-add-new-container mt-3">
+    {% if '?q=' in request.build_absolute_uri or '&q=' in request.build_absolute_uri %}
+    <a href="{% url 'crm:clients_list' %}" class="verg-button-1" type="button">
+        <i class="bi bi-arrow-left-circle-fill"></i>&nbsp;Назад 
+    </a>
+    {% else %}
     <a href="" class="verg-button-1 add-new-client-button" type="button">
         Добавить клиента &nbsp;
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
         </svg>
     </a>
+    {% endif %}
+    <form action="#" method="get">
+        <div class="input-group my-3">
+            <input name="q" type="text" class="form-control" placeholder="Поиск по имени" aria-label="Поиск по имени" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+        </div>
+    </form>
 </div>
 
+
+
 <div class="container-md container-fluid clients-list-container mt-3">
+    {% if clients_count < 1 %}
+    <h6>По вашему запросу ничего не найден. Попробуйте ввести другое имя или вернитесь к общему списку.</h6>
+    {% else %}
     <table class="table rounded-table">
         <thead>
           <tr>
@@ -38,20 +55,23 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 </div>
+
+
 
 <div class="container-md container-fluid paginator-container">
     {% if clients.paginator.num_pages > 1 %}
     <div id="pagination" class="my-3 d-flex justify-content-center d-md-block">
         {% for p in clients.paginator.page_range %}
             {% if clients.number == p %}
-                <a class="paginator-link-active me-1" href="?page={{ p }}">{{ p }}</a>
+                <a class="paginator-link-active me-1" href="?page={{ p }}&q={{ search_query }}">{{ p }}</a>
             {% else %}
-                <a class="paginator-link me-1" href="?page={{ p }}">{{ p }}</a>
+                <a class="paginator-link me-1" href="?page={{ p }}&q={{ search_query }}">{{ p }}</a>
             {% endif %}
         {% endfor %}
         {% if clients.has_next %}
-            <a class="paginator-next-button" href="?page={{ clients.next_page_number }}">
+            <a class="paginator-next-button" href="?page={{ clients.next_page_number }}&q={{ search_query }}">
                 Далее
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
