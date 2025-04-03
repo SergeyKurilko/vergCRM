@@ -311,3 +311,156 @@ class TaskUpdateView(BaseTaskView, View):
             "success": True,
         })
 
+
+@method_decorator(staff_required, "dispatch")
+class TaskCreateView(BaseTaskView, View):
+    """
+    Создание задачи (на отдельной странице)
+    """
+    def get(self, request: WSGIRequest):
+        """
+        Принимает ajax-запрос, возвращает модальное окно для создания задачи.
+
+        Args:
+            request (WSGIRequest): объект запроса WSGIRequest
+        Returns:
+            JsonResponse (JsonResponse): html код с модальным окном или ошибку
+        """
+        context = {
+            "manager_id": request.user.id
+        }
+        new_task_modal = render_to_string(
+            template_name="crm/tasks/dynamic_modals/modal-for-add-new-task.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "new_task_modal": new_task_modal
+        })
+
+    def post(self, request):
+        data = request.POST
+        required_fields = {
+            "manager_id",
+            "title", "text", "must_be_completed_by"
+        }
+        # Проверка наличия всех обязательных полей
+        if not required_fields.issubset(set(data.keys())):
+            return json_response.validation_error(
+                message="Что-то пошло не так. Перезагрузите страницу"
+            )
+
+        # Извлечение данных из тела запроса
+        manager_id = data.get("manager_id")
+        title = data.get("title")
+        text = data.get("text")
+        must_be_completed_by = data.get("must_be_completed_by")
+        notifications = data.get("notifications")
+
+        if not manager_id:
+            return json_response.validation_error(
+                "Expected manager_id"
+            )
+
+        if (not title or not text) or (len(title) < 5 or len(text) < 5):
+            return json_response.validation_error(
+                "Название и текст должны быть не короче 5 симв."
+            )
+
+        # Проверка наличия и длины даты
+        if not must_be_completed_by or len(must_be_completed_by) < 16:
+            return json_response.validation_error(
+                "Вы не указали дату."
+            )
+
+        # Преобразуем строку must_be_completed_by в datetime
+        try:
+            must_be_completed_by = datetime.strptime(must_be_completed_by, '%d.%m.%Y %H:%M')
+        except ValueError:
+            # Обработка ошибки, если формат неверный
+            return json_response.validation_error(
+                "Неверный формат даты"
+            )
+
+        # Включен ли toggle напоминания у задачи
+        task_notifications = True if notifications else False
+
+        new_task = Task.objects.create(
+            title=title,
+            text=text,
+            manager_id=manager_id,
+            must_be_completed_by=must_be_completed_by,
+            notifications=task_notifications
+        )
+
+        # Поиск reminders
+        new_reminders = []
+        for key, value in data.items():
+            if key.startswith('reminderMode-'):
+                index = key.split("-")[1]
+
+                # Если это разовый reminder
+                if value == 'once':
+                    # Извлекаем reminder_once_datetime и преобразуем строку scheduled_datetime в datetime
+                    try:
+                        scheduled_datetime = (
+                            datetime.strptime(data.get(f"reminder_once_datetime-{index}"), '%d.%m.%Y %H:%M'))
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+                    once_reminder = Reminder(
+                        task=new_task,
+                        mode='once',
+                        scheduled_datetime=scheduled_datetime
+                    )
+                    new_reminders.append(once_reminder)
+
+                # Если это recurring reminder
+                elif value == "recurring":
+                    # Извлекаем time и преобразуем в корректный datetime.time
+                    try:
+                        time_str = data.get(f"reminder_recurring_time-{index}")
+                        time_obj = datetime.strptime(time_str, '%H:%M').time()
+                    except ValueError:
+                        # Обработка ошибки, если формат неверный
+                        return json_response.validation_error(
+                            "Неверный формат даты у напоминания"
+                        )
+
+                    recurring_days = []
+                    day_mapping = {
+                        'mon': 'mon',
+                        'tue': 'tue',
+                        'wed': 'wed',
+                        'thu': 'thu',
+                        'fri': 'fri',
+                        'sat': 'sat',
+                        'sun': 'sun'
+                    }
+
+                    for day_key, day_value in data.items():
+                        if (day_key.startswith(
+                                tuple(day_mapping.keys())) and
+                                day_key.endswith(f"-{index}")
+                        ):
+                            day_name = day_key.split("-")[0]
+                            recurring_days.append(day_name)
+
+                    recurring_reminder = Reminder(
+                        task=new_task,
+                        mode='recurring',
+                        recurring_time=time_obj,
+                        recurring_days=recurring_days
+                    )
+                    new_reminders.append(recurring_reminder)
+
+        Reminder.objects.bulk_create(new_reminders)
+
+        return JsonResponse({
+            "success": True,
+        }, status=200)
+
