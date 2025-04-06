@@ -80,19 +80,19 @@ def one_workday_before_task_expired():
     Поиск задач, которые будут просрочены на следующий рабочий день.
     Задача выполняется каждый день в 9 утра.
     """
-    today = timezone.localtime().date()
+    today = timezone.localtime().date() # Проверка времени и даты в момент запуска
     tasks = Task.objects.filter(
         notifications=True,
         expired=False,
         must_be_completed_by__gt=timezone.localtime(),
         before_one_workday_deadline_notification=False,
-    )
+    ) # находим все задачи, которые нужно оповестить
 
-    for task in tasks:
-        deadline_date = task.must_be_completed_by.date()
-        previous_workday = get_previous_workday(deadline_date)
+    for task in tasks: # Перебираем их
+        deadline_date = task.must_be_completed_by.date() # день/месяц/год
+        previous_workday = get_previous_workday(deadline_date) # находим предыдущий рабочий день у задачи
 
-        # Сегодня не предыдущий рабочий день -> пропускаем
+        # если сегодня не предыдущий рабочий день относительно срока задачи, то пропускаем
         if previous_workday != today:
             continue
 
@@ -107,6 +107,6 @@ def one_workday_before_task_expired():
         # 2. Дедлайн в выходные, но пользователь разрешил такие уведомления
         if not is_deadline_weekend or manager_profile.day_off_notification:
             one_workday_before_deadline_notification.delay(task.id)
-            task.before_one_workday_deadline_notification = True
-            task.save()
+            # task.before_one_workday_deadline_notification = True
+            # task.save()
 

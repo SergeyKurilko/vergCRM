@@ -4,9 +4,9 @@ import telebot
 from django.conf import settings
 
 # Инициализация django
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vergCRM.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vergCRM.settings')
 # Загрузка django
-# django.setup()
+django.setup()
 
 
 # Импорт моделей после инициализации django
