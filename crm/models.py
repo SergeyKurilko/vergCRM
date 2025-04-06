@@ -319,7 +319,7 @@ class DisplayNotification(models.Model):
         ("reminder", "Напоминание"),
     ]
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    type=models.CharField(choices=NOTIFICATION_TYPES, max_length=20)
+    type=models.CharField(choices=NOTIFICATION_TYPES, max_length=35)
     message=models.TextField()
     viewed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
