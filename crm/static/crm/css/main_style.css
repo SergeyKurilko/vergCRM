@@ -1057,3 +1057,22 @@ select option:hover {
 
 
 /* ========================== /Reminder item rules ================================ */
+
+
+/* ========================== Display notification rules ================================ */
+.display-notification-card {
+  position: fixed;
+  z-index: 2070;
+  right: 8px;
+  top: 63px;
+  opacity: 0.95;
+}
+
+.display-notification-card .card-body {
+  background-color: #05bc0540;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+
+/* ========================== /Display notification rules ================================ */

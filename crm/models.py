@@ -313,7 +313,9 @@ class DisplayNotification(models.Model):
     Предназначены для отображения напоминаний и оповещений пользователю в браузере.
     """
     NOTIFICATION_TYPES = [
-        ("task_expiry", "Просрочка задачи"),
+        ("one_hour_before_task_expired", "За час до просрочки задачи"),
+        ("one_workday_before_task_expired", "За день до просрочки задачи"),
+        ("on_task_expired", "В момент просрочки задачи"),
         ("reminder", "Напоминание"),
     ]
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
