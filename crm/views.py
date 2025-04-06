@@ -56,9 +56,13 @@ class CrmLoginView(View):
 
 
 def test(request):
-    # Тестовая view
-    pprint(request.META)
+    from telegram_bot.bot import bot
     st = request.user.is_staff
+    manager_id = request.user.userprofile.telegram_id
+    bot.send_message(
+        chat_id=manager_id,
+        text="Привет. Это тестовое сообщение из джанго"
+    )
     return HttpResponse(f"user.is_staff: {st}")
 
 

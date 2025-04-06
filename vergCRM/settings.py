@@ -11,10 +11,19 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Загрузка переменных из .env
+load_dotenv(Path(BASE_DIR/'.env'))
+TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -25,7 +34,7 @@ SECRET_KEY = 'django-insecure-4az8ak9zzyay%k%dv!^6b=88yr)b6al@a_@izrffe@yn^h9oc6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['fkx0j7-46-22-51-139.ru.tuna.am']
+ALLOWED_HOSTS = ['0.0.0.0', '192.168.100.10']
 
 # CSRF_TRUSTED_ORIGINS = ['https://fkx0j7-46-22-51-139.ru.tuna.am', 'http://192.168.100.10:8080']
 
@@ -37,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
@@ -44,6 +54,8 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'crm'
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
