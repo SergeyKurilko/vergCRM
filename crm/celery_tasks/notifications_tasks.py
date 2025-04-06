@@ -2,7 +2,7 @@ from celery import shared_task
 from django.contrib.sites.models import Site
 
 from crm.models import Task
-from telegram_bot.task_notifications import send_telegram_notification
+from telegram_bot.task_notifications_senders import send_telegram_notification
 
 weekdays_mapping = {
     0: "Понедельник",

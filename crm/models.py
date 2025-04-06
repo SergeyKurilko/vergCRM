@@ -286,9 +286,7 @@ class Reminder(models.Model):
 
     is_active = models.BooleanField(default=True,
                                     verbose_name="Активно")
-    last_reminder_sent = models.DateTimeField(null=True,
-                                              blank=True,
-                                              verbose_name="Последнее отправленное напоминание")
+
 
     # Поля для разового напоминания
     scheduled_datetime = models.DateTimeField(null=True,
@@ -300,6 +298,9 @@ class Reminder(models.Model):
                                       help_text="Дни недели, например ['mon', 'wed', 'fri']")
     recurring_time = models.TimeField(null=True,
                                       blank=True)
+    last_reminder_sent = models.DateTimeField(null=True,
+                                              blank=True,
+                                              verbose_name="Последнее отправленное напоминание")
 
     def __str__(self):
         return f"Напоминание для задачи {self.task.title} ({self.get_mode_display()})"
