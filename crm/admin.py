@@ -3,7 +3,7 @@ from crm.models import (Client, ServiceRequest, Comment,
                         ImageForServiceRequest, UserProfile,
                         Task, Service, NoteForServiceRequest,
                         CostPriceCase, PartOfCostPriceCase,
-                        Reminder)
+                        Reminder, DisplayNotification)
 
 
 @admin.register(Client)
@@ -66,3 +66,10 @@ class PartOfCostPriceCaseAdmin(admin.ModelAdmin):
 @admin.register(Reminder)
 class ReminderAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(DisplayNotification)
+class DisplayNotificationAdmin(admin.ModelAdmin):
+    list_display = [
+        "id", "type", "viewed"
+    ]
+    list_editable = ["viewed"]

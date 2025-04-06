@@ -304,3 +304,23 @@ class Reminder(models.Model):
 
     def __str__(self):
         return f"Напоминание для задачи {self.task.title} ({self.get_mode_display()})"
+
+
+class DisplayNotification(models.Model):
+    """
+    Модель объекта DisplayNotification. Объекты создаются в момент отправки
+    напоминаний или оповещений о сроке задачи.
+    Предназначены для отображения напоминаний и оповещений пользователю в браузере.
+    """
+    NOTIFICATION_TYPES = [
+        ("task_expiry", "Просрочка задачи"),
+        ("reminder", "Напоминание"),
+    ]
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    type=models.CharField(choices=NOTIFICATION_TYPES, max_length=20)
+    message=models.TextField()
+    viewed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Экранное оповещение ({self.type})"
