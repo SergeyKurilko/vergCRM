@@ -35,6 +35,9 @@
 
 {% block navbar %}
 {% include 'crm/incl/navbar.html' %}
+<script>
+  var checkNotifications = 'https://example_notife'
+</script>
 {% endblock %}
 
 <div class="main_wrapper">
@@ -110,6 +113,7 @@
 
 <!-- 4. Локализация (если нужно) -->
 <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.7/dist/js/locales/ru.min.js"></script>
+<!-- Базовый скрипт -->
 <script src="{% static 'crm/js/base.js' %}"></script>
     {% block scripts %}
     {% endblock %}

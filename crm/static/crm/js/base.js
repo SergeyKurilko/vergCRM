@@ -127,3 +127,26 @@ function showDotsLoader(elForHidden, off) {
         $('.l-overlay').css("display", "none");
     }
 }
+
+///////////////////////////////////////// Проверка display notifications ////////////////////////////////////////
+function makeDisplayNotificationIsReading (displayNotificationId) {
+    console.log("Будем делать напоминание прочитанным. ID напоминания:" + displayNotificationId)
+}
+
+
+
+function checkDisplayNotifications() {
+    if (checkNotifications) {
+        $.ajax({
+            type: "GET",
+            url: checkNotifications,
+            dataType: "dataType",
+            success: function (response) {
+                console.log("Показываем оповещение")
+            }
+        });
+
+    }
+}
+
+///////////////////////////////////////// /Проверка display notifications ////////////////////////////////////////
