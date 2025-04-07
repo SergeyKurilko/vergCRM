@@ -38,9 +38,11 @@ class GetDisplayNotification(View):
         notification = notifications.first()
 
         context = {
-            "notification_header": "Напоминание" if notification.type == "reminder" else "Оповещение",
+            "notification_header": "Напоминание" if notification.type == "reminder" else "⚡ Оповещение",
             "message": notification.message,
-            "notification_id": notification.id
+            "notification_id": notification.id,
+            "link_url": notification.link_url,
+            "link_text": notification.link_text
         }
 
         html = render_to_string(

@@ -25,6 +25,7 @@ def one_workday_before_deadline_display_notification(task_id: int):
         message=
         f'⏳ Задача: "{task.title}" будет просрочена '
         f"{task.must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
-        f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}.\n"
-        f"🔗 [Открыть задачу]({task.get_absolute_url()})"
+        f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}).\n",
+        link_text="Открыть задачу",
+        link_url=task.get_absolute_url()
     )

@@ -157,8 +157,28 @@ function checkDisplayNotifications() {
     });
 }
 
-// Обработчик кнопки "Прочитано"
+// Обработчик события прочтения оповещения
 function setupNotificationHandlers(notificationId) {
+    // DisplayNotification прочтано при переходе по ссылке в оповещении
+    $(`#mark-read-link-${notificationId}`).click(function (e) { 
+        e.preventDefault();
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+        var successRedirectUrl = $(this).attr('href')
+        console.log("csrfToken: " + csrfToken)
+        console.log("Ссылка: " + $(this).attr('href'))
+
+        var makeViewdUrl = $(this).data("url-for-make-viewed")
+        $.ajax({
+            url: makeViewdUrl,
+            method: 'POST',
+            data: {"notification_id": notificationId, "csrfmiddlewaretoken": csrfToken},
+            success: function() {
+                window.location.href = successRedirectUrl;
+            }
+        });
+    });
+
+    // DisplayNotification прочитано при нажатии "Прочитано"
     $(`#mark-read-${notificationId}`).submit(function (e) {
         e.preventDefault();
  
