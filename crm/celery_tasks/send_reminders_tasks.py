@@ -26,8 +26,6 @@ def send_once_reminder(reminder_id: int):
         message=message
     )
 
-    reminder.delete()
-
 
 @shared_task
 def send_recurring_reminder(reminder_id: int):

@@ -22,7 +22,10 @@ def check_once_reminders():
     now = timezone.localtime()
     for r in reminders:
         if r.scheduled_datetime <= now:
+            # TODO: reminder_display_notification.delay()
             send_once_reminder.delay(reminder_id=r.id)
+
+            # TODO: перевод напоминания в неактивный. Без удаления
 
 
 @shared_task
@@ -48,23 +51,8 @@ def recurring_reminders_check():
             send_recurring_reminder(reminder_id=r.id)
 
 
-
-
-# @shared_task
-# def check_custom_reminders():
-#     """
-#     Проверка ежемесячных напоминаний.
-#     Работает в celery beat раз в минуту.
-#     """
-#     reminders = Reminder.objects.filter(
-#         is_active=True,
-#         mode="custom"
-#     ).exclude(task__expired=True)
-#     now = timezone.localtime()
-#     for reminder in reminders:
-#         if should_send_custom(reminder, now):
-#             # TODO: Тут логика отправки кастомного напоминания
-#             send_reminder_test_def(reminder.id)
-#             # Обновление даты последней отправки напоминания
-#             reminder.last_reminder_sent = now
-#             reminder.save()
+#shared_task
+def check_old_inactive_reminders():
+    # TODO: описать check_old_inactive_reminders
+    # поиск и удаление напоминаний, у которых is_active = False и последний показ был месяц назад и более
+    pass

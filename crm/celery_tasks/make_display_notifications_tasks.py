@@ -59,3 +59,7 @@ def at_expired_task_display_notification(task_id):
         link_text="Открыть задачу",
         link_url=task.get_absolute_url()
     )
+
+@shared_task
+def reminder_display_notification(reminder_id):
+    pass
