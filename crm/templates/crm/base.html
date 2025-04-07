@@ -35,27 +35,13 @@
 
 {% block navbar %}
 <script>
-  checkNotifications = "https://example_notife"
+  var checkNotifications = "{% url 'crm:get_display_notification' %}"
 </script>
 {% include 'crm/incl/navbar.html' %}
 
 {% endblock %}
 
 <div class="main_wrapper">
-  <!-- Card for display notification -->
-  <div class="card display-notification-card">
-    <div class="card-header">
-      Featured
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">Special title treatment</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
-  </div>
-  <!-- Card for display notification - end -->
-
-
     <div id="backendMessageToast" class="toast bottom-2 start-50 translate-middle-x" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body backend-message-toast-text">

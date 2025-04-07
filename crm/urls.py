@@ -19,6 +19,8 @@ from crm.reminders_views import GetContentForNewReminder, DeleteReminderView
 
 from crm.tasks_views import TaskListView, TaskDetailView, TaskDeleteView, TaskUpdateView, TaskCreateView
 
+from crm.display_notifications_views import GetDisplayNotification, MarkNotificationAsRead
+
 app_name = "crm"
 
 
@@ -138,7 +140,13 @@ ajax_urlpatterns = [
          name="add_new_reminder_card"),
     path("ajax/delete-reminder",
          DeleteReminderView.as_view(),
-         name="delete_reminder")
+         name="delete_reminder"),
+    path("ajax/get-display-notification",
+         GetDisplayNotification.as_view(),
+         name="get_display_notification"),
+    path("ajax/make-display-notification-as-read",
+         MarkNotificationAsRead.as_view(),
+         name="make_display_notification_as_read")
 ]
 
 urlpatterns += ajax_urlpatterns

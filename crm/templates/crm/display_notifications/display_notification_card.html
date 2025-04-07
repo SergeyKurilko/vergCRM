@@ -1,0 +1,15 @@
+<!-- Card for display notification -->
+<div class="card display-notification-card w-50" id="notification-{{ notification_id }}">
+    <div class="card-header">
+      {{ notification_header }}
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{ message }}</p>
+      <form action="{% url 'crm:make_display_notification_as_read' %}" method="post" id="mark-read-{{ notification_id }}">
+        {% csrf_token %}
+        <input type="hidden" name="notification_id" value="{{ notification_id }}">
+        <button type="submit" class="btn btn-primary">Прочитано</button>
+      </form>
+    </div>
+  </div>
+  <!-- Card for display notification - end -->

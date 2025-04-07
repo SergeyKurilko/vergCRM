@@ -133,20 +133,57 @@ function makeDisplayNotificationIsReading (displayNotificationId) {
     console.log("Будем делать напоминание прочитанным. ID напоминания:" + displayNotificationId)
 }
 
+console.log("checkNotifications: " + checkNotifications)
+console.log("checkNotifications.length: " + checkNotifications.length)
 
+
+let checkInterval = 1000; // Стартовый интервал
 
 function checkDisplayNotifications() {
-    if (checkNotifications) {
+    $.ajax({
+        type: "GET",
+        url: checkNotifications,
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                // Обновляем интервал
+                if (response.interval) {
+                    checkInterval = response.interval;
+                }
+                
+                // Если есть уведомление и его ещё нет на странице
+                if (response.notification && !$(`#notification-${response.notification_id}`).length) {
+                    $('.main_wrapper').prepend(response.notification);
+                    setupNotificationHandlers(response.notification_id)
+                }
+            }
+        },
+        complete: function() {
+            // Перезапускаем с новым интервалом
+            setTimeout(checkDisplayNotifications, checkInterval);
+        }
+    });
+}
+
+// Обработчик кнопки "Прочитано"
+function setupNotificationHandlers(notificationId) {
+    $(`#mark-read-${notificationId}`).submit(function (e) {
+        e.preventDefault();
+ 
         $.ajax({
-            type: "GET",
-            url: checkNotifications,
-            dataType: "dataType",
-            success: function (response) {
-                console.log("Показываем оповещение")
+            url: $(this).attr("action"),
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function() {
+                $(`#notification-${notificationId}`).remove();
             }
         });
-
-    }
+    });
 }
+
+// Первый запуск
+$(document).ready(function() {
+    checkDisplayNotifications();
+});
 
 ///////////////////////////////////////// /Проверка display notifications ////////////////////////////////////////
