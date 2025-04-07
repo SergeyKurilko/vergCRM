@@ -4,7 +4,8 @@ from django.contrib.sites.models import Site
 from crm.models import Task
 from telegram_bot.task_notifications_senders import send_telegram_notification
 from crm.celery_tasks.make_display_notifications_tasks import (one_workday_before_deadline_display_notification,
-                                                               one_hour_before_deadline_display_notification)
+                                                               one_hour_before_deadline_display_notification,
+                                                               at_expired_task_display_notification)
 
 weekdays_mapping = {
     0: "Понедельник",
@@ -93,6 +94,11 @@ def notification_at_expired_task(task_id: int):
     message = (
         f"🚨 Просрочена задача: {task.title}\n"
         f"🔗 [Открыть задачу]({absolute_url})"
+    )
+
+    # Задача на создание DisplayNotification
+    at_expired_task_display_notification.delay(
+        task_id=task.id
     )
 
     send_telegram_notification.delay(

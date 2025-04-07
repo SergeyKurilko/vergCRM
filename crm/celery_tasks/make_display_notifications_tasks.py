@@ -44,3 +44,18 @@ def one_hour_before_deadline_display_notification(task_id):
         link_text="Открыть задачу",
         link_url=task.get_absolute_url()
     )
+
+@shared_task
+def at_expired_task_display_notification(task_id):
+    notification_type = "on_task_expired"
+    task = get_object_or_404(
+        Task, id=task_id
+    )
+    DisplayNotification.objects.create(
+        user=task.manager,
+        type=notification_type,
+        message=
+        f'🚨🚨🚨 Задача: "{task.title}" просрочена.',
+        link_text="Открыть задачу",
+        link_url=task.get_absolute_url()
+    )
