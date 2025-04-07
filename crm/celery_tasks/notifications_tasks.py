@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 
 from crm.models import Task
 from telegram_bot.task_notifications_senders import send_telegram_notification
+from crm.celery_tasks.make_display_notifications_tasks import one_workday_before_deadline_display_notification
 
 weekdays_mapping = {
     0: "Понедельник",
@@ -27,12 +28,18 @@ def one_workday_before_deadline_notification(task_id: int):
     absolute_url = f"https://{domain}{task.get_absolute_url()}"
 
     message = (
-        f"⏳ Задача: {task.title} будет просрочена "
+        f"⏳ Задача: '{task.title}' будет просрочена "
         f"{task.must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
-        f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}.\n"
+        f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}).\n"
         f"🔗 [Открыть задачу]({absolute_url})"
     )
 
+    # Постановка задачи на создание DisplayNotification
+    one_workday_before_deadline_display_notification.delay(
+        task_id=task.id
+    )
+
+    # Постановка задачи на отправку оповещения в тг
     send_telegram_notification.delay(
         chat_id=telegram_id,
         message=message

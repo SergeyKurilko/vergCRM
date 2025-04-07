@@ -129,14 +129,6 @@ function showDotsLoader(elForHidden, off) {
 }
 
 ///////////////////////////////////////// Проверка display notifications ////////////////////////////////////////
-function makeDisplayNotificationIsReading (displayNotificationId) {
-    console.log("Будем делать напоминание прочитанным. ID напоминания:" + displayNotificationId)
-}
-
-console.log("checkNotifications: " + checkNotifications)
-console.log("checkNotifications.length: " + checkNotifications.length)
-
-
 let checkInterval = 1000; // Стартовый интервал
 
 function checkDisplayNotifications() {

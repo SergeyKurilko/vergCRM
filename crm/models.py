@@ -319,10 +319,13 @@ class DisplayNotification(models.Model):
         ("reminder", "Напоминание"),
     ]
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    type=models.CharField(choices=NOTIFICATION_TYPES, max_length=35)
-    message=models.TextField()
+    type = models.CharField(choices=NOTIFICATION_TYPES, max_length=35)
+    message = models.TextField()
     viewed = models.BooleanField(default=False)
+    link_text = models.CharField(max_length=100, blank=True)
+    link_url = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return f"Экранное оповещение ({self.type})"
