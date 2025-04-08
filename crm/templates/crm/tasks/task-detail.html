@@ -147,7 +147,7 @@
                 <div class="edit-task-for-request">
                   <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
                 </div>
-                <button class="verg-button-green complete-task-button">Завершить задачу</button>
+                <button data-task-id="{{ task.id }}" data-url-for-complete-task="{% url 'crm:make_task_is_completed' %}" class="verg-button-green complete-task-button">Завершить задачу</button>
               </div>
                 
               

@@ -17,7 +17,8 @@ from crm.clients_views import (ClientListView, ClientDetailView,
 
 from crm.reminders_views import GetContentForNewReminder, DeleteReminderView
 
-from crm.tasks_views import TaskListView, TaskDetailView, TaskDeleteView, TaskUpdateView, TaskCreateView
+from crm.tasks_views import (TaskListView, TaskDetailView, TaskDeleteView,
+                             TaskUpdateView, TaskCreateView, MakeTaskIsCompleted)
 
 from crm.display_notifications_views import GetDisplayNotification, MarkNotificationAsRead
 
@@ -77,7 +78,10 @@ tasks_urlpatterns = [
          name="task_update"),
     path("my-tasks/task-create",
          TaskCreateView.as_view(),
-         name="task_create")
+         name="task_create"),
+    path("ajax/make-task-is-completed",
+         MakeTaskIsCompleted.as_view(),
+         name="make_task_is_completed")
 ]
 
 ajax_urlpatterns = [
