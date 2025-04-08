@@ -4,6 +4,7 @@ from django.db.models import Q
 
 from crm.models import Reminder, Task
 from crm.celery_tasks.send_reminders_tasks import send_once_reminder, send_recurring_reminder
+from crm.celery_tasks.make_display_notifications_tasks import reminder_display_notification
 from datetime import datetime
 from django.utils import timezone
 
@@ -22,10 +23,10 @@ def check_once_reminders():
     now = timezone.localtime()
     for r in reminders:
         if r.scheduled_datetime <= now:
-            # TODO: reminder_display_notification.delay()
+            reminder_display_notification.delay(reminder_id=r.id)
             send_once_reminder.delay(reminder_id=r.id)
-
-            # TODO: перевод напоминания в неактивный. Без удаления
+            r.is_active = False
+            r.save()
 
 
 @shared_task
@@ -48,7 +49,11 @@ def recurring_reminders_check():
 
     for r in reminders:
         if now_day in r.recurring_days and now_time > r.recurring_time:
-            send_recurring_reminder(reminder_id=r.id)
+            send_recurring_reminder.delay(reminder_id=r.id)
+            reminder_display_notification.delay(reminder_id=r.id)
+
+            r.last_reminder_sent = now
+            r.save()
 
 
 #shared_task
