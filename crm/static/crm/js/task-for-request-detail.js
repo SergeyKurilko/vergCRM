@@ -23,11 +23,14 @@ $(document).ready(function () {
         $('.actual_notifications_status').addClass('d-none');
         $('.actual_must_be_completed_by').addClass('d-none');
         $('.add-reminder-in-task-for-request-detail').removeClass('d-none');
+        $('.complete-or-open-new-tab').addClass('d-none')
         }
     };
 
+
     // Включение режима редактирования
     $('#editTaskForRequest').click(function (e) { 
+        e.preventDefault();
         toggleEditMode();
     });
 

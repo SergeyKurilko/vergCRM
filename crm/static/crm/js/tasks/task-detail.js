@@ -24,6 +24,7 @@ $(document).ready(function () {
             $('.actual_notifications_status').addClass('d-none');
             $('.actual_must_be_completed_by').addClass('d-none');
             $('.add-reminder-in-task-for-request-detail').removeClass('d-none');
+            $('.complete-task-button').addClass('d-none');
         }
     };
 

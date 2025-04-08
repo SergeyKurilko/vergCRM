@@ -17,18 +17,18 @@
 // }
 
 // Функция для применения сохраненной темы при загрузке страницы
-function applySavedTheme() {
-    const body = document.body;
-    const savedTheme = localStorage.getItem('theme'); // Получаем сохраненную тему
+// function applySavedTheme() {
+//     const body = document.body;
+//     const savedTheme = localStorage.getItem('theme'); // Получаем сохраненную тему
 
-    if (savedTheme === 'dark') {
-        // Если сохранена темная тема, применяем ее
-        body.setAttribute('data-theme', 'dark');
-    } else {
-        // Иначе применяем светлую тему (по умолчанию)
-        body.removeAttribute('data-theme');
-    }
-}
+//     if (savedTheme === 'dark') {
+//         // Если сохранена темная тема, применяем ее
+//         body.setAttribute('data-theme', 'dark');
+//     } else {
+//         // Иначе применяем светлую тему (по умолчанию)
+//         body.removeAttribute('data-theme');
+//     }
+// }
 
 // Назначаем обработчик события для кнопки переключения темы
 // document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
@@ -173,7 +173,8 @@ function setupNotificationHandlers(notificationId) {
             method: 'POST',
             data: {"notification_id": notificationId, "csrfmiddlewaretoken": csrfToken},
             success: function() {
-                window.location.href = successRedirectUrl;
+                $(`#notification-${notificationId}`).remove();
+                window.open(successRedirectUrl, '_blank');
             }
         });
     });

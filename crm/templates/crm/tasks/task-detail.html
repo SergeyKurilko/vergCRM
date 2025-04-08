@@ -143,14 +143,19 @@
                   data-bs-dismiss="modal">Отменить редактирование</button>
               </form>
 
-
-              <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
+              <div class="d-flex justify-content-between">
+                <div class="edit-task-for-request">
+                  <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
+                </div>
+                <button class="verg-button-green complete-task-button">Завершить задачу</button>
+              </div>
                 
               
       
               <hr class="hr delete-task-hr d-none">
               <button data-delete-url="{% url 'crm:task_delete' %}" data-task-id="{{task.id}}" id="deleteTask"
                 class="verg-button-danger d-none">Удалить задачу</button>
+                
             
             
         </div>

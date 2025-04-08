@@ -198,6 +198,23 @@ input::-webkit-inner-spin-button {
   right: 16px;
 }
 
+.verg-transperent-button {
+  padding: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+  font-weight: 500;
+  border-radius: 5px;
+  position: relative;
+  border: 1px solid rgb(212 205 205) !important;
+  color: var(--contrast-color);
+  display: inline-block;
+}
+
+.verg-transperent-button:hover {
+  background-color: var(--contrast-color);
+  color: var(--ver-g-white-text);
+}
+
 /* ========================== / Buttons Rules ================================ */
 
 /* ========================== Dropdowns Rules ================================ */
