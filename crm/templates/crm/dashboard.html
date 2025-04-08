@@ -20,10 +20,12 @@
             <div class="my_tasks ms-3">
                 <a href="{% url 'crm:tasks_list' %}" type="button" class="verg-button-1 position-relative">
                     Мои задачи
+                    {% if expired_tasks > 0 %}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        5
+                        {{ expired_tasks }}
                         <span class="visually-hidden"></span>
                     </span>
+                    {% endif %}
                 </a>
             </div>
         </div>

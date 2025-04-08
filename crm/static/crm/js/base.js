@@ -2,19 +2,19 @@
 
 
 // Переключение темы (темная / светлая)
-function toggleTheme() {
-    const body = document.body;
-    // Проверяем текущую тему
-    if (body.getAttribute('data-theme') === 'dark') {
-        // Если тема темная, то переключаем на светлую
-        body.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light') // Сохраняем выбор в localStorage
-    } else {
-        // Если тема светлая, переключаем на темную
-        body.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark')
-    }
-}
+// function toggleTheme() {
+//     const body = document.body;
+//     // Проверяем текущую тему
+//     if (body.getAttribute('data-theme') === 'dark') {
+//         // Если тема темная, то переключаем на светлую
+//         body.removeAttribute('data-theme');
+//         localStorage.setItem('theme', 'light') // Сохраняем выбор в localStorage
+//     } else {
+//         // Если тема светлая, переключаем на темную
+//         body.setAttribute('data-theme', 'dark');
+//         localStorage.setItem('theme', 'dark')
+//     }
+// }
 
 // Функция для применения сохраненной темы при загрузке страницы
 function applySavedTheme() {
@@ -31,10 +31,10 @@ function applySavedTheme() {
 }
 
 // Назначаем обработчик события для кнопки переключения темы
-document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+// document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
 // Применяем сохраненную тему при загрузке страницы
-document.addEventListener('DOMContentLoaded', applySavedTheme);
+// document.addEventListener('DOMContentLoaded', applySavedTheme);
 
 ///////////////////////////////////////// Инициализация toast ////////////////////////////////////////
 $(document).ready(function() {

@@ -122,7 +122,8 @@ input::-webkit-inner-spin-button {
 .verg-button-1:hover, .verg-button-1-active {
     /* background-color: var(--orange-accent-color);
     color: var(--contrast-color); */
-    background-color: #343b41;
+    box-shadow: 2px 3px 11px -7px rgba(34, 60, 80, 0.75);
+    background-color: #31383d;
 }
 
 .verg-button-1-disabled {

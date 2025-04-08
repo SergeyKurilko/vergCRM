@@ -10,7 +10,8 @@ from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
 
 
-from crm.models import ServiceRequest, Service, Client
+from crm.models import ServiceRequest, Service, Client, Task
+
 
 def staff_required(view_func):
     """
@@ -92,9 +93,14 @@ class DashboardView(View):
             .get('total_expected_profit', None)
         )
 
+        expired_tasks = Task.objects.filter(
+            expired=True
+        ).count()
+
         context = {
             "active_requests_count": active_requests_count,
-            "total_expected_profit": total_expected_profit
+            "total_expected_profit": total_expected_profit,
+            "expired_tasks": expired_tasks
         }
         return render(request, "crm/dashboard.html", context)
 
