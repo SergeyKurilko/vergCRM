@@ -469,7 +469,7 @@ class TaskCreateView(BaseTaskView, View):
         }, status=200)
 
 
-class MakeTaskIsCompleted(View):
+class MakeTaskIsCompletedView(View):
     """
     Завершить задачу.
     """
