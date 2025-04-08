@@ -18,7 +18,7 @@ def check_once_reminders():
     reminders = Reminder.objects.filter(
         is_active=True,
         mode="once"
-    ).select_related('task').exclude(task__expired=True)
+    ).select_related('task')
 
     now = timezone.localtime()
     for r in reminders:
