@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views import View
 from django.utils.decorators import method_decorator
-from django.db.models import Count, Sum, F, Q
+from django.db.models import Count, Sum, F, Q, Prefetch
 
 from crm.models import Task, Reminder
 from crm.responses import json_response
@@ -29,7 +29,11 @@ class BaseTaskView(ElementPermission):
         """
 
         try:
-            task = Task.objects.get(id=task_id)
+            task = Task.objects.prefetch_related(
+                Prefetch(
+                    'reminders',
+                    queryset=Reminder.objects.filter(is_active=True))
+            ).get(id=task_id)
         except Task.DoesNotExist:
             return HttpResponse("Task not found", status=404)
 
