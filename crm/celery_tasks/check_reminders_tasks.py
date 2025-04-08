@@ -1,11 +1,8 @@
 from celery import shared_task
-from django.contrib.sites.models import Site
-from django.db.models import Q
 
-from crm.models import Reminder, Task
+from crm.models import Reminder
 from crm.celery_tasks.send_reminders_tasks import send_once_reminder, send_recurring_reminder
 from crm.celery_tasks.make_display_notifications_tasks import reminder_display_notification
-from datetime import datetime
 from django.utils import timezone
 
 
@@ -39,8 +36,7 @@ def recurring_reminders_check():
         is_active=True,
         mode="recurring"
     ).select_related('task').exclude(
-        Q(task__expired=True) |
-        Q(last_reminder_sent__date=now.date())
+        last_reminder_sent__date=now.date()
     )
 
 
