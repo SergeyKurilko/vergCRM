@@ -87,6 +87,7 @@ input::-webkit-inner-spin-button {
 
 .verg-button-danger:hover {
     box-shadow: 2px 3px 11px -7px rgba(34, 60, 80, 0.75);
+    background-color: rgb(204, 11, 11);
 }
 
 .verg-button-green {
@@ -103,6 +104,7 @@ input::-webkit-inner-spin-button {
 
 .verg-button-green:hover {
     box-shadow: 2px 3px 11px -7px rgba(34, 60, 80, 0.75);
+    background-color: #429446;
 }
 
 .verg-button-1 {
@@ -114,11 +116,13 @@ input::-webkit-inner-spin-button {
     font-weight: 500;
     border-radius: 5px;
     position: relative;
+    border: none;
 }
 
 .verg-button-1:hover, .verg-button-1-active {
-    background-color: var(--orange-accent-color);
-    color: var(--contrast-color);
+    /* background-color: var(--orange-accent-color);
+    color: var(--contrast-color); */
+    background-color: #343b41;
 }
 
 .verg-button-1-disabled {
@@ -231,14 +235,16 @@ input::-webkit-inner-spin-button {
 }
 
 .nav-link:hover, .navbar-brand:hover {
-    color: var(--orange-accent-color) !important;
-    font-weight: 500;
+    /* color: var(--orange-accent-color) !important; */
+    /* font-weight: 500; */
+    text-shadow: 1px 1px 2px rgba(159, 159, 159, 0.50);
     
 }
 
 .is-active-nav-link {
-    color: var(--orange-accent-color) !important;
+    /* color: var(--orange-accent-color) !important; */
     font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(188, 188, 188, 0.5);
 }
 
 
