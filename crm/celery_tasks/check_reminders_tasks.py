@@ -4,6 +4,7 @@ from django.db.models import Q
 
 from crm.models import Reminder, Task
 from crm.celery_tasks.send_reminders_tasks import send_once_reminder, send_recurring_reminder
+from crm.celery_tasks.make_display_notifications_tasks import reminder_display_notification
 from datetime import datetime
 from django.utils import timezone
 
@@ -22,7 +23,10 @@ def check_once_reminders():
     now = timezone.localtime()
     for r in reminders:
         if r.scheduled_datetime <= now:
+            reminder_display_notification.delay(reminder_id=r.id)
             send_once_reminder.delay(reminder_id=r.id)
+            r.is_active = False
+            r.save()
 
 
 @shared_task
@@ -45,26 +49,15 @@ def recurring_reminders_check():
 
     for r in reminders:
         if now_day in r.recurring_days and now_time > r.recurring_time:
-            send_recurring_reminder(reminder_id=r.id)
+            send_recurring_reminder.delay(reminder_id=r.id)
+            reminder_display_notification.delay(reminder_id=r.id)
+
+            r.last_reminder_sent = now
+            r.save()
 
 
-
-
-# @shared_task
-# def check_custom_reminders():
-#     """
-#     Проверка ежемесячных напоминаний.
-#     Работает в celery beat раз в минуту.
-#     """
-#     reminders = Reminder.objects.filter(
-#         is_active=True,
-#         mode="custom"
-#     ).exclude(task__expired=True)
-#     now = timezone.localtime()
-#     for reminder in reminders:
-#         if should_send_custom(reminder, now):
-#             # TODO: Тут логика отправки кастомного напоминания
-#             send_reminder_test_def(reminder.id)
-#             # Обновление даты последней отправки напоминания
-#             reminder.last_reminder_sent = now
-#             reminder.save()
+#shared_task
+def check_old_inactive_reminders():
+    # TODO: описать check_old_inactive_reminders
+    # поиск и удаление напоминаний, у которых is_active = False и последний показ был месяц назад и более
+    pass

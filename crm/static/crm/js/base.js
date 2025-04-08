@@ -129,24 +129,73 @@ function showDotsLoader(elForHidden, off) {
 }
 
 ///////////////////////////////////////// Проверка display notifications ////////////////////////////////////////
-function makeDisplayNotificationIsReading (displayNotificationId) {
-    console.log("Будем делать напоминание прочитанным. ID напоминания:" + displayNotificationId)
-}
-
-
+let checkInterval = 1000; // Стартовый интервал
 
 function checkDisplayNotifications() {
-    if (checkNotifications) {
+    $.ajax({
+        type: "GET",
+        url: checkNotifications,
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                // Обновляем интервал
+                if (response.interval) {
+                    checkInterval = response.interval;
+                }
+                
+                // Если есть уведомление и его ещё нет на странице
+                if (response.notification && !$(`#notification-${response.notification_id}`).length) {
+                    $('.main_wrapper').prepend(response.notification);
+                    setupNotificationHandlers(response.notification_id)
+                }
+            }
+        },
+        complete: function() {
+            // Перезапускаем с новым интервалом
+            setTimeout(checkDisplayNotifications, checkInterval);
+        }
+    });
+}
+
+// Обработчик события прочтения оповещения
+function setupNotificationHandlers(notificationId) {
+    // DisplayNotification прочтано при переходе по ссылке в оповещении
+    $(`#mark-read-link-${notificationId}`).click(function (e) { 
+        e.preventDefault();
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+        var successRedirectUrl = $(this).attr('href')
+        console.log("csrfToken: " + csrfToken)
+        console.log("Ссылка: " + $(this).attr('href'))
+
+        var makeViewdUrl = $(this).data("url-for-make-viewed")
         $.ajax({
-            type: "GET",
-            url: checkNotifications,
-            dataType: "dataType",
-            success: function (response) {
-                console.log("Показываем оповещение")
+            url: makeViewdUrl,
+            method: 'POST',
+            data: {"notification_id": notificationId, "csrfmiddlewaretoken": csrfToken},
+            success: function() {
+                window.location.href = successRedirectUrl;
             }
         });
+    });
 
-    }
+    // DisplayNotification прочитано при нажатии "Прочитано"
+    $(`#mark-read-${notificationId}`).submit(function (e) {
+        e.preventDefault();
+ 
+        $.ajax({
+            url: $(this).attr("action"),
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function() {
+                $(`#notification-${notificationId}`).remove();
+            }
+        });
+    });
 }
+
+// Первый запуск
+$(document).ready(function() {
+    checkDisplayNotifications();
+});
 
 ///////////////////////////////////////// /Проверка display notifications ////////////////////////////////////////
