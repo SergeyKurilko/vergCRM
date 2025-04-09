@@ -551,7 +551,9 @@ class MakeTaskIsCompletedView(View):
 
         return JsonResponse({
             "success": True,
-            "url_for_redirect": task.get_absolute_url()
+
+            # Для обновления списка задач в заявке, если действие в заявке
+            "url_for_update_content": reverse("crm:task_list_for_request")
         }, status=200)
 
 
@@ -632,4 +634,7 @@ class ResumeTaskView(View):
 
         return JsonResponse({
             "success": True,
+
+            # Для обновления списка задач в заявке, если действие в заявке
+            "url_for_update_content": reverse("crm:task_list_for_request")
         }, status=200)

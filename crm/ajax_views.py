@@ -641,7 +641,7 @@ class GetTaskListForServiceRequest(View):
 
         # Поиск объекта ServiceRequest
         try:
-            service_request = ServiceRequest.objects.get(
+            service_request = ServiceRequest.objects.prefetch_related('tasks').get(
                 id=service_request_id
             )
         except ServiceRequest.DoesNotExist:
@@ -652,7 +652,7 @@ class GetTaskListForServiceRequest(View):
         # Если в параметрах запроса нет фильтра
         if not filter_by:
             # Получение списка задач для заявки без фильтров (основной список)
-            tasks = service_request.tasks.all().exclude(is_completed=True)
+            tasks = service_request.tasks.all()
             context = {
                 "tasks": tasks,
                 "filtered_query": False
@@ -681,7 +681,7 @@ class GetTaskListForServiceRequest(View):
                 )
             else:
                 if filter_by != 'all':
-                    # Формируем словарь фильрации
+                    # Формируем словарь фильтрации
                     filter_dict = {filter_by: True}
                     tasks = service_request.tasks.filter(
                         **filter_dict

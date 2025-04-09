@@ -102,7 +102,6 @@ class ServiceRequest(models.Model):
         ordering = ["-updated_at"]
 
 
-
 class CostPriceCase(models.Model):
     """
     Кейс себестоимости
@@ -263,7 +262,11 @@ class Task(models.Model):
     class Meta:
         verbose_name = "Задача"
         verbose_name_plural = "Задачи"
-        ordering = ["-expired", "must_be_completed_by"]
+        ordering = [
+            "is_completed",
+            "expired",
+            "must_be_completed_by",
+        ]
 
 
 class Reminder(models.Model):
@@ -286,7 +289,6 @@ class Reminder(models.Model):
 
     is_active = models.BooleanField(default=True,
                                     verbose_name="Активно")
-
 
     # Поля для разового напоминания
     scheduled_datetime = models.DateTimeField(null=True,
@@ -325,7 +327,6 @@ class DisplayNotification(models.Model):
     link_text = models.CharField(max_length=100, blank=True)
     link_url = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         return f"Экранное оповещение ({self.type})"

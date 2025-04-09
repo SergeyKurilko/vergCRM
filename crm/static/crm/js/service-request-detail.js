@@ -490,6 +490,126 @@ $(document).ready(function () {
     })
     // Добавление напоминаний в задачах - end
 
-    
+    //******************************************Завершение задачи*******************************************//
+
+    // Получение модального окна для подтверждения завершения задачи.
+    $(document).on('click', '.complete-task-button', function (e) {
+        e.preventDefault();
+        var taskId = $(this).data("task-id")
+        var urlForGetModal = $(this).data("url-for-complete-task")
+
+        $.ajax({
+            type: "GET",
+            url: urlForGetModal,
+            data: `task_id=${taskId}`,
+            dataType: "json",
+            success: function (response) {
+                var modalHtml = response.new_content
+                $('.main_wrapper').append(modalHtml);
+                $('#TaskForRequestDetailModal .modal-content').css('filter', 'opacity(0.5)')
+                $('#confirmMakeTaskIsCompleteModal').modal("show");
+            }
+        });
+    })
+
+    // При закрытии модального окна с подтверждением завершения задачи, удаляем это окно.
+    $(document).on('hidden.bs.modal', '#confirmMakeTaskIsCompleteModal', function (e) {
+        $('#confirmMakeTaskIsCompleteModal').remove();
+        $('#TaskForRequestDetailModal .modal-content').css('filter', 'opacity(1)')
+    });
+
+    // Подтверждение завершения задачи
+    $(document).on('submit', '#finalMakeTaskIsCompletedForm', function (e) {
+        e.preventDefault();
+        $('#confirmMakeTaskIsCompleteModal').modal('hide');
+        $('#TaskForRequestDetailModal').modal('hide');
+
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                // Обновляем список задач для заявки:
+                var urlForUpdateTaskList = response.url_for_update_content
+                contentUpdate(
+                    url=`${urlForUpdateTaskList}`,
+                    element=$('.task-list-for-service-request-offcanvas-body'),
+                    params=`?service_request_id=${currentServiceRequestId}&filter_by=all`
+                );
+
+                showToast("Задача завершена");
+
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+    //******************************************Завершение задачи - end*******************************************//
+
+    //******************************************Возобновление задачи*******************************************//
+    $(document).on('click', '.resume-task-button', function (e) {
+        e.preventDefault();
+        var taskId = $(this).data("task-id");
+        var urlForGetModal = $(this).data("url-for-resume-task");
+
+        $.ajax({
+            type: "GET",
+            url: urlForGetModal,
+            data: `task_id=${taskId}`,
+            dataType: "json",
+            success: function (response) {
+                var modalHtml = response.new_content
+                $('.main_wrapper').append(modalHtml);
+                $('#TaskForRequestDetailModal .modal-content').css('filter', 'opacity(0.5)')
+                $('#confirmTaskResumeModal').modal("show");
+            }
+        });
+    })
+
+
+    // При закрытии модального окна с подтверждением возобновления задачи, удаляем это окно.
+    $(document).on('hidden.bs.modal', '#confirmTaskResumeModal', function (e) {
+        $('#TaskForRequestDetailModal .modal-content').css('filter', 'opacity(1)');
+        $('#confirmTaskResumeModal').remove();
+    });
+
+    // Подтверждение возобновления задачи
+    $(document).on('submit', '#finalTaskResumeForm', function (e) {
+        e.preventDefault();
+        $('#confirmTaskResumeModal').modal('hide');
+        $('#TaskForRequestDetailModal').modal('hide');
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                // Обновляем список задач для заявки:
+                var urlForUpdateTaskList = response.url_for_update_content
+                contentUpdate(
+                    url=`${urlForUpdateTaskList}`,
+                    element=$('.task-list-for-service-request-offcanvas-body'),
+                    params=`?service_request_id=${currentServiceRequestId}&filter_by=all`
+                );
+
+                showToast("Задача возобновлена");
+
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+
+
+    //******************************************Возобновление задачи - end*******************************************//
 
 });

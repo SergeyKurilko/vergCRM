@@ -19,7 +19,7 @@
             <form id="updateTask" action="{% url 'crm:task_update' %}" method="post">
                 {% csrf_token %}
                 {% if task.expired %}<h5 style="color: red">Задача просрочена</h5>{% endif %}
-                {% if task.is_completed %}<h5 style="color: green">Задача выполнена</h5>{% endif %}
+                {% if task.is_completed %}<h5 style="color: green">Задача завершена</h5>{% endif %}
                 <input type="hidden" name="manager_id" value="{{ task.manager.id }}" required>
                 <input type="hidden" name="task_id" value="{{ task.id }}" required>
 
