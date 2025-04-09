@@ -4,19 +4,25 @@
 
 {% block content %}
 
-<div class="container-md container-fluid service-requests-list-filters-container mt-2">
+<div class="container-md container-fluid task-list-filters-container mt-2">
         <a href="?status=all" type="button"
-            class="verg-button-1 position-relative {% if current_status == 'all' %}verg-button-1-active{% endif %} mt-2">
+            class="verg-button-1 position-relative {% if current_status == 'Все заявки' %}verg-button-1-active{% endif %} mt-2">
             Все задачи
         </a>
-        <a href="?status=in_progress" type="button"
-            class="verg-button-1 position-relative {% if current_status == 'in_progress' %}verg-button-1-active{% endif %} mt-2">
-            Просроченные
+        <a href="?status=active" type="button"
+            class="verg-button-1 position-relative {% if current_status == 'Активные задачи' %}verg-button-1-active{% endif %} mt-2">
+            Активные
         </a>
         <a href="?status=completed" type="button"
             class="verg-button-1 position-relative {% if current_status == 'completed' %}verg-button-1-active{% endif %} mt-2">
             Завершенные
         </a>
+</div>
+
+<div class="container-md container-fluid tasks-info-container mt-3">
+     
+    <h4>{{ current_status }}</h4>
+    <h5>Всего: {{ tasks_count }} шт.</h5>
 </div>
 
 <div class="container-md container-fluid client-list-add-new-container mt-2">
@@ -35,7 +41,6 @@
             <th scope="col">Название</th>
             <th scope="col">Заявка</th>
             <th scope="col">Срок выполнения</th>
-            <th scope="col">Напоминание</th>
             <th scope="col">Выполнена</th>
             <th scope="col">Просрочена</th>
           </tr>
@@ -52,7 +57,6 @@
             </td>
             <td>{% if task.service_request %}<a href="{{ task.service_request.get_absolute_url }}" title="{{ task.service_request }}" class="service_request-detail-link">{{ task.service_request|truncatechars:25 }}</a>{% else %}<span class="text-center">-</span>{% endif %}</td>
             <td>{{ task.must_be_completed_by }}</td>
-            <td>{% if task.reminder %}Включено{% else %}<span class="text-center">-</span>{% endif %}</td>
             <td>{% if task.is_completed %}Выполнена{% else %}Выполняется{% endif %}</td>
             <td>{% if task.expired %}<span style="color: red">Просрочена</span>{% else %}<span class="text-center">-</span>{% endif %}</td>
           </tr>
@@ -66,13 +70,13 @@
     <div id="pagination" class="my-3 d-flex justify-content-center d-md-block">
         {% for p in tasks.paginator.page_range %}
             {% if tasks.number == p %}
-                <a class="paginator-link-active me-1" href="?page={{ p }}">{{ p }}</a>
+                <a class="paginator-link-active me-1" href="?page={{ p }}&status={{ status }}">{{ p }}</a>
             {% else %}
-                <a class="paginator-link me-1" href="?page={{ p }}">{{ p }}</a>
+                <a class="paginator-link me-1" href="?page={{ p }}&status={{ status }}">{{ p }}</a>
             {% endif %}
         {% endfor %}
         {% if tasks.has_next %}
-            <a class="paginator-next-button" href="?page={{ task.next_page_number }}">
+            <a class="paginator-next-button" href="?page={{ task.next_page_number }}&status={{ status }}">
                 Далее
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>

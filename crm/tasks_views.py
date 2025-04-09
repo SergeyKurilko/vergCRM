@@ -69,6 +69,22 @@ class TaskListView(View):
         tasks = Task.objects.filter(
             manager=request.user
         )
+
+        # Проверяем фильтр status
+        allowed_statuses = {"active", "completed", "all"}
+        status = request.GET.get("status")
+        current_status = "Все задачи"
+        tasks_count = tasks.count()
+        if status and status != 'all' and status in allowed_statuses:
+            if status == 'active':
+                tasks = tasks.filter(is_completed=False)
+                current_status = "Активные задачи"
+                tasks_count = tasks.count()
+            elif status == 'completed':
+                tasks = tasks.filter(is_completed=True)
+                current_status = "Завершенные задачи"
+                tasks_count = tasks.count()
+
         # Пагинация
         paginator = Paginator(tasks, 10)
         page_number = request.GET.get('page')
@@ -76,6 +92,9 @@ class TaskListView(View):
 
         context = {
             "tasks": page_obj,
+            "current_status": current_status,
+            "tasks_count": tasks_count,
+            "status": status
         }
 
         return render(request, "crm/tasks/tasks-list.html", context)
