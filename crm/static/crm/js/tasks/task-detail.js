@@ -150,8 +150,7 @@ $(document).ready(function () {
             data: $(this).serialize(),
             dataType: "json",
             success: function (response) {
-                var urlForRedirect = response.url_for_redirect
-                window.location.href = urlForRedirect;
+                window.location.reload();
             },
             error: function (response) {
                 var errorMessage = response.responseJSON['message'];

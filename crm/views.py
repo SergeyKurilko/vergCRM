@@ -94,7 +94,7 @@ class DashboardView(View):
         )
 
         expired_tasks = Task.objects.filter(
-            expired=True
+            expired=True, manager=request.user
         ).count()
 
         context = {
