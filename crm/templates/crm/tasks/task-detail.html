@@ -10,6 +10,8 @@
     <div class="card task-card">
         <div class="card-body p-4">
             <div class="card-title text-center"><h4>Задача: "{{ task.title }}"</h4></div>
+
+            
             
             <hr class="hr">
             <input type="hidden" name="notifications_status" value="{% if task.notifications %}ON{% else %}OFF{% endif %}">
@@ -17,7 +19,7 @@
             <form id="updateTask" action="{% url 'crm:task_update' %}" method="post">
                 {% csrf_token %}
                 {% if task.expired %}<h5 style="color: red">Задача просрочена</h5>{% endif %}
-                {% if task.is_completed %}<h5 style="color: green">Задача выполнена</h5>{% endif %}
+                {% if task.is_completed %}<h5 style="color: green">Задача завершена</h5>{% endif %}
                 <input type="hidden" name="manager_id" value="{{ task.manager.id }}" required>
                 <input type="hidden" name="task_id" value="{{ task.id }}" required>
 
@@ -29,6 +31,8 @@
                   <textarea id="taskText" minlength="5" rows="7" class="form-control" name="text" id="" required
                   readonly>{{ task.text }}</textarea>
                 <hr class="hr mb-2">
+              {% if not task.is_completed %}
+                <!-- Если задача не завершена -->
                 <!-- Срок выполнения задачи -->
                 <div class="d-flex">
                   <h6 class="me-2">Срок выполнения задачи.</h6>
@@ -147,7 +151,7 @@
                 <div class="edit-task-for-request">
                   <button id="editTaskForRequest" class="verg-button-1 border-0">Редактировать</button>
                 </div>
-                <button class="verg-button-green complete-task-button">Завершить задачу</button>
+                <button data-task-id="{{ task.id }}" data-url-for-complete-task="{% url 'crm:make_task_is_completed' %}" class="verg-button-green complete-task-button">Завершить задачу</button>
               </div>
                 
               
@@ -155,8 +159,12 @@
               <hr class="hr delete-task-hr d-none">
               <button data-delete-url="{% url 'crm:task_delete' %}" data-task-id="{{task.id}}" id="deleteTask"
                 class="verg-button-danger d-none">Удалить задачу</button>
-                
             
+            <!-- Если задача завершена -->
+            {% else %}
+            <button data-task-id="{{ task.id }}" data-url-for-resume-task="{% url 'crm:resume_task' %}" class="verg-button-green resume-task-button">Возобновить задачу</button>
+
+            {% endif %}
             
         </div>
     </div>

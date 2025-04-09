@@ -112,6 +112,102 @@ $(document).ready(function () {
     $(document).on('hidden.bs.modal', '#confirmDeleteTaskModal', function (e) {
         $('#confirmDeleteTaskModal').remove();
     });
+    // Удаление задачи для заявки - end
+
+    //******************************************Завершение задачи*******************************************//
+
+    // Получение модального окна для подтверждения завершения задачи.
+    $('.complete-task-button').click(function (e) {
+        e.preventDefault();
+        var taskId = $(this).data("task-id")
+        var urlForGetModal = $(this).data("url-for-complete-task")
+
+        $.ajax({
+            type: "GET",
+            url: urlForGetModal,
+            data: `task_id=${taskId}`,
+            dataType: "json",
+            success: function (response) {
+                var modalHtml = response.new_content
+                $('.main_wrapper').prepend(modalHtml);
+                $('#confirmMakeTaskIsCompleteModal').modal("show");
+            }
+        });
+    })
+
+
+    // При закрытии модального окна с подтверждением завершения задачи, удаляем это окно.
+    $(document).on('hidden.bs.modal', '#confirmMakeTaskIsCompleteModal', function (e) {
+        $('#confirmMakeTaskIsCompleteModal').remove();
+    });
+
+    // Подтверждение завершения задачи
+    $(document).on('submit', '#finalMakeTaskIsCompletedForm', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                var urlForRedirect = response.url_for_redirect
+                window.location.href = urlForRedirect;
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+
+    //******************************************Завершение задачи - end*******************************************//
+
+    //******************************************Возобновление задачи*******************************************//
+    $('.resume-task-button').click(function (e) {
+        e.preventDefault();
+        var taskId = $(this).data("task-id");
+        var urlForGetModal = $(this).data("url-for-resume-task");
+
+        $.ajax({
+            type: "GET",
+            url: urlForGetModal,
+            data: `task_id=${taskId}`,
+            dataType: "json",
+            success: function (response) {
+                var modalHtml = response.new_content
+                $('.main_wrapper').prepend(modalHtml);
+                $('#confirmTaskResumeModal').modal("show");
+            }
+        });
+    })
+
+    // При закрытии модального окна с подтверждением возобновления задачи, удаляем это окно.
+    $(document).on('hidden.bs.modal', '#confirmTaskResumeModal', function (e) {
+        $('#confirmTaskResumeModal').remove();
+    });
+
+    // Подтверждение возобновления задачи
+    $(document).on('submit', '#finalTaskResumeForm', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+
+
+    //******************************************Возобновление задачи - end*******************************************//
 
     //******************************************Напоимнания*******************************************//
     function initTempusEventHandlers() {

@@ -468,3 +468,173 @@ class TaskCreateView(BaseTaskView, View):
             "success": True,
         }, status=200)
 
+
+class MakeTaskIsCompletedView(View):
+    """
+    Завершить задачу.
+    """
+    def get(self, request: WSGIRequest):
+        """
+        Получение модального окна для завершения задачи (на отдельной странице)
+        """
+        task_id = request.GET.get("task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if task.manager.id != request.user.id:
+            return json_response.manager_forbidden(
+                "Менеджер не привязан к задаче."
+            )
+
+        context = {
+            "task": task
+        }
+
+        new_content = render_to_string(
+            template_name="crm/tasks/dynamic_modals/confirm-make-task-is-completed.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "new_content": new_content
+        })
+
+    def post(self, request):
+        """
+        Завершение задачи (на отдельной странице)
+        """
+        task_id = request.POST.get("complete_task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.prefetch_related(
+                "reminders"
+            ).get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if task.is_completed:
+            return json_response.validation_error(
+                "Задача уже завершена."
+            )
+
+        if request.user.id != task.manager.id:
+            return json_response.manager_forbidden(
+                "Задача не принадлежит менеджеру"
+            )
+
+        # Выключаем напоминания, если есть
+        task.reminders.all().update(is_active=False)
+
+        task.is_completed = True
+        task.expired = False
+        task.before_one_hour_deadline_notification = False
+        task.before_one_workday_deadline_notification = False
+        task.save()
+
+
+        return JsonResponse({
+            "success": True,
+
+            # Для обновления списка задач в заявке, если действие в заявке
+            "url_for_update_content": reverse("crm:task_list_for_request")
+        }, status=200)
+
+
+class ResumeTaskView(View):
+    """
+    Вернуть завершенную задачу в работу
+    """
+    def get(self, request):
+        """
+        Получение модального окна для возвращения задачи в работу.
+        """
+        task_id = request.GET.get("task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if task.manager.id != request.user.id:
+            return json_response.manager_forbidden(
+                "Менеджер не привязан к задаче."
+            )
+
+        context = {
+            "task": task
+        }
+
+        new_content = render_to_string(
+            template_name="crm/tasks/dynamic_modals/confirm-task-resume.html",
+            request=request,
+            context=context
+        )
+
+        return JsonResponse({
+            "success": True,
+            "new_content": new_content
+        })
+
+    def post(self, request):
+        """
+        Возобновление задачи
+        """
+        task_id = request.POST.get("resume_task_id")
+        if not task_id:
+            return json_response.validation_error(
+                "Что-то пошло не так. Перезагрузите страницу."
+            )
+
+        try:
+            task = Task.objects.prefetch_related(
+                "reminders"
+            ).get(id=task_id)
+        except Task.DoesNotExist:
+            return json_response.not_found_error(
+                "Задача не найдена"
+            )
+
+        if request.user.id != task.manager.id:
+            return json_response.manager_forbidden(
+                "Задача не принадлежит менеджеру"
+            )
+
+        # Включаем напоминания, если еще есть
+        task.reminders.all().update(is_active=True)
+
+        task.is_completed = False
+        task.expired = False
+        task.before_one_hour_deadline_notification = False
+        task.before_one_workday_deadline_notification = False
+        task.save()
+
+
+        return JsonResponse({
+            "success": True,
+
+            # Для обновления списка задач в заявке, если действие в заявке
+            "url_for_update_content": reverse("crm:task_list_for_request")
+        }, status=200)

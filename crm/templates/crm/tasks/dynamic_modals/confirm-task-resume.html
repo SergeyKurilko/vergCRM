@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="modal fade" id="confirmTaskResumeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmTaskResumeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmTaskResumeModalLabel">Возобновление задачи</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>Вернуть задачу в работу?</h5>
+          <hr class="hr">
+          <div class="">
+            <h5>Информация о задаче:</h5>
+            <b>Название:</b> "{{ task.title }}" <br>
+            <b>Текст:</b> {{ task.text }}
+          </div>
+        </div>
+        <form action="{% url 'crm:resume_task' %}" method="post" id="finalTaskResumeForm">
+            {% csrf_token %}
+            <input type="hidden" name="resume_task_id" value="{{ task.id }}">
+            <div class="modal-footer">
+                <button type="submit" class="verg-button-danger border-0">Да, возобновить задачу <i class="bi bi-check-circle"></i></button>
+                <button type="button" class="verg-button-green border-0" data-bs-dismiss="modal">Нет. Оставить задачу завершенной <i class="bi bi-x-circle"></i></button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
