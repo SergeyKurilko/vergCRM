@@ -37,7 +37,8 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 showToast(message="Задача добавлена");
-                window.location.reload()
+                var urlForRedirectToTaskPage = response.url_for_redirect
+                window.location.href = urlForRedirectToTaskPage
             },
             error: function (response) {
                 var errorMessage = response.responseJSON['message']

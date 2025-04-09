@@ -485,7 +485,8 @@ class TaskCreateView(BaseTaskView, View):
 
         return JsonResponse({
             "success": True,
-        }, status=200)
+            "url_for_redirect": new_task.get_absolute_url()
+        }, status=201)
 
 
 class MakeTaskIsCompletedView(View):
