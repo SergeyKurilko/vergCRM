@@ -5,26 +5,26 @@
 
 {% block content %}
 
-<div class="container-md container-fluid service-requests-list-filters-container mt-3">
+<div class="container-md container-fluid service-requests-list-filters-container mt-2">
         <a href="?status=all" type="button" 
-            class="verg-button-1 position-relative {% if current_status == 'all' %}verg-button-1-active{% endif %}">
+            class="verg-button-1 position-relative {% if current_status == 'all' %}verg-button-1-active{% endif %} mt-2">
             Все заявки
         </a>
         <a href="?status=in_progress" type="button" 
-            class="verg-button-1 position-relative {% if current_status == 'in_progress' %}verg-button-1-active{% endif %}">
+            class="verg-button-1 position-relative {% if current_status == 'in_progress' %}verg-button-1-active{% endif %} mt-2">
             В работе
         </a>
         <a href="?status=completed" type="button" 
-            class="verg-button-1 position-relative {% if current_status == 'completed' %}verg-button-1-active{% endif %}">
+            class="verg-button-1 position-relative {% if current_status == 'completed' %}verg-button-1-active{% endif %} mt-2">
             Завершенные
         </a>
         <a href="?status=canceled" type="button" 
-            class="verg-button-1 position-relative {% if current_status == 'canceled' %}verg-button-1-active{% endif %}">
+            class="verg-button-1 position-relative {% if current_status == 'canceled' %}verg-button-1-active{% endif %} mt-2">
             Отмененные
         </a>
 </div>
 
-<div class="container-md container-fluid service-requests-list-add-new-container mt-3">
+<div class="container-md container-fluid service-requests-list-add-new-container mt-2">
     <a href="{% url 'crm:add_service_request' %}" class="verg-button-1" type="button">
         Новая заявка &nbsp;
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
