@@ -4,6 +4,7 @@ from django.urls import reverse
 from crm.utils import service_request_image_path
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+from django.db.models import When, Case, Value, IntegerField
 
 
 class UserProfile(models.Model):
@@ -56,11 +57,9 @@ class Client(models.Model):
 
 class ServiceRequest(models.Model):
     STATUS_CHOICES = [
-        ('new', 'Новая'),  # TODO: убрать этот статус
         ('in_progress', 'В работе'),
         ('completed', 'Завершена'),
         ('canceled', 'Отменена'),
-        ('archive', 'В архиве'),  # TODO: убрать этот статус
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE,
@@ -99,7 +98,16 @@ class ServiceRequest(models.Model):
     class Meta:
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
-        ordering = ["-updated_at"]
+        ordering = [
+            Case(
+                When(status='in_progress', then=Value(0)),
+                When(status='completed', then=Value(1)),
+                When(status='canceled', then=Value(2)),
+                default=Value(3),
+                output_field=IntegerField()
+            ),
+            "-updated_at"
+        ]
 
 
 class CostPriceCase(models.Model):
