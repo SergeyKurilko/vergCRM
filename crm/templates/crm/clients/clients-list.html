@@ -65,13 +65,13 @@
     <div id="pagination" class="my-3 d-flex justify-content-center d-md-block">
         {% for p in clients.paginator.page_range %}
             {% if clients.number == p %}
-                <a class="paginator-link-active me-1" href="?page={{ p }}&q={{ search_query }}">{{ p }}</a>
+                <a class="paginator-link-active me-1" href="?page={{ p }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ p }}</a>
             {% else %}
-                <a class="paginator-link me-1" href="?page={{ p }}&q={{ search_query }}">{{ p }}</a>
+                <a class="paginator-link me-1" href="?page={{ p }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ p }}</a>
             {% endif %}
         {% endfor %}
         {% if clients.has_next %}
-            <a class="paginator-next-button" href="?page={{ clients.next_page_number }}&q={{ search_query }}">
+            <a class="paginator-next-button" href="?page={{ clients.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">
                 Далее
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
