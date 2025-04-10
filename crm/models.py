@@ -1,10 +1,11 @@
 from django.db import models
 from django.urls import reverse
 
-from crm.utils import service_request_image_path
+from crm.utils import service_request_file_path
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db.models import When, Case, Value, IntegerField
+from django.core.exceptions import ValidationError
 
 
 class UserProfile(models.Model):
@@ -201,15 +202,35 @@ class NoteForServiceRequest(models.Model):
         ordering = ["-updated_at"]
 
 
-class ImageForServiceRequest(models.Model):
-    image = models.ImageField(verbose_name="Изображение к заявке", upload_to=service_request_image_path)
+def validate_file_size(value):
+    file_size = value.size
+    max_size = 10 * 1024 * 1024  # 10 MB
+    if file_size > max_size:
+        raise ValidationError(f"Максимальный размер файла {max_size // 1024 // 1024}MB")
+
+class FileForServiceRequest(models.Model):
+    FILE_TYPES = [
+        ("image", "Изображение"),
+        ("document", "Документ")
+    ]
+    file = models.FileField(
+        verbose_name="Файл",
+        upload_to=service_request_file_path,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['jpg', 'jpeg', 'png','pdf', 'gif', 'doc', 'docx', 'xls', 'xlsx'],
+            ),
+            validate_file_size
+        ]
+    )
+    file_type = models.CharField(choices=FILE_TYPES, max_length=10)
     service_request = models.ForeignKey(to=ServiceRequest,
                                         on_delete=models.CASCADE,
-                                        related_name="images")
+                                        related_name="files")
 
     class Meta:
-        verbose_name = "Изображение для заявки"
-        verbose_name_plural = "Изображения для заявок"
+        verbose_name = "Файл для заявки"
+        verbose_name_plural = "Файлы для заявок"
 
 
 class Comment(models.Model):

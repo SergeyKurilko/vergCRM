@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
             name='ImageForServiceRequest',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=crm.utils.service_request_image_path, verbose_name='Изображение к заявке')),
+                ('image', models.ImageField(upload_to=crm.utils.service_request_file_path, verbose_name='Изображение к заявке')),
                 ('service_request', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='crm.servicerequest')),
             ],
         ),
