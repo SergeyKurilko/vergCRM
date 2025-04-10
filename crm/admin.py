@@ -42,6 +42,7 @@ class TaskAdmin(admin.ModelAdmin):
                     'before_one_hour_deadline_notification',
                     'before_one_workday_deadline_notification']
     list_display_links = ['id', 'title']
+    list_per_page = 15
 
 
 @admin.register(Service)

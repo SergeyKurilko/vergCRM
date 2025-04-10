@@ -2,6 +2,7 @@ import json
 
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse, HttpRequest
 from django.db import models
@@ -943,11 +944,14 @@ class TaskForRequestDetailView(View):
         # Преобразуем строку must_be_completed_by в datetime
         try:
             must_be_completed_by = datetime.strptime(must_be_completed_by, '%d.%m.%Y %H:%M')
+            must_be_completed_by = timezone.make_aware(must_be_completed_by)  # добавляет текущую временную зону
         except ValueError:
             # Обработка ошибки, если формат неверный
             return json_response.validation_error(
                 "Неверный формат даты"
             )
+
+        now = timezone.now()
 
         # Включен ли toggle напоминания у задачи
         task_notifications = True if notifications else False
@@ -955,6 +959,12 @@ class TaskForRequestDetailView(View):
         task.title=title
         task.text=text
         task.must_be_completed_by=must_be_completed_by
+        if must_be_completed_by > now:
+            task.expired = False
+        if (must_be_completed_by - now) >= timezone.timedelta(hours=1):
+            task.before_one_hour_deadline_notification = False
+        if (must_be_completed_by - now) >= timezone.timedelta(days=1):
+            task.before_one_workday_deadline_notification = False
         task.notifications=task_notifications
 
         task.save()
