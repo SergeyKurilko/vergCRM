@@ -218,7 +218,7 @@ class FileForServiceRequest(models.Model):
         upload_to=service_request_file_path,
         validators=[
             FileExtensionValidator(
-                allowed_extensions=['jpg', 'jpeg', 'png','pdf', 'gif', 'doc', 'docx', 'xls', 'xlsx'],
+                allowed_extensions=['jpg', 'jpeg', 'png','pdf', 'gif', 'doc', 'docx', 'xls', 'xlsx', 'ods'],
             ),
             validate_file_size
         ]
@@ -227,6 +227,9 @@ class FileForServiceRequest(models.Model):
     service_request = models.ForeignKey(to=ServiceRequest,
                                         on_delete=models.CASCADE,
                                         related_name="files")
+
+    def __str__(self):
+        return f"Файл для заявки #{self.service_request.id}"
 
     class Meta:
         verbose_name = "Файл для заявки"

@@ -1,0 +1,36 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% block title %}Галерея файлов для заявки №{{ service_request.id }}{% endblock %}
+
+
+{% block content %}
+Тут все файлы и картинки
+
+<h3>Картинки</h3>
+{% for image in images %}
+{{ forloop.counter }} <br>
+<a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="Изображение {{ forloop.counter }}">
+    <img src="{{ image.file.url }}" data-lightbox="image-{{ image.id }}" alt="" width="210px">
+</a> <br>
+{% endfor %}
+
+<hr class="hr">
+
+<h3>Документы</h3>
+{% for document in documents %}
+<a href="{{ document.file.url }}">Документ</a>
+{% endfor %}
+
+<!-- LightBox css -->
+ <link rel="stylesheet" href="{% static 'crm/lightbox2-2.11.4/dist/css/lightbox.min.css' %}">
+<!-- LightBox js -->
+ <script src="{% static 'crm/lightbox2-2.11.4/dist/js/lightbox.min.js' %}"></script>
+ <script>
+    lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true,
+      'alwaysShowNavOnTouchDevices': true,
+    })
+</script>
+
+{% endblock %}

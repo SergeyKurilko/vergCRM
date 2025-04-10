@@ -173,6 +173,29 @@ class ServiceRequestDetailView(View):
         return render(request, "crm/service_request_detail.html", context)
 
 
+@method_decorator(staff_required, "dispatch")
+class FilesForServiceRequestView(View):
+    def get(self, request, service_request_id, filter_by=None):
+        try:
+            service_request = ServiceRequest.objects.prefetch_related(
+                "files"
+            ).get(id=service_request_id)
+        except ServiceRequest.DoesNotExist:
+            return HttpResponse("ServiceRequest not found", status=404)
+
+        context = {
+            "images": service_request.files.filter(file_type="image"),
+            "documents": service_request.files.filter(file_type="document"),
+            "service_request": service_request
+        }
+
+        return render(
+            request,
+            template_name="crm/files-gallery-for-service-request.html",
+            context=context
+        )
+
+
 
 
 
