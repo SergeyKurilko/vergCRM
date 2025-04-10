@@ -650,10 +650,11 @@ class GetTaskListForServiceRequest(View):
                 "Заявка не найдена"
             )
 
+        tasks = service_request.tasks.all()
+
         # Если в параметрах запроса нет фильтра
         if not filter_by:
             # Получение списка задач для заявки без фильтров (основной список)
-            tasks = service_request.tasks.all()
             context = {
                 "tasks": tasks,
                 "filtered_query": False
@@ -673,7 +674,7 @@ class GetTaskListForServiceRequest(View):
         # Если в параметрах запроса есть фильтр
         else:
             # Получение списка с фильтрацией
-            allowed_filters = {'all', 'expired',  'is_completed'}
+            allowed_filters = {'all', 'active', 'completed'}
 
             # Проверка допустимого параметра фильтрации
             if filter_by not in allowed_filters:
@@ -681,14 +682,10 @@ class GetTaskListForServiceRequest(View):
                     "Недопустимый фильтр"
                 )
             else:
-                if filter_by != 'all':
-                    # Формируем словарь фильтрации
-                    filter_dict = {filter_by: True}
-                    tasks = service_request.tasks.filter(
-                        **filter_dict
-                    )
-                else:
-                    tasks = service_request.tasks.all()
+                if filter_by == 'active':
+                    tasks = tasks.filter(is_completed=False)
+                elif filter_by == 'completed':
+                    tasks = tasks.filter(is_completed=True)
 
                 context = {
                     "tasks": tasks,

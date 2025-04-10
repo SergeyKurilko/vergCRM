@@ -5,7 +5,7 @@
     <h5 id="offcanvasRightLabel">Задачи</h5>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
-  <div class="offcanvas-body task-list-for-service-request-offcanvas-body">
+  <div class="offcanvas-body task-list-for-service-request-offcanvas-body pt-0">
     {% if tasks.count == 0 %} 
     <h4 class="no-tasks">У заявки пока нет задач.</h4>
     <button data-url-for-add-task="{% url 'crm:add_task_for_request' %}" class="verg-button-1 border-0" type="button" id="addNewTaskForRequestButton">
@@ -18,19 +18,19 @@
 
     <div class="container-fliud task-list-for-service-request-container {% if tasks.count == 0 %}d-none{% endif %}">
         <div class="task-list-filter-buttons">
-            <button class="verg-button-1 task-list-filter-button border-0" 
+            <button class="verg-button-1 task-list-filter-button border-0 {% if not filtered_by or filtered_by == 'all' %}verg-button-1-active{% endif %}" 
                     data-url-for-tasks="{% url 'crm:task_list_for_request' %}"
                     data-filter-by="all">
                 Все задачи
             </button>
-            <button class="verg-button-1 task-list-filter-button border-0" 
+            <button class="verg-button-1 task-list-filter-button border-0 {% if filtered_by == 'active' %}verg-button-1-active{% endif %}" 
                     data-url-for-tasks="{% url 'crm:task_list_for_request' %}"
-                    data-filter-by="expired">
-                Просроченные
+                    data-filter-by="active">
+                Активные
             </button>
-            <button class="verg-button-1 task-list-filter-button border-0" 
+            <button class="verg-button-1 task-list-filter-button border-0 {% if filtered_by == 'completed' %}verg-button-1-active{% endif %}" 
                     data-url-for-tasks="{% url 'crm:task_list_for_request' %}"
-                    data-filter-by="is_completed">
+                    data-filter-by="completed">
                 Завершенные
             </button>
         </div>

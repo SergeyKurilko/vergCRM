@@ -1,4 +1,4 @@
-<div class="offcanvas-body task-list-for-service-request-offcanvas-body">
+<div class="offcanvas-body task-list-for-service-request-offcanvas-body pt-0">
     {% if tasks.count == 0 and not filtered_query %} 
     <h4 class="no-tasks">У заявки пока нет задач.</h4>
     <button data-url-for-add-task="{% url 'crm:add_task_for_request' %}" class="verg-button-1 border-0" type="button" id="addNewTaskForRequestButton">
@@ -16,14 +16,14 @@
                     data-filter-by="all">
                 Все задачи
             </button>
-            <button class="verg-button-1 task-list-filter-button border-0 {% if filtered_by == 'expired' %}verg-button-1-active{% endif %}" 
+            <button class="verg-button-1 task-list-filter-button border-0 {% if filtered_by == 'active' %}verg-button-1-active{% endif %}" 
                     data-url-for-tasks="{% url 'crm:task_list_for_request' %}"
-                    data-filter-by="expired">
-                Просроченные
+                    data-filter-by="active">
+                Активные
             </button>
-            <button class="verg-button-1 task-list-filter-button border-0 {% if filtered_by == 'is_completed' %}verg-button-1-active{% endif %}" 
+            <button class="verg-button-1 task-list-filter-button border-0 {% if filtered_by == 'completed' %}verg-button-1-active{% endif %}" 
                     data-url-for-tasks="{% url 'crm:task_list_for_request' %}"
-                    data-filter-by="is_completed">
+                    data-filter-by="completed">
                 Завершенные
             </button>
         </div>
