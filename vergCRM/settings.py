@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'django.contrib.humanize',
     'django_celery_beat',
-    'thumbnails',
     'crm'
 ]
 
@@ -169,35 +168,5 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 #     },
 # }
 
-# Настройки thumbnails
-THUMBNAILS = {
-    'METADATA': {
-        'BACKEND': 'thumbnails.backends.metadata.DatabaseBackend',
-    },
-    'STORAGE': {
-        'BACKEND': 'django.core.files.storage.FileSystemStorage',  # Можно заменить на S3, если нужно
-    },
-    'SIZES': {
-        'small': {
-            'PROCESSORS': [
-                {'PATH': 'thumbnails.processors.resize', 'width': 100, 'height': 100},
-                {'PATH': 'thumbnails.processors.crop', 'width': 80, 'height': 80}
-            ],
-            'POST_PROCESSORS': [
-                {'PATH': 'thumbnails.post_processors.optimize', 'command': 'optipng -force -o7 "%(filename)s"'}
-            ],
-        },
-        'medium': {
-            'PROCESSORS': [
-                {'PATH': 'thumbnails.processors.resize', 'width': 210, 'height': 210},  # Размер под ваш шаблон
-            ],
-        },
-        'large': {
-            'PROCESSORS': [
-                {'PATH': 'thumbnails.processors.resize', 'width': 800, 'height': 800},
-            ],
-        }
-    }
-}
 
 

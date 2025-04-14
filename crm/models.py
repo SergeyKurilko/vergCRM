@@ -8,6 +8,7 @@ from django.db.models import When, Case, Value, IntegerField
 from django.core.exceptions import ValidationError
 
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_id = models.CharField(max_length=15, verbose_name="telegram", blank=True)
