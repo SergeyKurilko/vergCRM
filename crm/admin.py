@@ -1,7 +1,7 @@
 from django.contrib import admin
 from crm.models import (Client, ServiceRequest, Comment,
-                        FileForServiceRequest, UserProfile,
-                        Task, Service, NoteForServiceRequest,
+                        UserProfile, Task, Service,
+                        NoteForServiceRequest,
                         CostPriceCase, PartOfCostPriceCase,
                         Reminder, DisplayNotification)
 
@@ -21,9 +21,7 @@ class CommentAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(FileForServiceRequest)
-class FileForServiceRequestAdmin(admin.ModelAdmin):
-    pass
+
 
 
 @admin.register(UserProfile)

@@ -208,32 +208,7 @@ def validate_file_size(value):
     if file_size > max_size:
         raise ValidationError(f"Максимальный размер файла {max_size // 1024 // 1024}MB")
 
-class FileForServiceRequest(models.Model):
-    FILE_TYPES = [
-        ("image", "Изображение"),
-        ("document", "Документ")
-    ]
-    file = models.FileField(
-        verbose_name="Файл",
-        upload_to=service_request_file_path,
-        validators=[
-            FileExtensionValidator(
-                allowed_extensions=['jpg', 'jpeg', 'png','pdf', 'doc', 'docx', 'xls', 'xlsx', 'ods'],
-            ),
-            validate_file_size
-        ]
-    )
-    file_type = models.CharField(choices=FILE_TYPES, max_length=10)
-    service_request = models.ForeignKey(to=ServiceRequest,
-                                        on_delete=models.CASCADE,
-                                        related_name="files")
 
-    def __str__(self):
-        return f"Файл для заявки #{self.service_request.id}"
-
-    class Meta:
-        verbose_name = "Файл для заявки"
-        verbose_name_plural = "Файлы для заявок"
 
 
 class Comment(models.Model):
