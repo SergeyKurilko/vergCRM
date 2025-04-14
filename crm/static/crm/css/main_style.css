@@ -1122,6 +1122,26 @@ select option:hover {
   object-position: center;
   border: 1px solid rgb(188, 188, 188);
   margin: 5px 0;
+  filter: contrast(0.85);
+}
+
+.image-for-request-item > a > img:hover {
+  filter: contrast(1);
+}
+
+.image-for-request-item > a {
+  text-decoration: none;
+  color: var(--contrast-color);
+  transition: all 0.3s;
+}
+
+.image-for-request-item > a:hover {
+  color: var(--orange-accent-color);
+}
+
+.image-for-request-item > a > span {
+  line-height: 1;
+  text-decoration: none;
 }
 
 

@@ -212,6 +212,7 @@ def validate_file_size(value):
         raise ValidationError(f"Максимальный размер файла {max_size // 1024 // 1024}MB")
 
 class ServiceRequestImage(models.Model):
+    """Изображения для ServiceRequest"""
     file = models.ImageField(
         upload_to=service_request_file_path,
         validators=[validate_file_size]
@@ -233,6 +234,30 @@ class ServiceRequestImage(models.Model):
             return self.thumbnail.url
         except:
             return self.file.url
+
+
+class ServiceRequestDocument(models.Model):
+    """Документы для ServiceRequest"""
+    file = models.FileField(
+        verbose_name="Документ",
+        upload_to=service_request_file_path,
+        validators=[
+            FileExtensionValidator(allowed_extensions=['doc', 'docx', 'xls', 'xlsx', 'ods', 'pdf']),
+            validate_file_size
+        ]
+    )
+    service_request = models.ForeignKey(
+        'ServiceRequest',
+        on_delete=models.CASCADE,
+        related_name='documents'
+    )
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return f"Документ #{self.id}"
 
 
 class Comment(models.Model):
