@@ -6,47 +6,56 @@
 
 {% block content %}
 <div class="container-lg container-fluid mt-3">
+  <div class="card service-request-files-card">
+    <div class="card-body"> 
+      <h3 class="card-title text-center">Файлы для заявки №{{ service_request.id }}"</h3>
 
-  <div class="docs-for-request">
-  <h3>Документы</h3>
-  {% for document in documents %}
-      {% with ext=document.file.url|get_file_extension %}
-        <a target="_blank" href="{{ document.file.url }}" class="document-link" title="{{ document.file.url|get_document_name }}">
-          {% if ext == 'png' %}
-          <span><i class="bi bi-filetype-png h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-          {% elif ext == 'pdf' %} 
-            <span><i class="bi bi-filetype-pdf h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-          {% elif ext == 'doc'%} 
-            <span><i class="bi bi-filetype-doc h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-          {% elif ext == 'docx'%} 
-            <span><i class="bi bi-filetype-docx h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-          {% elif ext == 'xls' or ext == 'xlsx' %} 
-            <i class="bi bi-file-earmark-excel h4"></i> {{ document.file.url|get_document_name|truncatechars:20 }}
-          {% elif ext == 'ods' %} 
-            <i class="bi bi-file-earmark-spreadsheet h4"></i> {{ document.file.url|get_document_name|truncatechars:25 }}
-          {% endif %}
+      <div class="docs-for-request">
+        <a class="btn-for-collapse-request-docs" data-bs-toggle="collapse" href="#collapseRequestDocsList" role="button" aria-expanded="false" aria-controls="collapseRequestDocsList">
+          <h4 class="docs-list-title">Посмотреть документы</h4>
         </a>
-      {% endwith %}
-  {% endfor %}
-  </div>
+        <div class="collapse" id="collapseRequestDocsList">
+          {% for document in documents %}
+            {% with ext=document.file.url|get_file_extension %}
+              <a target="_blank" href="{{ document.file.url }}" class="document-link" title="{{ document.file.url|get_document_name }}">
+                {% if ext == 'png' %}
+                <span><i class="bi bi-filetype-png h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
+                {% elif ext == 'pdf' %} 
+                  <span><i class="bi bi-filetype-pdf h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
+                {% elif ext == 'doc'%} 
+                  <span><i class="bi bi-filetype-doc h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
+                {% elif ext == 'docx'%} 
+                  <span><i class="bi bi-filetype-docx h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
+                {% elif ext == 'xls' or ext == 'xlsx' %} 
+                  <i class="bi bi-file-earmark-excel h4"></i> {{ document.file.url|get_document_name|truncatechars:20 }}
+                {% elif ext == 'ods' %} 
+                  <i class="bi bi-file-earmark-spreadsheet h4"></i> {{ document.file.url|get_document_name|truncatechars:25 }}
+                {% endif %}
+              </a>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      </div>
 
-  <hr class="hr">
+      <hr class="hr">
 
 
 
-  <h3>Изображения</h3>
-  <div class="row">
+      <h4>Изображения</h4>
+      <div class="row">
 
-    {% for image in images %}
-    <div class="col-md-2 col-4 image-for-request-item mt-2">
-    <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="{{ image.file.url|get_document_name }}">
-        <img class="mb-0" src="{{ image.thumbnail_url }}" data-lightbox="image-{{ image.id }}">
-        <span class="d-block mt-0">{{ image.file.url|get_document_name|truncatechars:10 }}</span>
-    </a>
-    </div>
-    {% endfor %}
-    
+        {% for image in images %}
+        <div class="col-md-2 col-4 image-for-request-item mt-2">
+        <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="{{ image.file.url|get_document_name }}">
+            <img class="mb-0" src="{{ image.thumbnail_url }}" data-lightbox="image-{{ image.id }}">
+            <span class="d-block mt-0">{{ image.file.url|get_document_name|truncatechars:10 }}</span>
+        </a>
+        </div>
+        {% endfor %}
+        
 
+      </div>
+    </div>  
   </div>
 </div>
 
@@ -65,5 +74,6 @@
       'alwaysShowNavOnTouchDevices': true,
     })
 </script>
+<script src="{% static 'crm/js/files-gallery.js' %}"></script>
 
 {% endblock %}
