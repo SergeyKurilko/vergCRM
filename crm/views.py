@@ -181,14 +181,15 @@ class FilesForServiceRequestView(View):
     def get(self, request, service_request_id, filter_by=None):
         try:
             service_request = ServiceRequest.objects.prefetch_related(
-                "images"
+                "images",
+                "documents"
             ).get(id=service_request_id)
         except ServiceRequest.DoesNotExist:
             return HttpResponse("ServiceRequest not found", status=404)
 
         context = {
             "images": service_request.images.all(),
-            # "documents": service_request.files.filter(file_type="document"),
+            "documents": service_request.documents.all(),
             "service_request": service_request
         }
 
