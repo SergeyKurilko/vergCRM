@@ -218,7 +218,7 @@ class FileForServiceRequest(models.Model):
         upload_to=service_request_file_path,
         validators=[
             FileExtensionValidator(
-                allowed_extensions=['jpg', 'jpeg', 'png','pdf', 'gif', 'doc', 'docx', 'xls', 'xlsx', 'ods'],
+                allowed_extensions=['jpg', 'jpeg', 'png','pdf', 'doc', 'docx', 'xls', 'xlsx', 'ods'],
             ),
             validate_file_size
         ]

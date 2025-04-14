@@ -82,8 +82,8 @@ aria-hidden="true">
             <div class="service_request-description">
                 {{ service_request.description }}
             </div>
-            <div class="files-gallery">
-                <a href="{% url 'crm:files_gallery' service_request_id=service_request.id %}" target="_blank" class="verg-button-1 border-0">Файлы</a>
+            <div class="files-gallery mt-3">
+                <a type="button" href="{% url 'crm:files_gallery' service_request_id=service_request.id %}" target="_blank" class="verg-button-1 border-0">Файлы &nbsp;<i class="bi bi-folder"></i></a>
             </div>
 
             <hr class="hr">

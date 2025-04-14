@@ -1,25 +1,55 @@
 {% extends 'crm/base.html' %}
 {% load static %}
+{% load doc_extensions %}
 {% block title %}Галерея файлов для заявки №{{ service_request.id }}{% endblock %}
 
 
 {% block content %}
-Тут все файлы и картинки
+<div class="container-lg container-fluid mt-3">
 
-<h3>Картинки</h3>
-{% for image in images %}
-{{ forloop.counter }} <br>
-<a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="Изображение {{ forloop.counter }}">
-    <img src="{{ image.file.url }}" data-lightbox="image-{{ image.id }}" alt="" width="210px">
-</a> <br>
-{% endfor %}
+  <div class="docs-for-request">
+  <h3>Документы</h3>
+  {% for document in documents %}
+      {% with ext=document.file.url|get_file_extension %}
+        <a target="_blank" href="{{ document.file.url }}" class="document-link" title="{{ document.file.url|get_document_name }}">
+          {% if ext == 'png' %}
+          <span><i class="bi bi-filetype-png h5"></i></span> {{ document.file.url|get_document_name|truncatechars:20 }}
+          {% elif ext == 'pdf' %} 
+            <span><i class="bi bi-file-earmark-pdf h5"></i></span> {{ document.file.url|get_document_name|truncatechars:20 }}
+          {% elif ext == 'doc' or ext == 'docx' %} 
+            <span><i class="bi bi-file-earmark-word h5"></i></span> {{ document.file.url|get_document_name|truncatechars:20 }}
+          {% elif ext == 'xls' or ext == 'xlsx' %} 
+            <i class="bi bi-file-earmark-excel h5"></i> {{ document.file.url|get_document_name|truncatechars:20 }}
+          {% elif ext == 'ods' %} 
+            <i class="bi bi-file-earmark-spreadsheet h5"></i> {{ document.file.url|get_document_name|truncatechars:20 }}
+          {% endif %}
+        </a>
+      {% endwith %}
+  {% endfor %}
+  </div>
 
-<hr class="hr">
+  <hr class="hr">
 
-<h3>Документы</h3>
-{% for document in documents %}
-<a href="{{ document.file.url }}">Документ</a>
-{% endfor %}
+
+
+  <h3>Картинки</h3>
+  <div class="row">
+
+    {% for image in images %}
+    <div class="col-md-2 col-6">
+    <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="Изображение {{ forloop.counter }}">
+        <img src="{{ image.file.url }}" data-lightbox="image-{{ image.id }}" alt="" width="210px">
+    </a>
+    </div>
+    {% endfor %}
+    
+
+  </div>
+</div>
+
+
+
+
 
 <!-- LightBox css -->
  <link rel="stylesheet" href="{% static 'crm/lightbox2-2.11.4/dist/css/lightbox.min.css' %}">

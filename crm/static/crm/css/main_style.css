@@ -1100,3 +1100,20 @@ select option:hover {
 
 
 /* ========================== /Display notification rules ================================ */
+
+/* ========================== Files gallery page rules ================================ */
+
+.docs-for-request a {
+  text-decoration: none;
+  display: block;
+  color: var(--contrast-color);
+  transition: all 0.3s;
+}
+
+.docs-for-request a:hover {
+  text-decoration: none;
+  color: var(--orange-accent-color);
+}
+
+
+/* ========================== /Files gallery page rules ================================ */
