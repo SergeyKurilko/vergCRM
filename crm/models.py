@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from imagekit.models import ImageSpecField
+from pilkit.processors import ResizeToFill
 
 from crm.utils import service_request_file_path
 from django.contrib.auth.models import User
@@ -209,7 +211,28 @@ def validate_file_size(value):
     if file_size > max_size:
         raise ValidationError(f"Максимальный размер файла {max_size // 1024 // 1024}MB")
 
+class ServiceRequestImage(models.Model):
+    file = models.ImageField(
+        upload_to=service_request_file_path,
+        validators=[validate_file_size]
+    )
+    service_request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE, related_name='images')
 
+    # Автоматически генерируем thumbnail при сохранении
+    thumbnail = ImageSpecField(
+        source='file',
+        processors=[ResizeToFill(210, 210)],  # Размер thumbnail
+        format='JPEG',
+        options={'quality': 80}
+    )
+
+    @property
+    def thumbnail_url(self):
+        """Возвращает URL thumbnail или оригинального изображения при ошибке."""
+        try:
+            return self.thumbnail.url
+        except:
+            return self.file.url
 
 
 class Comment(models.Model):

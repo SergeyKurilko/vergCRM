@@ -32,13 +32,13 @@
 
 
 
-  <h3>Картинки</h3>
+  <h3>Изображения</h3>
   <div class="row">
 
     {% for image in images %}
-    <div class="col-md-2 col-6">
-    <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="Изображение {{ forloop.counter }}">
-        <img src="{{ image.file.url }}" data-lightbox="image-{{ image.id }}" alt="" width="210px">
+    <div class="col-md-2 col-6 image-for-request-item">
+    <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="{{ image.file.url|get_document_name }}">
+        <img src="{{ image.thumbnail_url }}" data-lightbox="image-{{ image.id }}">
     </a>
     </div>
     {% endfor %}

@@ -175,17 +175,20 @@ class ServiceRequestDetailView(View):
 
 @method_decorator(staff_required, "dispatch")
 class FilesForServiceRequestView(View):
+    """
+    Страница с документами и изображениями для ServiceRequest
+    """
     def get(self, request, service_request_id, filter_by=None):
         try:
             service_request = ServiceRequest.objects.prefetch_related(
-                "files"
+                "images"
             ).get(id=service_request_id)
         except ServiceRequest.DoesNotExist:
             return HttpResponse("ServiceRequest not found", status=404)
 
         context = {
-            "images": service_request.files.filter(file_type="image"),
-            "documents": service_request.files.filter(file_type="document"),
+            "images": service_request.images.all(),
+            # "documents": service_request.files.filter(file_type="document"),
             "service_request": service_request
         }
 

@@ -1115,5 +1115,14 @@ select option:hover {
   color: var(--orange-accent-color);
 }
 
+.image-for-request-item > a > img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid rgb(188, 188, 188);
+  margin: 5px 0;
+}
+
 
 /* ========================== /Files gallery page rules ================================ */

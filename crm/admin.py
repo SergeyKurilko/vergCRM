@@ -3,7 +3,8 @@ from crm.models import (Client, ServiceRequest, Comment,
                         UserProfile, Task, Service,
                         NoteForServiceRequest,
                         CostPriceCase, PartOfCostPriceCase,
-                        Reminder, DisplayNotification)
+                        Reminder, DisplayNotification,
+                        ServiceRequestImage)
 
 
 @admin.register(Client)
@@ -21,7 +22,9 @@ class CommentAdmin(admin.ModelAdmin):
     pass
 
 
-
+@admin.register(ServiceRequestImage)
+class ServiceRequestImageAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(UserProfile)
