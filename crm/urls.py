@@ -1,7 +1,7 @@
 from django.urls import path
 from crm.views import (CrmLoginView, DashboardView, test,
                        user_logout_view, ServiceRequestsListView,
-                       ServiceRequestCreateView, ServiceRequestDetailView, FilesForServiceRequestView)
+                       ServiceRequestCreateView, ServiceRequestDetailView)
 
 from crm.ajax_views import (AddNewServiceAjaxView, AddNewClientAjaxView,
                             AddNewServiceRequestAjaxView, AddNewNoteAjaxView,
@@ -22,6 +22,8 @@ from crm.tasks_views import (TaskListView, TaskDetailView, TaskDeleteView,
                              ResumeTaskView)
 
 from crm.display_notifications_views import GetDisplayNotification, MarkNotificationAsRead
+
+from crm.service_request_files_views import ServiceRequestFilesListView, ServiceRequestFilesAddView
 
 app_name = "crm"
 
@@ -45,9 +47,6 @@ urlpatterns = [
     path("service-request-detail/<int:service_request_id>/",
          ServiceRequestDetailView.as_view(),
          name="service_request_detail"),
-    path("service-request/files-gallery/<int:service_request_id>/",
-         FilesForServiceRequestView.as_view(),
-         name="files_gallery"),
     path("test", test,
          name="test/")
 ]
@@ -89,6 +88,15 @@ tasks_urlpatterns = [
     path("ajax/resume-task",
          ResumeTaskView.as_view(),
          name="resume_task")
+]
+
+service_request_files_urlpatterns = [
+    path("service-request/files-gallery/<int:service_request_id>/",
+         ServiceRequestFilesListView.as_view(),
+         name="files_gallery"),
+    path("service-request/files/add-new-files/",
+         ServiceRequestFilesAddView.as_view(),
+         name="service_request_add_files")
 ]
 
 ajax_urlpatterns = [
@@ -163,3 +171,4 @@ ajax_urlpatterns = [
 urlpatterns += ajax_urlpatterns
 urlpatterns += clients_urlpatterns
 urlpatterns += tasks_urlpatterns
+urlpatterns += service_request_files_urlpatterns
