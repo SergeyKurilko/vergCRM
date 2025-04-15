@@ -25,6 +25,10 @@
     --ver-g-text-color: #F5F5F5;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .main_wrapper {
     min-height: 100vh;
     background: linear-gradient(0deg, rgba(135,236,82,1) 3%, rgba(143,216,251,1) 99%);
@@ -1113,6 +1117,10 @@ select option:hover {
 .docs-for-request a:hover {
   text-decoration: none;
   color: var(--orange-accent-color);
+}
+
+.request-images-title {
+  color: var(--contrast-color);
 }
 
 .image-for-request-item > a > img {

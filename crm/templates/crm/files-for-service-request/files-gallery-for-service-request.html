@@ -12,9 +12,14 @@
 
       <div class="docs-for-request">
         <a class="btn-for-collapse-request-docs" data-bs-toggle="collapse" href="#collapseRequestDocsList" role="button" aria-expanded="false" aria-controls="collapseRequestDocsList">
-          <h4 class="docs-list-title">Посмотреть документы</h4>
+          <h4 class="docs-list-title">Скрыть документы <i class="bi bi-arrow-up-circle"></i></h4>
         </a>
-        <div class="collapse" id="collapseRequestDocsList">
+        <div class="add-docs mb-2">
+          <button class="add-files-button verg-button-1 border-0" data-service_req_id="{{ service_request.id}}" data-url-for-add-item="{% url 'crm:service_request_add_files' %}" data-add-item-type="documents">
+            Добавить документы для
+          </button>
+        </div>
+        <div class="collapse show" id="collapseRequestDocsList">
           {% for document in documents %}
             {% with ext=document.file.url|get_file_extension %}
               <a target="_blank" href="{{ document.file.url }}" class="document-link" title="{{ document.file.url|get_document_name }}">
@@ -41,7 +46,12 @@
 
 
 
-      <h4>Изображения</h4>
+      <h4 class="request-images-title">Изображения</h4>
+      <div class="add-docs mb-2">
+        <button class="add-files-button verg-button-1 border-0" data-service_req_id="{{ service_request.id}}" data-url-for-add-item="{% url 'crm:service_request_add_files' %}" data-add-item-type="images">
+          Добавить изображения
+        </button>
+      </div>
       <div class="row">
 
         {% for image in images %}
