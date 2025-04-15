@@ -41,4 +41,19 @@ $(document).ready(function () {
     $(document).on('hidden.bs.modal', '#addFileModal', function (e) {
         $('#addFileModal').remove();
     });
+
+    // Отправка формы с добавлением файлов
+    $('#addFilesForm').submit(function (e) { 
+        e.preventDefault();
+
+        $.ajax({
+            type: "method",
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                console.log("Ответ от бэка")
+            }
+        });
+    });
 });

@@ -1152,6 +1152,10 @@ select option:hover {
   text-decoration: none;
 }
 
+.file-input {
+  display: flex;
+}
+
 
 
 /* ========================== /Files gallery page rules ================================ */

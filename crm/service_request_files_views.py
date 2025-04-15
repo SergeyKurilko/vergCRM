@@ -53,7 +53,8 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
         # Проверить доступность объекта ServiceRequest для менеджера.
         # Проверить тип файлов (images | documents) для контекста
         context = {
-            "files_type": files_type
+            "files_type": files_type,
+            "service_request_id": service_request_id
         }
         new_content = render_to_string(
             request=request,
@@ -71,5 +72,10 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
         # Проверить доступность объекта ServiceRequest для менеджера.
         # Проверить тип файлов (image | document) для определения логики сохранения (ServiceRequestImage или ServiceRequestDocument)
         # Распарсить и сохранить.
-        pass
-
+        print(request.POST)
+        files_type = request.GET.get("files_type")
+        print(files_type)
+        print(request.FILES)
+        return JsonResponse({
+            "success": True
+        })
