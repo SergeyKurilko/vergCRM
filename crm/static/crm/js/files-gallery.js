@@ -43,17 +43,21 @@ $(document).ready(function () {
     });
 
     // Отправка формы с добавлением файлов
-    $('#addFilesForm').submit(function (e) { 
+    $(document).on('submit', '#addFilesForm', function (e) {
         e.preventDefault();
 
+        var formData = new FormData(this)
+
         $.ajax({
-            type: "method",
+            type: "POST",
             url: $(this).attr("action"),
-            data: $(this).serialize(),
+            data: formData,
+            processData: false,  // Не обрабатывать данные
+            contentType: false,  // Не устанавливать тип контента
             dataType: "json",
             success: function (response) {
                 console.log("Ответ от бэка")
             }
         });
-    });
+    })
 });

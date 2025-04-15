@@ -18,9 +18,19 @@
                 <div class="file-input mt-1" id="file-input-1">
                   <input name="file_1" 
                   type="file" 
-                  class="form-control me-1" 
+                  class="form-control me-1 file-input-item" 
                   id="file_1"
-                  {% if files_type == "documents" %}accept=".doc,.docx,.xls,.xlsx,.ods,.pdf"{% elif files_type == "images" %}accept=".jpg,.jpeg,.png"{% endif %}
+                  required
+                  {% if files_type == "documents" %}
+                  accept="
+                  application/msword, 
+                  application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+                  application/vnd.ms-excel,
+                  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                  application/vnd.oasis.opendocument.spreadsheet,
+                  application/pdf"
+                  {% elif files_type == "images" %}
+                  accept="image/jpeg, image/png, image/jpg"{% endif %}
                   >
                   <button data-input-id="file-input-1" type="button" class="btn btn-danger remove-file-input border-0" disabled>Удалить</button>
                 </div>

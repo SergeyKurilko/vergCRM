@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from crm.models import ServiceRequest
+from crm.models import ServiceRequest, ServiceRequestDocument, ServiceRequestImage
 from crm.views import staff_required
 
 
@@ -72,10 +72,28 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
         # Проверить доступность объекта ServiceRequest для менеджера.
         # Проверить тип файлов (image | document) для определения логики сохранения (ServiceRequestImage или ServiceRequestDocument)
         # Распарсить и сохранить.
-        print(request.POST)
-        files_type = request.GET.get("files_type")
-        print(files_type)
-        print(request.FILES)
+        service_request_id = request.POST.get("service_request_id")
+
+        # TODO: проверить, есть ли такой service_request и есть ли права на него
+        service_request = ServiceRequest.objects.get(id=service_request_id)
+        files_type = request.POST.get("files_type")
+        files = request.FILES
+        new_files = []
+        if len(files) > 0:
+            for key, value in files.items():
+                # TODO: проверить формат файла
+                if key.startswith("file"):
+                    file = ServiceRequestDocument(
+                        file=value,
+                        service_request=service_request
+                    )
+                    new_files.append(file)
+
+            if files_type == "documents":
+                ServiceRequestDocument.objects.bulk_create(new_files)
+            elif files_type == "images":
+                ServiceRequestImage.objects.bulk_create(new_files)
+
         return JsonResponse({
             "success": True
         })
