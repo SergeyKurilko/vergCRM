@@ -56,7 +56,20 @@ $(document).ready(function () {
             contentType: false,  // Не устанавливать тип контента
             dataType: "json",
             success: function (response) {
-                console.log("Ответ от бэка")
+                showToast("Файлы добавлены")
+                $('#addFileModal').modal('hide');
+
+                if (response.files_type === "documents") {
+                    var actualDocsListHtml = response.actual_files_list_htm
+                    $('#collapseRequestDocsList').html(actualDocsListHtml)
+                } else if (response.files_type === "images") {
+                    var actualImagesListHtml = response.actual_files_list_htm
+                    $('.images-collection').html(actualImagesListHtml)
+                }
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                showAlertToast(errorMessage);
             }
         });
     })

@@ -78,10 +78,11 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
         service_request = ServiceRequest.objects.get(id=service_request_id)
         files_type = request.POST.get("files_type")
         files = request.FILES
+        actual_files_list_htm = None
         new_files = []
         if len(files) > 0:
             for key, value in files.items():
-                # TODO: проверить формат файла
+                # TODO: проверить форматы файлов
                 if key.startswith("file"):
                     file = ServiceRequestDocument(
                         file=value,
@@ -91,9 +92,31 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
 
             if files_type == "documents":
                 ServiceRequestDocument.objects.bulk_create(new_files)
+                actual_files_list_htm = render_to_string(
+                    template_name=
+                    "crm/files-for-service-request/dynamic_content/actual-documents-list.html",
+                    request=request,
+                    context={
+                        "documents": ServiceRequestDocument.objects.filter(
+                            service_request=service_request
+                        )
+                    }
+                )
             elif files_type == "images":
                 ServiceRequestImage.objects.bulk_create(new_files)
+                actual_files_list_htm = render_to_string(
+                    template_name=
+                    "crm/files-for-service-request/dynamic_content/actual-images-list.html",
+                    request=request,
+                    context={
+                        "images": ServiceRequestImage.objects.filter(
+                            service_request=service_request
+                        )
+                    }
+                )
 
         return JsonResponse({
-            "success": True
+            "success": True,
+            "actual_files_list_htm": actual_files_list_htm,
+            "files_type": files_type
         })

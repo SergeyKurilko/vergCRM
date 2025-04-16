@@ -1,0 +1,13 @@
+{% load static %}
+{% load doc_extensions %}
+
+
+{% for image in images %}
+    <div class="col-md-2 col-4 image-for-request-item mt-2">
+        <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="{{ image.file.url|get_document_name }}">
+            <img class="mb-0" src="{{ image.thumbnail_url }}" data-lightbox="image-{{ image.id }}">
+            <span class="d-block mt-0">{{ image.file.url|get_document_name|truncatechars:10 }}</span>
+        </a>
+    </div>
+{% endfor %}
+
