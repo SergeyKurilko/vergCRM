@@ -6,10 +6,18 @@ from django.views import View
 
 from crm.models import ServiceRequest, ServiceRequestDocument, ServiceRequestImage
 from crm.views import staff_required
+from crm.responses import json_response
 
 
 class ServiceRequestFilesBaseView:
-    pass
+    @staticmethod
+    def validate_file_size(value):
+        """Проверяет, что размер файла не более 10 мб"""
+        max_size = 10 * 1024 * 1024
+        if value.size > max_size:
+            return json_response.validation_error(
+                f"Размер файла ({value}) должен быть не более 10мб."
+            )
 
 @method_decorator(staff_required, "dispatch")
 class ServiceRequestFilesListView(View):
@@ -83,6 +91,11 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
         if len(files) > 0:
             for key, value in files.items():
                 # TODO: проверить форматы файлов
+
+                # Проверка размера файла
+                size_validate = self.validate_file_size(value)
+                if isinstance(size_validate, JsonResponse):
+                    return size_validate
                 if key.startswith("file"):
                     file = ServiceRequestDocument(
                         file=value,
