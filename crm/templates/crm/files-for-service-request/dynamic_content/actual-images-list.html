@@ -3,11 +3,20 @@
 
 
 {% for image in images %}
-    <div class="col-md-2 col-4 image-for-request-item mt-2">
+    <div class="col-md-2 col-4 image-for-request-item mt-2" id="image-item-{{ image.id }}">
         <a href="{{ image.file.url }}" data-lightbox="service_request_{{ service_request.id }}" data-title="{{ image.file.url|get_document_name }}">
             <img class="mb-0" src="{{ image.thumbnail_url }}" data-lightbox="image-{{ image.id }}">
-            <span class="d-block mt-0">{{ image.file.url|get_document_name|truncatechars:10 }}</span>
         </a>
+        <div class="image-name-and-delete-btn d-flex align-items-center mt-1">
+            <span class="d-block mt-0">{{ image.file.url|get_document_name|truncatechars:10 }}</span>
+            <button 
+                data-file-type="image" 
+                data-delete-file-url="{% url 'crm:service_request_delete_file' %}" 
+                data-file-id="{{ image.id }}" 
+                class="verg-button-danger delete-file-btn px-2 py-1">
+                <i class="bi bi-trash3"></i>
+            </button>
+        </div>
     </div>
 {% endfor %}
 

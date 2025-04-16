@@ -3,20 +3,29 @@
 
 {% for document in documents %}
     {% with ext=document.file.url|get_file_extension %}
+    <div id="document-item-{{ document.id }}" class="document-and-delete-btn d-flex align-items-center mt-1">
         <a target="_blank" href="{{ document.file.url }}" class="document-link" title="{{ document.file.url|get_document_name }}">
-        {% if ext == 'png' %}
-        <span><i class="bi bi-filetype-png h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-        {% elif ext == 'pdf' %} 
+          {% if ext == 'png' %}
+          <span><i class="bi bi-filetype-png h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
+          {% elif ext == 'pdf' %} 
             <span><i class="bi bi-filetype-pdf h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-        {% elif ext == 'doc'%} 
+          {% elif ext == 'doc'%} 
             <span><i class="bi bi-filetype-doc h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-        {% elif ext == 'docx'%} 
+          {% elif ext == 'docx'%} 
             <span><i class="bi bi-filetype-docx h4"></i></span> {{ document.file.url|get_document_name|truncatechars:25 }}
-        {% elif ext == 'xls' or ext == 'xlsx' %} 
+          {% elif ext == 'xls' or ext == 'xlsx' %} 
             <i class="bi bi-file-earmark-excel h4"></i> {{ document.file.url|get_document_name|truncatechars:20 }}
-        {% elif ext == 'ods' %} 
+          {% elif ext == 'ods' %} 
             <i class="bi bi-file-earmark-spreadsheet h4"></i> {{ document.file.url|get_document_name|truncatechars:25 }}
-        {% endif %}
+          {% endif %}
         </a>
+        <button 
+          data-file-type="document" 
+          data-delete-file-url="{% url 'crm:service_request_delete_file' %}" 
+          data-file-id="{{ document.id }}" 
+          class="verg-button-danger delete-file-btn px-2 py-1">
+          <i class="bi bi-trash3"></i>
+        </button>
+      </div>
     {% endwith %}
 {% endfor %}

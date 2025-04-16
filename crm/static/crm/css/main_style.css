@@ -1107,14 +1107,16 @@ select option:hover {
 
 /* ========================== Files gallery page rules ================================ */
 
-.docs-for-request a {
+.docs-for-request a,
+.confirm-delete-file-body a {
   text-decoration: none;
   display: block;
   color: var(--contrast-color);
   transition: all 0.3s;
 }
 
-.docs-for-request a:hover {
+.docs-for-request a:hover,
+.confirm-delete-file-body a:hover {
   text-decoration: none;
   color: var(--orange-accent-color);
 }
@@ -1154,6 +1156,22 @@ select option:hover {
 
 .file-input {
   display: flex;
+}
+
+.image-name-and-delete-btn {
+  width: 150px;
+  justify-content: space-between;
+}
+
+.confirm-delete-file-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.document-and-delete-btn {
+  justify-content: space-between;
+  width: 300px;
 }
 
 

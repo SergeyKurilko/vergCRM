@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'imagekit',
     'django.contrib.humanize',
     'django_celery_beat',
-    'crm'
+    'crm',
+    'django_cleanup.apps.CleanupConfig'
 ]
 
 SITE_ID = 1

@@ -1,0 +1,55 @@
+{% load static %}
+{% load doc_extensions %}
+
+<div class="modal fade" id="deleteFileModal" tabindex="-1" aria-labelledby="deleteFileModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content confirm-delete-file-modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteFileModalLabel">
+            {% if file_type == "document" %}
+            Удаление документа
+            {% elif file_type == "image" %}
+            Удаление изображения
+            {% endif %}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="mb-3 mx-3" action="{% url 'crm:service_request_delete_file' %}" method="post" id="deleteFileForm">
+              {% csrf_token %}
+              <input type="hidden" name="service_request_id" value="{{ service_request_id }}">
+              <input type="hidden" name="file_type" value="{{ file_type }}">
+              <input type="hidden" name="file_id" value="{{ file.id }}">
+
+              <div class="confirm-delete-file-body">
+                Вы действительно хотите удалить
+                {% if file_type == "document" %} 
+                <div class="mb-2">
+                  <b><a target="_blank" href="{{ file.file.url }}" class="document-link" title="{{ file.file.url|get_document_name }}">"{{ file.filename }}" ?</a></b>
+                </div>
+                {% elif file_type == "image" %}
+                это изображение?
+                <div class="image-for-request-item my-2">
+                    <a href="{{ file.file.url }}" data-lightbox="del" data-title="{{ file.file.url|get_document_name }}">
+                        <img class="mb-0" src="{{ file.thumbnail_url }}" data-lightbox="image-{{ file.id }}">
+                    </a>
+                </div>
+                {% endif %}
+                
+              </div>
+
+              <div class="modal-footer justify-content-center">
+                  <div style="color: red; font-weight: 600;" class="delete-file-error-place mt-1"></div>
+                  <button type="submit" class="verg-button-danger border-0" >Да, удалить <i class="bi bi-trash3"></i></button>
+                  <button type="button" class="verg-button-green border-0" data-bs-dismiss="modal">Отменить удаление <i class="bi bi-x-circle"></i></button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+<script src="{% static 'crm/js/files-for-service-request/confirm-delete-file.js' %}"></script>
+</div>
+
+
+

@@ -37,7 +37,7 @@ $(document).ready(function () {
             });
     });
 
-    // При закрытии модального окна для для добавления файлов, удаляем окно целиком из DOM    
+    // При закрытии модального окна для добавления файлов, удаляем окно целиком из DOM    
     $(document).on('hidden.bs.modal', '#addFileModal', function (e) {
         $('#addFileModal').remove();
     });
@@ -45,6 +45,7 @@ $(document).ready(function () {
     // Отправка формы с добавлением файлов
     $(document).on('submit', '#addFilesForm', function (e) {
         e.preventDefault();
+        showDotsLoader($('.add-files-modal-content'));
 
         var formData = new FormData(this)
 
@@ -56,8 +57,10 @@ $(document).ready(function () {
             contentType: false,  // Не устанавливать тип контента
             dataType: "json",
             success: function (response) {
-                showToast("Файлы добавлены")
                 $('#addFileModal').modal('hide');
+                hideDotsLoader();
+                showToast("Файлы добавлены")
+                
 
                 if (response.files_type === "documents") {
                     var actualDocsListHtml = response.actual_files_list_htm
@@ -69,8 +72,38 @@ $(document).ready(function () {
             },
             error: function (response) {
                 var errorMessage = response.responseJSON['message'];
+                hideDotsLoader();
                 showAlertToast(errorMessage);
             }
         });
     })
+
+    // ********************************* Удаление файла ******************************* //
+    $(document).on('click', '.delete-file-btn', function (e) {
+        var fileType = $(this).data('file-type')
+        var fileId = $(this).data('file-id')
+        
+        $.ajax({
+            type: "GET",
+            url: $(this).data('delete-file-url'),
+            data: {
+                "file_type": fileType,
+                "file_id": fileId
+            },
+            dataType: "json",
+            success: function (response) {
+                console.log("Получили ответ от бека.")
+                var modalForDeleteFile = response.modal_for_delete_file
+                $('.main_wrapper').prepend(modalForDeleteFile);
+                $('#deleteFileModal').modal('show');
+            }
+        });
+    });
+
+    // При закрытии модального окна для подтверждения удаления файла, удаляем  модальное окно целиком из DOM    
+    $(document).on('hidden.bs.modal', '#deleteFileModal', function (e) {
+        $('#deleteFileModal').remove();
+    });
+
+
 });

@@ -119,13 +119,19 @@ function showDotsLoader(elForHidden, off) {
         loader.addClass("active-dots-loader")
     
         // Размываем контент, на который будет помещен loader
-        // elForHidden.css({"filter": "blur(1.4px)", "z-index": "10"});
+        elForHidden.css({"filter": "blur(1.4px)", "z-index": "10"});
+        // elForHidden.fadeOut();
         $('.l-overlay').css("display", "block");
         
     } else {
         $(".active-dots-loader").remove();
         $('.l-overlay').css("display", "none");
     }
+}
+
+function hideDotsLoader() {
+    $(".active-dots-loader").remove();
+    $('.l-overlay').css("display", "none");
 }
 
 ///////////////////////////////////////// Проверка display notifications ////////////////////////////////////////

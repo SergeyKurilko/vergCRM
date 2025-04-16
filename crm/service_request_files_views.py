@@ -133,3 +133,61 @@ class ServiceRequestFilesAddView(ServiceRequestFilesBaseView, View):
             "actual_files_list_htm": actual_files_list_htm,
             "files_type": files_type
         })
+
+
+@method_decorator(staff_required, "dispatch")
+class ServiceRequestFileDeleteView(View):
+    """Удаление файлов для ServiceRequest"""
+    def get(self, request):
+        """
+        Получение модального окна для подтверждения удаления файла.
+        """
+        file_type = request.GET.get("file_type")
+        file_id = request.GET.get("file_id")
+
+        context = {}
+        if file_type == "image":
+            file = ServiceRequestImage.objects.get(
+                id=file_id
+            )
+            context["file"] = file
+            context["file_type"] = "image"
+        elif file_type == "document":
+            file = ServiceRequestDocument.objects.get(
+                id=file_id
+            )
+            context["file"] = file
+            context["file_type"] = "document"
+
+        modal_for_delete_file = render_to_string(
+            template_name="crm/files-for-service-request/confirm-delete-file-modal.html",
+            request=request,
+            context=context
+        )
+        return JsonResponse({
+            "success": True,
+            "modal_for_delete_file": modal_for_delete_file
+        })
+
+
+    def post(self, request):
+        """
+        Подтверждение удаления файла для ServiceRequest
+        """
+        file_type = request.POST.get("file_type")
+        file_id = request.POST.get("file_id")
+        if file_type == "image":
+            file = ServiceRequestImage.objects.get(
+                id=file_id
+            )
+            file.delete()
+        elif file_type == "document":
+            file = ServiceRequestDocument.objects.get(
+                id=file_id
+            )
+            file.delete()
+        return JsonResponse({
+            "success": True,
+            "deleted_file_type": file_type,
+            "deleted_file_id": file_id
+        })

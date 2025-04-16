@@ -23,7 +23,8 @@ from crm.tasks_views import (TaskListView, TaskDetailView, TaskDeleteView,
 
 from crm.display_notifications_views import GetDisplayNotification, MarkNotificationAsRead
 
-from crm.service_request_files_views import ServiceRequestFilesListView, ServiceRequestFilesAddView
+from crm.service_request_files_views import (ServiceRequestFilesListView, ServiceRequestFilesAddView,
+                                             ServiceRequestFileDeleteView)
 
 app_name = "crm"
 
@@ -96,7 +97,10 @@ service_request_files_urlpatterns = [
          name="files_gallery"),
     path("service-request/files/add-new-files/",
          ServiceRequestFilesAddView.as_view(),
-         name="service_request_add_files")
+         name="service_request_add_files"),
+    path("service-request/files/delete-file/",
+         ServiceRequestFileDeleteView.as_view(),
+         name="service_request_delete_file")
 ]
 
 ajax_urlpatterns = [

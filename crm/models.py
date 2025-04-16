@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.urls import reverse
 from imagekit.models import ImageSpecField
@@ -235,6 +237,9 @@ class ServiceRequestImage(models.Model):
         except:
             return self.file.url
 
+    def filename(self):
+        return os.path.basename(self.file.name)
+
 
 class ServiceRequestDocument(models.Model):
     """Документы для ServiceRequest"""
@@ -258,6 +263,9 @@ class ServiceRequestDocument(models.Model):
 
     def __str__(self):
         return f"Документ #{self.id}"
+
+    def filename(self):
+        return os.path.basename(self.file.name)
 
 
 class Comment(models.Model):
