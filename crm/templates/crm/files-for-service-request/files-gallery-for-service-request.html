@@ -16,7 +16,7 @@
         </a>
         <div class="add-docs mb-2">
           <button class="add-files-button verg-button-1 border-0" data-service_req_id="{{ service_request.id}}" data-url-for-add-item="{% url 'crm:service_request_add_files' %}" data-add-item-type="documents">
-            Добавить документы для
+            Добавить документы <i class="bi bi-plus"></i> <i class="bi bi-file-text"></i>
           </button>
         </div>
         <div class="collapse show" id="collapseRequestDocsList">
@@ -49,7 +49,7 @@
       <h4 class="request-images-title">Изображения</h4>
       <div class="add-docs mb-2">
         <button class="add-files-button verg-button-1 border-0" data-service_req_id="{{ service_request.id}}" data-url-for-add-item="{% url 'crm:service_request_add_files' %}" data-add-item-type="images">
-          Добавить изображения
+          Добавить изображения <i class="bi bi-plus"></i> <i class="bi bi-images"></i>
         </button>
       </div>
       <div class="row images-collection">
