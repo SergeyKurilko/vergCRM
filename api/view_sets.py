@@ -3,6 +3,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 
 from api.serializers import ReminderSerializer
+from api.permissions import HasApiSecretKey
+
 from crm.models import Reminder
 
 class ReminderViewSet(ModelViewSet):
@@ -10,7 +12,7 @@ class ReminderViewSet(ModelViewSet):
     serializer_class = ReminderSerializer
     http_method_names = ["delete", "get"]
 
-    # TODO: Добавить permission_class
+    permission_classes = [HasApiSecretKey]
 
     def destroy(self, request, *args, **kwargs):
         """

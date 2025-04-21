@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Загрузка переменных из .env
 load_dotenv(Path(BASE_DIR/'.env'))
 TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
+X_API_KEY=os.getenv("X_API_KEY")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
