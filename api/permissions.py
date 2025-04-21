@@ -19,3 +19,14 @@ class IsReminderOwner(permissions.BasePermission):
         if not telegram_id:
             return False
         return str(obj.task.manager.userprofile.telegram_id) == telegram_id
+
+
+class IsTaskOwner(permissions.BasePermission):
+    """
+    Проверка прав доступа к Task
+    """
+    def has_object_permission(self, request, view, obj):
+        telegram_id = request.headers.get("Telegram-ID")
+        if not telegram_id:
+            return False
+        return str(obj.manager.userprofile.telegram_id) == telegram_id

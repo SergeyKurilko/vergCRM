@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 from api.serializers import ReminderSerializer, TaskSerializer
-from api.permissions import HasApiSecretKey, IsReminderOwner
+from api.permissions import HasApiSecretKey, IsReminderOwner, IsTaskOwner
 
 from crm.models import Reminder, Task
 
@@ -32,8 +32,10 @@ class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     http_method_names = ["patch", "get"]
+    authentication_classes = []
+    permission_classes = [HasApiSecretKey, IsTaskOwner]
 
-    @action(methods=["patch"], detail=True, url_path="postpone/hour")
+    @action(detail=True, methods=["patch"], url_path="postpone/hour")
     def postpone_one_hour(self, request, pk=None):
         """Перенос срока задачи на час вперед"""
         task = self.get_object()
@@ -49,7 +51,7 @@ class TaskViewSet(ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-    @action(methods=["patch"], detail=True, url_path="postpone/three_hour")
+    @action(detail=True, methods=["patch"], url_path="postpone/three_hour")
     def postpone_three_hour(self, request, pk=None):
         """Перенос срока задачи на три часа вперед"""
         task = self.get_object()
@@ -66,7 +68,7 @@ class TaskViewSet(ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-    @action(methods=["patch"], detail=True, url_path="postpone/day")
+    @action(detail=True, methods=["patch"], url_path="postpone/day")
     def postpone_one_day(self, request, pk=None):
         """Перенос срока задачи на день вперед"""
         task = self.get_object()
@@ -83,7 +85,7 @@ class TaskViewSet(ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-    @action(methods=["patch"], detail=True, url_path="postpone/week")
+    @action(detail=True, methods=["patch"], url_path="postpone/week")
     def postpone_one_week(self, request, pk=None):
         """Перенос срока задачи на неделю вперед"""
         task = self.get_object()
