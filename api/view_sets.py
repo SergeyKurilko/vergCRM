@@ -8,6 +8,7 @@ from crm.models import Reminder
 class ReminderViewSet(ModelViewSet):
     queryset = Reminder.objects.all()
     serializer_class = ReminderSerializer
+    http_method_names = ["delete", "get"]
 
     # TODO: Добавить permission_class
 
