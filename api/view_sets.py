@@ -12,7 +12,9 @@ class ReminderViewSet(ModelViewSet):
     # TODO: Добавить permission_class
 
     def destroy(self, request, *args, **kwargs):
-        """Ожидает метод delete"""
+        """
+        Ожидает метод delete и параметр /id/.
+        """
         instance = self.get_object()
         instance.is_active = False
         instance.save()

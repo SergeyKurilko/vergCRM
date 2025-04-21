@@ -73,7 +73,8 @@ class PartOfCostPriceCaseAdmin(admin.ModelAdmin):
 
 @admin.register(Reminder)
 class ReminderAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "mode", "task", "is_active"]
+    list_editable = ["is_active"]
 
 @admin.register(DisplayNotification)
 class DisplayNotificationAdmin(admin.ModelAdmin):
