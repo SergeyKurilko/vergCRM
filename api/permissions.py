@@ -8,3 +8,14 @@ class HasApiSecretKey(permissions.BasePermission):
     def has_permission(self, request, view):
         api_key = request.headers.get("X-API-KEY")
         return api_key == settings.X_API_KEY
+
+
+class IsReminderOwner(permissions.BasePermission):
+    """
+    Проверка прав на доступ к Reminder
+    """
+    def has_object_permission(self, request, view, obj):
+        telegram_id = request.headers.get("Telegram-ID")
+        if not telegram_id:
+            return False
+        return str(obj.task.manager.userprofile.telegram_id) == telegram_id

@@ -46,7 +46,8 @@ class TaskAdmin(admin.ModelAdmin):
                     'expired', 'created_at',
                     'must_be_completed_by',
                     'before_one_hour_deadline_notification',
-                    'before_one_workday_deadline_notification']
+                    'before_one_workday_deadline_notification',
+                    'manager']
     list_display_links = ['id', 'title']
     list_per_page = 15
 
@@ -73,8 +74,9 @@ class PartOfCostPriceCaseAdmin(admin.ModelAdmin):
 
 @admin.register(Reminder)
 class ReminderAdmin(admin.ModelAdmin):
-    list_display = ["id", "mode", "task", "is_active"]
+    list_display = ["id", "mode", "task", "is_active", "task__manager"]
     list_editable = ["is_active"]
+
 
 @admin.register(DisplayNotification)
 class DisplayNotificationAdmin(admin.ModelAdmin):
