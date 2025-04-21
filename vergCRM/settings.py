@@ -49,11 +49,13 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'django_extensions',
     'imagekit',
     'django.contrib.humanize',
     'django_celery_beat',
     'crm',
+    'api',
     'django_cleanup.apps.CleanupConfig'
 ]
 
