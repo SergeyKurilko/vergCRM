@@ -2,7 +2,7 @@ from celery import shared_task
 from django.contrib.sites.models import Site
 
 from crm.models import Reminder, Task
-from telegram_bot.task_reminders_senders import send_telegram_reminder
+from telegram_bot.sender_bot.task_reminders_senders import send_telegram_reminder
 from django.utils import timezone
 
 @shared_task
