@@ -12,11 +12,18 @@ class CRMAPIClient:
     async def postpone_task(self, task_id: int, period: str, telegram_id: int):
         # /api/tasks/382/postpone/hour/
         endpoint = f"/api/tasks/{task_id}/postpone/{period}"
-        url = f"{self.base_url}{endpoint}"
+        url = f"{self.base_url}{endpoint}/"
 
         async with aiohttp.ClientSession() as session:
             async with session.patch(
                 url=url,
                 headers={**self.headers, "Telegram-ID": str(telegram_id)},
             ) as response:
-                return await response.json()
+                if response.status == 200:
+                    response_dict = {
+                        "status": response.status,
+                        "data": await response.json()
+                    }
+                    return response_dict
+                else:
+                    return None

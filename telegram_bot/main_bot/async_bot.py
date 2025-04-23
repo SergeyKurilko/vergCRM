@@ -12,7 +12,8 @@ project_root = Path(__file__).parent.parent.parent  # Переходим из te
 sys.path.append(str(project_root))
 
 from telegram_bot.main_bot.task_handlers import (handler_get_keyboard_for_postpone_task,
-                                                 handler_cancel_postpone_mode)
+                                                 handler_cancel_postpone_mode,
+                                                 handler_confirm_postpone_task)
 
 load_dotenv(Path('../../.env'))
 TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
@@ -28,11 +29,16 @@ async def test_message_echo(message: Message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('postpone-task-mode_'))
 async def callback_enter_to_postpone_task_mode(call: CallbackQuery):
+    print("Нажата кнопка, будем вызывать handler_get_keyboard_for_postpone_task")
     await handler_get_keyboard_for_postpone_task(bot, call)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode_'))
 async def callback_cancel_postpone_task_mode(call: CallbackQuery):
     await handler_cancel_postpone_mode(bot, call)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('conf-post_'))
+async def callback_confirm_postpone_task(call: CallbackQuery):
+    await handler_confirm_postpone_task(bot, call)
 
 
 async def run_bot():
