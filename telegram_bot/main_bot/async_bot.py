@@ -1,19 +1,39 @@
 import asyncio
 import os
+import sys
+
 from dotenv import load_dotenv
 from telebot.async_telebot import AsyncTeleBot
+from telebot.types import Message, CallbackQuery
 from pathlib import Path
+
+# Добавляем корневую директорию проекта в PYTHONPATH
+project_root = Path(__file__).parent.parent.parent  # Переходим из telegram_bot/main_bot в vergCRM
+sys.path.append(str(project_root))
+
+from telegram_bot.main_bot.task_handlers import (handler_get_keyboard_for_postpone_task,
+                                                 handler_cancel_postpone_mode)
 
 load_dotenv(Path('../../.env'))
 TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
 
+
 # Основной бот для работы с API
 bot = AsyncTeleBot(TELEGRAM_BOT_TOKEN)
 
-# Handle all other messages with content_type 'text' (content_types defaults to ['text'])
-@bot.message_handler(func=lambda message: True)
-async def echo_message(message):
-    await bot.reply_to(message, message.text)
+@bot.message_handler(func=lambda message: message.text.startswith("привет"))
+async def test_message_echo(message: Message):
+    print(f"isinstance(message, Message) = {isinstance(message, Message)}")
+    await bot.reply_to(message, text="И тебе привет")
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('postpone-task-mode_'))
+async def callback_enter_to_postpone_task_mode(call: CallbackQuery):
+    await handler_get_keyboard_for_postpone_task(bot, call)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode_'))
+async def callback_cancel_postpone_task_mode(call: CallbackQuery):
+    await handler_cancel_postpone_mode(bot, call)
+
 
 async def run_bot():
     await bot.polling()
