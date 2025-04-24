@@ -27,16 +27,16 @@ async def test_message_echo(message: Message):
     print(f"isinstance(message, Message) = {isinstance(message, Message)}")
     await bot.reply_to(message, text="И тебе привет")
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('postpone-task-mode_'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('postpone-task-mode!'))
 async def callback_enter_to_postpone_task_mode(call: CallbackQuery):
     print("Нажата кнопка, будем вызывать handler_get_keyboard_for_postpone_task")
     await handler_get_keyboard_for_postpone_task(bot, call)
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode_'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode!'))
 async def callback_cancel_postpone_task_mode(call: CallbackQuery):
     await handler_cancel_postpone_mode(bot, call)
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('conf-post_'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('conf-post!'))
 async def callback_confirm_postpone_task(call: CallbackQuery):
     await handler_confirm_postpone_task(bot, call)
 

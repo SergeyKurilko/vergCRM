@@ -16,7 +16,8 @@ async def handler_get_keyboard_for_postpone_task(bot: AsyncTeleBot, call: Callba
     Присваивает состояние ожидания срока переноса задачи, возвращает клавиатуру для выбора срока или отмены.
     """
     print("Нажат перенос даты")
-    call_data = call.data.split('_')
+    print(f"До сплита дата: {call.data}")
+    call_data = call.data.split('!')
     print(f"call_data: {call_data}")
 
     task_id = int(call_data[1])
@@ -26,8 +27,6 @@ async def handler_get_keyboard_for_postpone_task(bot: AsyncTeleBot, call: Callba
         task_id=task_id,
         task_url=task_url
     )
-
-    print(f"keyboard_for_select_postpone: {keyboard_for_select_postpone}")
 
     await bot.edit_message_reply_markup(
         chat_id=call.message.chat.id,
@@ -40,15 +39,22 @@ async def handler_confirm_postpone_task(bot: AsyncTeleBot, call: CallbackQuery):
     Подтверждение переноса срока просроченной задачи. Запрос к API-endpoint для изменения срока.
     Пример приходящего call.data: "confirm-postpone_week_{task_id}"
     """
-    print("Выбрали перенос даты")
-
-    call_data = call.data.split('_')
+    call_data = call.data.split('!')
     telegram_id = call.from_user.id
     period = call_data[1]
     task_id = int(call_data[2])
     task_url = call_data[3]
 
-    print(f"call_data: {call_data}")
+    original_message_text = call.message.text
+
+    # Пока делается запрос показываем паузу
+    await bot.edit_message_text(
+        text=f"{original_message_text}\n\n <b>Подождите. Ищу задачу... </b> 🔍",
+        chat_id=call.message.chat.id,
+        message_id=call.message.id,
+        reply_markup=None,
+        parse_mode="HTML",
+    )
 
     api_response = await api.postpone_task(
         task_id=task_id,
@@ -56,9 +62,7 @@ async def handler_confirm_postpone_task(bot: AsyncTeleBot, call: CallbackQuery):
         telegram_id=telegram_id
     )
 
-    print(f"Сдклали запрос: {api_response}")
     if api_response and api_response.get("status") == 200:
-        original_message_text = call.message.text
         new_date_str = api_response["data"]["must_be_completed_by"]
 
         # Парсим строку в объект datetime
@@ -67,11 +71,11 @@ async def handler_confirm_postpone_task(bot: AsyncTeleBot, call: CallbackQuery):
         new_date = date_obj.strftime("%d.%m.%Yг. (до %H:%M)")
 
         await bot.edit_message_text(
-            text=f"{original_message_text}\n\n __Срок задачи перенесен. Новая дата: {new_date}__",
+            text=f"{original_message_text}\n\n <b>Срок задачи перенесен. Новая дата: {new_date}</b>",
             chat_id=call.message.chat.id,
             message_id=call.message.id,
             reply_markup=task_link_keyboard(task_url=task_url),
-            parse_mode="Markdown",
+            parse_mode="HTML",
         )
     else:
         await bot.answer_callback_query(
@@ -79,7 +83,6 @@ async def handler_confirm_postpone_task(bot: AsyncTeleBot, call: CallbackQuery):
             text="Ошибка.",
             show_alert=True
         )
-        print("Что-то пошло не так.")
 
 
 
@@ -88,7 +91,7 @@ async def handler_cancel_postpone_mode(bot: AsyncTeleBot, call: CallbackQuery):
     """
     Отмена выбора переноса срока просроченной задачи
     """
-    call_data = call.data.split('_')
+    call_data = call.data.split('!')
 
     task_id = int(call_data[1])
     task_url = call_data[2]

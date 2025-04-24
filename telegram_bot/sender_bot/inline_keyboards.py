@@ -14,7 +14,7 @@ def task_link_and_postpone_mode_keyboard(task_url: str, task_id: int):
     markup.row(
         InlineKeyboardButton(
             text="Перенести срок задачи",
-            callback_data=f"postpone-task-mode_{task_id}_{task_url}"),
+            callback_data=f"postpone-task-mode!{task_id}!{task_url}"),
     )
     return markup
 
