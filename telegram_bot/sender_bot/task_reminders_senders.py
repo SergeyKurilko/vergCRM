@@ -8,6 +8,9 @@ from telegram_bot.sender_bot.inline_keyboards import (
 
 @shared_task(bind=True, max_retries=3)
 def send_telegram_once_reminder(self, chat_id: int, task_title: str, task_url: str):
+    """
+    Задача отправки разового напоминания в телеграм
+    """
     message = (
         f"⏰ Напоминание о задаче: {task_title}\n"
     )
@@ -29,7 +32,7 @@ def send_telegram_recurring_reminder(
         task_url: str, reminder_id: int
 ):
     """
-    Задача отправки повторяющегося сообщения в телеграм
+    Задача отправки повторяющегося напоминания в телеграм
     """
     message = (
         f"⏰ Напоминание о задаче: {task_title}\n\n"

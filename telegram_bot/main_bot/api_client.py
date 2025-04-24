@@ -10,7 +10,9 @@ class CRMAPIClient:
         }
 
     async def postpone_task(self, task_id: int, period: str, telegram_id: int):
-        # /api/tasks/382/postpone/hour/
+        """
+        Запрос к API для переноса срока выполнения задачи.
+        """
         endpoint = f"/api/tasks/{task_id}/postpone/{period}"
         url = f"{self.base_url}{endpoint}/"
 
@@ -32,7 +34,6 @@ class CRMAPIClient:
         """
         Запрос к API для отключения напоминания.
         """
-        # http://site-example.ru/api/reminders/98/
         endpoint = f"/api/reminders/{reminder_id}/"
         url = f"{self.base_url}{endpoint}/"
 

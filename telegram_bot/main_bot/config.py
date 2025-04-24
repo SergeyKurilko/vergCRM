@@ -6,5 +6,5 @@ load_dotenv(Path('../../.env'))
 
 class BotConfig:
     BOT_TOKEN = os.getenv("BOT_TOKEN")
-    API_BASE_URL = os.getenv("API_BASE_URL")
+    API_BASE_URL = os.getenv("BASE_URL")
     API_KEY = os.getenv("X_API_KEY")

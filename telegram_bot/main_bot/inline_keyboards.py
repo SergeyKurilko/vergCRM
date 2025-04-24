@@ -1,6 +1,9 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def create_postpone_keyboard(task_id: int, task_url: str):
+    """
+    Клавиатура с выбором периодов переноса срока задачи.
+    """
     markup = InlineKeyboardMarkup()
     markup.row(
         InlineKeyboardButton("+1 час", callback_data=f"conf-post!hour!{task_id}!{task_url}"),
@@ -17,6 +20,9 @@ def create_postpone_keyboard(task_id: int, task_url: str):
 
 
 def off_reminder_keyboard(reminder_id: int, task_url: str):
+    """
+    Клавиатура для подтверждения отключения напоминания.
+    """
     markup = InlineKeyboardMarkup()
     markup.row(
         InlineKeyboardButton(
