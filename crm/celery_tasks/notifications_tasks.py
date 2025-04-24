@@ -2,7 +2,8 @@ from celery import shared_task
 from django.contrib.sites.models import Site
 
 from crm.models import Task
-from telegram_bot.task_notifications_senders import send_telegram_notification
+from telegram_bot.sender_bot.task_notifications_senders import (send_telegram_notification_before_expire_task,
+                                                                send_telegram_notification_at_expire_task)
 from crm.celery_tasks.make_display_notifications_tasks import (one_workday_before_deadline_display_notification,
                                                                one_hour_before_deadline_display_notification,
                                                                at_expired_task_display_notification)
@@ -27,13 +28,12 @@ def one_workday_before_deadline_notification(task_id: int):
 
     # Получаем текущий домен
     domain = Site.objects.get_current().domain
-    absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    task_absolute_url = f"https://{domain}{task.get_absolute_url()}"
 
     message = (
         f"⏳ Задача: '{task.title}' будет просрочена "
         f"{task.must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
         f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}).\n"
-        f"🔗 [Открыть задачу]({absolute_url})"
     )
 
     # Постановка задачи на создание DisplayNotification
@@ -42,9 +42,10 @@ def one_workday_before_deadline_notification(task_id: int):
     )
 
     # Постановка задачи на отправку оповещения в тг
-    send_telegram_notification.delay(
+    send_telegram_notification_before_expire_task.delay(
         chat_id=telegram_id,
-        message=message
+        message=message,
+        task_url=task_absolute_url
     )
     task.before_one_workday_deadline_notification = True
     task.save()
@@ -59,11 +60,10 @@ def one_hour_before_deadline_notification(task_id: int):
 
     # Получаем текущий домен
     domain = Site.objects.get_current().domain
-    absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    task_absolute_url = f"https://{domain}{task.get_absolute_url()}"
 
     message = (
-        f"⏳ Задача: {task.title} будет просрочена через час.\n"
-        f"🔗 [Открыть задачу]({absolute_url})"
+        f"⏳ Задача: {task.title} будет просрочена в течение часа.\n"
     )
 
     # Задача на создание DisplayNotification
@@ -71,9 +71,10 @@ def one_hour_before_deadline_notification(task_id: int):
         task_id=task.id
     )
 
-    send_telegram_notification.delay(
+    send_telegram_notification_before_expire_task.delay(
         chat_id=telegram_id,
-        message=message
+        message=message,
+        task_url=task_absolute_url
     )
     task.before_one_hour_deadline_notification = True
     task.save()
@@ -89,11 +90,10 @@ def notification_at_expired_task(task_id: int):
 
     # Получаем текущий домен
     domain = Site.objects.get_current().domain
-    absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    task_absolute_url = f"https://{domain}{task.get_absolute_url()}"
 
     message = (
-        f"🚨 Просрочена задача: {task.title}\n"
-        f"🔗 [Открыть задачу]({absolute_url})"
+        f"🚨 Просрочена задача: {task.title}"
     )
 
     # Задача на создание DisplayNotification
@@ -101,7 +101,9 @@ def notification_at_expired_task(task_id: int):
         task_id=task.id
     )
 
-    send_telegram_notification.delay(
+    send_telegram_notification_at_expire_task.delay(
         chat_id=telegram_id,
-        message=message
+        message=message,
+        task_url=task_absolute_url,
+        task_id=task_id
     )
