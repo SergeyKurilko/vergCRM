@@ -2,46 +2,55 @@ from celery import shared_task
 from django.contrib.sites.models import Site
 
 from crm.models import Reminder, Task
-from telegram_bot.sender_bot.task_reminders_senders import send_telegram_once_reminder
+from telegram_bot.sender_bot.task_reminders_senders import (
+    send_telegram_once_reminder,
+    send_telegram_recurring_reminder
+)
 
 
 @shared_task
 def send_once_reminder(reminder_id: int):
+    """
+    Отправка сообщений с разовыми напоминаниями.
+    Предусматривает расширение (другие мессенджеры, email и т.д.)
+    """
     reminder = Reminder.objects.get(id=reminder_id)
 
     task = Task.objects.get(id=reminder.task.id)
     telegram_id = task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
+    # TODO: переделать на извлечение домена из .env
     domain = Site.objects.get_current().domain
     absolute_url = f"https://{domain}{task.get_absolute_url()}"
 
-    message = (
-        f"⏰ Напоминание о задаче: {task.title}\n"
-    )
 
     send_telegram_once_reminder.delay(
         chat_id=telegram_id,
-        message=message,
-        task_url=absolute_url
+        task_url=absolute_url,
+        task_title=task.title
     )
 
 
 @shared_task
 def send_recurring_reminder(reminder_id: int):
+    """
+    Отправка сообщений с повторяющимися напоминаниями.
+    Предусматривает расширение (другие мессенджеры, email и т.д.)
+    """
     reminder = Reminder.objects.select_related('task').get(id=reminder_id)
+    task = Task.objects.get(id=reminder.task.id)
 
     telegram_id = reminder.task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
+    # TODO: переделать на извлечение домена из .env
     domain = Site.objects.get_current().domain
     absolute_url = f"https://{domain}{reminder.task.get_absolute_url()}"
 
-    message = (
-        f"⏰ Напоминание о задаче: {reminder.task.title}\n"
-        f"🔗 [Открыть задачу]({absolute_url})"
-    )
-    send_telegram_reminder.delay(
+    send_telegram_recurring_reminder.delay(
         chat_id=telegram_id,
-        message=message
+        task_url=absolute_url,
+        task_title=task.title,
+        reminder_id=reminder.id,
     )

@@ -13,7 +13,10 @@ sys.path.append(str(project_root))
 
 from telegram_bot.main_bot.task_handlers import (handler_get_keyboard_for_postpone_task,
                                                  handler_cancel_postpone_mode,
-                                                 handler_confirm_postpone_task)
+                                                 handler_confirm_postpone_task,
+                                                 handler_enter_to_off_reminder_mode,
+                                                 handler_exit_from_off_reminder_mode,
+                                                 handler_confirm_off_reminder)
 
 load_dotenv(Path('../../.env'))
 TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
@@ -37,6 +40,18 @@ async def callback_cancel_postpone_task_mode(call: CallbackQuery):
 @bot.callback_query_handler(func=lambda call: call.data.startswith('conf-post!'))
 async def callback_confirm_postpone_task(call: CallbackQuery):
     await handler_confirm_postpone_task(bot, call)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('rem-off-mode!'))
+async def callback_enter_to_off_reminder_mode(call: CallbackQuery):
+    await handler_enter_to_off_reminder_mode(bot, call)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-rem-off!'))
+async def callback_enter_to_off_reminder_mode(call: CallbackQuery):
+    await handler_exit_from_off_reminder_mode(bot, call)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('conf-rem-off!'))
+async def callback_confirm_off_reminder(call: CallbackQuery):
+    await handler_confirm_off_reminder(bot, call)
 
 
 async def run_bot():

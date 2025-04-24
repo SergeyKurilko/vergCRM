@@ -14,3 +14,20 @@ def create_postpone_keyboard(task_id: int, task_url: str):
         InlineKeyboardButton("Отмена", callback_data=f"cancel-postpone-mode!{task_id}!{task_url}")
     )
     return markup
+
+
+def off_reminder_keyboard(reminder_id: int, task_url: str):
+    markup = InlineKeyboardMarkup()
+    markup.row(
+        InlineKeyboardButton(
+            text="Да, отключить напоминание.",
+            callback_data=f"conf-rem-off!{reminder_id}"
+        )
+    )
+    markup.row(
+        InlineKeyboardButton(
+            text="Нет, оставить напоминание.",
+            callback_data=f"cancel-rem-off!{reminder_id}!{task_url}"
+        )
+    )
+    return markup
