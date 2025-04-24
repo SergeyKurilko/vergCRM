@@ -15,10 +15,7 @@ async def handler_get_keyboard_for_postpone_task(bot: AsyncTeleBot, call: Callba
     """
     Присваивает состояние ожидания срока переноса задачи, возвращает клавиатуру для выбора срока или отмены.
     """
-    print("Нажат перенос даты")
-    print(f"До сплита дата: {call.data}")
     call_data = call.data.split('!')
-    print(f"call_data: {call_data}")
 
     task_id = int(call_data[1])
     task_url = call_data[2]

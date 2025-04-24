@@ -24,12 +24,10 @@ bot = AsyncTeleBot(TELEGRAM_BOT_TOKEN)
 
 @bot.message_handler(func=lambda message: message.text.startswith("привет"))
 async def test_message_echo(message: Message):
-    print(f"isinstance(message, Message) = {isinstance(message, Message)}")
     await bot.reply_to(message, text="И тебе привет")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('postpone-task-mode!'))
 async def callback_enter_to_postpone_task_mode(call: CallbackQuery):
-    print("Нажата кнопка, будем вызывать handler_get_keyboard_for_postpone_task")
     await handler_get_keyboard_for_postpone_task(bot, call)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode!'))
