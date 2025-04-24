@@ -2,8 +2,8 @@ from celery import shared_task
 from django.contrib.sites.models import Site
 
 from crm.models import Reminder, Task
-from telegram_bot.sender_bot.task_reminders_senders import send_telegram_reminder
-from django.utils import timezone
+from telegram_bot.sender_bot.task_reminders_senders import send_telegram_once_reminder
+
 
 @shared_task
 def send_once_reminder(reminder_id: int):
@@ -18,12 +18,12 @@ def send_once_reminder(reminder_id: int):
 
     message = (
         f"⏰ Напоминание о задаче: {task.title}\n"
-        f"🔗 [Открыть задачу]({absolute_url})"
     )
 
-    send_telegram_reminder.delay(
+    send_telegram_once_reminder.delay(
         chat_id=telegram_id,
-        message=message
+        message=message,
+        task_url=absolute_url
     )
 
 
