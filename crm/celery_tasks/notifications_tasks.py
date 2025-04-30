@@ -1,5 +1,5 @@
 from celery import shared_task
-from django.contrib.sites.models import Site
+from django.conf import settings
 
 from crm.models import Task
 from telegram_bot.sender_bot.task_notifications_senders import (send_telegram_notification_before_expire_task,
@@ -27,8 +27,8 @@ def one_workday_before_deadline_notification(task_id: int):
     telegram_id = task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
-    domain = Site.objects.get_current().domain
-    task_absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    domain = settings.BASE_URL
+    task_absolute_url = f"{domain}/{task.get_absolute_url()}"
 
     message = (
         f"⏳ Задача: '{task.title}' будет просрочена "
@@ -59,8 +59,8 @@ def one_hour_before_deadline_notification(task_id: int):
     telegram_id = task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
-    domain = Site.objects.get_current().domain
-    task_absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    domain = settings.BASE_URL
+    task_absolute_url = f"{domain}/{task.get_absolute_url()}"
 
     message = (
         f"⏳ Задача: {task.title} будет просрочена в течение часа.\n"
@@ -89,8 +89,8 @@ def notification_at_expired_task(task_id: int):
     telegram_id = task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
-    domain = Site.objects.get_current().domain
-    task_absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    domain = settings.BASE_URL
+    task_absolute_url = f"{domain}/{task.get_absolute_url()}"
 
     message = (
         f"🚨 Просрочена задача: {task.title}"
