@@ -90,7 +90,7 @@ async def callback_enter_to_postpone_task_mode(call: CallbackQuery):
     """
     await handler_get_keyboard_for_postpone_task(bot, call)
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode!'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-p!'))
 async def callback_cancel_postpone_task_mode(call: CallbackQuery):
     """
     Отслеживание нажатия inline кнопки "Отмена" при выборе периода переноса срока задачи.

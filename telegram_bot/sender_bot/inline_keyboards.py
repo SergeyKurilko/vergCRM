@@ -4,15 +4,12 @@ from telegram_bot.config import TelegramRedis
 
 tr = TelegramRedis()
 
-def task_link_and_postpone_mode_keyboard(task_url: str, task_id: int):
+def task_link_and_postpone_mode_keyboard(callback_key):
     """
     Клавиатура для перехода к задаче и входа в режим переноса срока.
     """
-    callback_key = f"call:{str(uuid.uuid4())}" # пример: "call:977ac410-f025-4009-9dba-22ff9ac4140f"
-    callback_value = f"task!{task_id}!{task_url}"
-    tr.set_task_callback_data(
-        callback_key, callback_value
-    )
+    task_data = tr.get_task_callback(callback_key).split("!") # Пример данных: task!{task_id}!{task_url}
+    task_url = task_data[2]
 
     markup = InlineKeyboardMarkup()
     markup.row(

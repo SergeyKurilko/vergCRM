@@ -116,18 +116,26 @@ async def handler_cancel_postpone_mode(bot: AsyncTeleBot, call: CallbackQuery):
     Отмена выбора переноса срока просроченной задачи
     """
     call_data = call.data.split('!')
+    callback_key = call_data[1]
 
-    task_id = int(call_data[1])
-    task_url = call_data[2]
-
-    await bot.edit_message_reply_markup(
-        chat_id=call.message.chat.id,
-        message_id=call.message.id,
-        reply_markup=task_link_and_postpone_mode_keyboard(
-            task_url=task_url,
-            task_id=task_id
+    if not tr.check_key_exists(callback_key): # Проверка актуальности ключа в redis
+        await bot.answer_callback_query(
+            callback_query_id=call.id,
+            text="Сообщение устарело",
+            show_alert=True
         )
-    )
+        await bot.delete_message(
+            chat_id=call.message.chat.id,
+            message_id=call.message.id
+        )
+    else:
+        await bot.edit_message_reply_markup(
+            chat_id=call.message.chat.id,
+            message_id=call.message.id,
+            reply_markup=task_link_and_postpone_mode_keyboard(
+                callback_key
+            )
+        )
 
 
 async def handle_task_postpone(bot: AsyncTeleBot, call):

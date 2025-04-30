@@ -35,7 +35,9 @@ class TelegramRedis:
         pass
 
     def check_key_exists(self, callback_key):
-        print(f"Тип данных в callback_key: {type(callback_key)}")
+        """
+        Проверка существования ключа в redis (TTL 259200 сек = 3 дня)
+        """
         return r.exists(callback_key)
 
 
