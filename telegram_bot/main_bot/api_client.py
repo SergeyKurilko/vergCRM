@@ -1,5 +1,5 @@
 import aiohttp
-from telegram_bot.main_bot.config import BotConfig
+from telegram_bot.config import BotConfig
 
 class CRMAPIClient:
     def __init__(self):
