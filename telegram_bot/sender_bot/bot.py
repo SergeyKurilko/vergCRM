@@ -2,9 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from telebot import TeleBot  # Синхронная версия!
-
-load_dotenv(Path('../../.env'))
-TELEGRAM_BOT_TOKEN = os.getenv("BOT_TOKEN")
+from telegram_bot.config import BotConfig
 
 # Синхронный бот только для отправки сообщений
-bot = TeleBot(TELEGRAM_BOT_TOKEN)
+bot = TeleBot(BotConfig.BOT_TOKEN)

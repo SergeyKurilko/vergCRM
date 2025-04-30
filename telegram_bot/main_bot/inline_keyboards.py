@@ -1,20 +1,24 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-def create_postpone_keyboard(task_id: int, task_url: str):
+from telegram_bot.config import TelegramRedis
+
+tr = TelegramRedis()
+
+def create_postpone_keyboard(callback_key):
     """
     Клавиатура с выбором периодов переноса срока задачи.
     """
     markup = InlineKeyboardMarkup()
     markup.row(
-        InlineKeyboardButton("+1 час", callback_data=f"conf-post!hour!{task_id}!{task_url}"),
-        InlineKeyboardButton("+3 часа", callback_data=f"conf-post!three_hour!{task_id}!{task_url}")
+        InlineKeyboardButton("+1 час", callback_data=f"c-p!hour!{callback_key}"),
+        InlineKeyboardButton("+3 часа", callback_data=f"c-p!three_hour!{callback_key}")
     )
     markup.row(
-        InlineKeyboardButton("+1 день", callback_data=f"conf-post!day!{task_id}!{task_url}"),
-        InlineKeyboardButton("+1 неделя", callback_data=f"conf-post!week!{task_id}!{task_url}")
+        InlineKeyboardButton("+1 день", callback_data=f"c-p!day!{callback_key}"),
+        InlineKeyboardButton("+1 неделя", callback_data=f"c-p!week!{callback_key}")
     )
     markup.row(
-        InlineKeyboardButton("Отмена", callback_data=f"cancel-postpone-mode!{task_id}!{task_url}")
+        InlineKeyboardButton("Отмена", callback_data=f"cancel-p!{callback_key}")
     )
     return markup
 
