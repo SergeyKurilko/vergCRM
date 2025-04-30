@@ -1,5 +1,5 @@
 from celery import shared_task
-from django.contrib.sites.models import Site
+from django.conf import settings
 
 from crm.models import Reminder, Task
 from telegram_bot.sender_bot.task_reminders_senders import (
@@ -20,9 +20,8 @@ def send_once_reminder(reminder_id: int):
     telegram_id = task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
-    # TODO: переделать на извлечение домена из .env
-    domain = Site.objects.get_current().domain
-    absolute_url = f"https://{domain}{task.get_absolute_url()}"
+    domain = settings.BASE_URL
+    absolute_url = f"{domain}/{task.get_absolute_url()}"
 
 
     send_telegram_once_reminder.delay(
@@ -44,9 +43,8 @@ def send_recurring_reminder(reminder_id: int):
     telegram_id = reminder.task.manager.userprofile.telegram_id
 
     # Получаем текущий домен
-    # TODO: переделать на извлечение домена из .env
-    domain = Site.objects.get_current().domain
-    absolute_url = f"https://{domain}{reminder.task.get_absolute_url()}"
+    domain = settings.BASE_URL
+    absolute_url = f"{domain}/{reminder.task.get_absolute_url()}"
 
     send_telegram_recurring_reminder.delay(
         chat_id=telegram_id,
