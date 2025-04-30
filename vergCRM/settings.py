@@ -14,10 +14,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,19 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(Path(BASE_DIR/'.env'))
 TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
 X_API_KEY=os.getenv("X_API_KEY")
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+BASE_URL=os.getenv("BASE_URL")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4az8ak9zzyay%k%dv!^6b=88yr)b6al@a_@izrffe@yn^h9oc6'
+SECRET_KEY=os.getenv("SECRET_KEY")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '192.168.100.10', '127.0.0.1', '2l9wge-46-22-51-156.ru.tuna.am']
-
-CSRF_TRUSTED_ORIGINS = ['https://2l9wge-46-22-51-156.ru.tuna.am']
+ALLOWED_HOSTS = ['0.0.0.0', '192.168.100.10', '127.0.0.1', os.getenv("BASE_URL")[8:]]
+CSRF_TRUSTED_ORIGINS = [os.getenv("BASE_URL")]
 
 
 # Application definition
