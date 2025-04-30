@@ -15,7 +15,9 @@ from django.core.exceptions import ValidationError
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    telegram_id = models.CharField(max_length=15, verbose_name="telegram", blank=True)
+    telegram_id = models.CharField(max_length=15, verbose_name="telegram",
+                                   blank=True, null=True,
+                                   default=None, unique=True)
     phone_number = models.CharField(max_length=15, verbose_name="телефон", blank=True)
     email_notification = models.BooleanField(default=True, verbose_name="Оповещения на почту")
     telegram_notification = models.BooleanField(default=True, verbose_name="Оповещения в телеграм")
