@@ -13,7 +13,8 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent  # Переходим из telegram_bot/main_bot в vergCRM
 sys.path.append(str(project_root))
 
-# from telegram_bot.decorators import check_access
+from telegram_bot.config import TelegramRedis
+from telegram_bot.config import BotConfig
 from telegram_bot.main_bot.api_client import CRMAPIClient
 from telegram_bot.main_bot.task_handlers import (handler_get_keyboard_for_postpone_task,
                                                  handler_cancel_postpone_mode,
@@ -23,7 +24,7 @@ from telegram_bot.main_bot.task_handlers import (handler_get_keyboard_for_postpo
                                                  handler_confirm_off_reminder)
 
 load_dotenv(Path('../../.env'))
-TELEGRAM_BOT_TOKEN=os.getenv("BOT_TOKEN")
+TELEGRAM_BOT_TOKEN=BotConfig.BOT_TOKEN
 
 api = CRMAPIClient()
 
@@ -82,21 +83,21 @@ async def test_message_echo(message: Message):
     await bot.reply_to(message, text="Бот запущен и работает.")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('postpone-task-mode!'))
-@check_access
+# @check_access
 async def callback_enter_to_postpone_task_mode(call: CallbackQuery):
     """
     Отслеживание нажатия inline кнопки "Перенести срок задачи".
     """
     await handler_get_keyboard_for_postpone_task(bot, call)
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-postpone-mode!'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('cancel-p!'))
 async def callback_cancel_postpone_task_mode(call: CallbackQuery):
     """
     Отслеживание нажатия inline кнопки "Отмена" при выборе периода переноса срока задачи.
     """
     await handler_cancel_postpone_mode(bot, call)
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('conf-post!'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('c-p!'))
 @check_access
 async def callback_confirm_postpone_task(call: CallbackQuery):
     """
