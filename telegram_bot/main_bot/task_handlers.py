@@ -179,20 +179,31 @@ async def handler_enter_to_off_reminder_mode(
     Вход в режим отключения повторяющегося напоминания.
     Возвращает клавиатуру для подтверждения отключения или отмены.
     """
-    call_data = call.data.split('!')
-    reminder_id = int(call_data[1])
-    task_url = call_data[2]
-    original_message_text = call.message.text
+    # Пример call.data: "rem-off-mode!{callback_key}"
+    callback_key = call.data.split("!")[1]
 
-    await bot.edit_message_text(
-        text=f"{original_message_text} \n\n "
-             f"🟢 🟢 🟢 🟢 🟢 🟢 \n\n"
-             f"<b>Подтвердите отключение напоминания.</b>",
-        chat_id=call.message.chat.id,
-        message_id=call.message.id,
-        parse_mode="HTML",
-        reply_markup=off_reminder_keyboard(reminder_id=reminder_id, task_url=task_url)
-    )
+    if not tr.check_key_exists(callback_key):
+        await bot.answer_callback_query(
+            callback_query_id=call.id,
+            text="Сообщение устарело",
+            show_alert=True
+        )
+        await bot.delete_message(
+            chat_id=call.message.chat.id,
+            message_id=call.message.id
+        )
+    else:
+        original_message_text = call.message.text
+
+        await bot.edit_message_text(
+            text=f"{original_message_text} \n\n "
+                 f"🟢 🟢 🟢 🟢 🟢 🟢 \n\n"
+                 f"<b>Подтвердите отключение напоминания.</b>",
+            chat_id=call.message.chat.id,
+            message_id=call.message.id,
+            parse_mode="HTML",
+            reply_markup=off_reminder_keyboard(callback_key)
+        )
 
 
 async def handler_exit_from_off_reminder_mode(
@@ -201,59 +212,89 @@ async def handler_exit_from_off_reminder_mode(
     """
     Выход из режима отключения повторяющегося напоминания.
     """
-    call_data = call.data.split('!')
-    reminder_id = int(call_data[1])
-    task_url = call_data[2]
-    original_message_text = call.message.text.split("🟢")[0].rstrip()
+    # Пример данных в call.data: "cancel-rem-off!{callback_key}"
+    callback_key = call.data.split("!")[1]
 
-    await bot.edit_message_text(
-        chat_id=call.message.chat.id,
-        message_id=call.message.id,
-        parse_mode="HTML",
-        text=original_message_text,
-        reply_markup=task_link_and_off_recurring_reminder_mode_keyboard(
-            reminder_id=reminder_id,
-            task_url=task_url
+    if not tr.check_key_exists(callback_key):
+        await bot.answer_callback_query(
+            callback_query_id=call.id,
+            text="Сообщение устарело",
+            show_alert=True
         )
-    )
+        await bot.delete_message(
+            chat_id=call.message.chat.id,
+            message_id=call.message.id
+        )
+    else:
+        # Пример данных в reminder_data: "reminder!{reminder_id}!{task_title}!{task_url}"
+        reminder_data = tr.get_reminder_callback(callback_key).split("!")
+
+        reminder_id = int(reminder_data[1])
+        task_url = reminder_data[-1]
+        original_message_text = call.message.text.split("🟢")[0].rstrip()
+
+        await bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.id,
+            parse_mode="HTML",
+            text=original_message_text,
+            reply_markup=task_link_and_off_recurring_reminder_mode_keyboard(
+                callback_key
+            )
+        )
 
 
 async def handler_confirm_off_reminder(
     bot: AsyncTeleBot, call: CallbackQuery
     ):
+    """Отправляет запрос к API для отключения повторяющегося напоминания.
     """
-    Отправляет запрос для отключения повторяющегося напоминания.
-    """
-    # в call data: "conf-rem-off!{reminder_id}"
-    call_data = call.data.split('!')
-    reminder_id = int(call_data[1])
-    telegram_id = call.from_user.id
+    # Пример данных в call.data: "conf-rem-off!{callback_key}"
+    callback_data = call.data.split('!')
+    callback_key = callback_data[-1]
 
-    try:
-        response = await api.turn_off_reminder(
-            reminder_id=reminder_id,
-            telegram_id=telegram_id
-        )
-
-        if response.status == 204:
-            await bot.answer_callback_query(
-                callback_query_id=call.id,
-                text=f"Напоминание отключено успешно.",
-                show_alert=True
-            )
-            await bot.delete_message(
-                chat_id=call.message.chat.id,
-                message_id=call.message.id
-            )
-        else:
-            await bot.answer_callback_query(
-                call.id,
-                "Что-то пошло не так.",
-                show_alert=True
-            )
-    except Exception as e:
+    if not tr.check_key_exists(callback_key):
         await bot.answer_callback_query(
-            call.id,
-            f"Ошибка соединения: {str(e)}",
+            callback_query_id=call.id,
+            text="Сообщение устарело",
             show_alert=True
         )
+        await bot.delete_message(
+            chat_id=call.message.chat.id,
+            message_id=call.message.id
+        )
+    else:
+        # Пример данных в reminder_data: "reminder!{reminder_id}!{task_title}!{task_url}"
+        reminder_data = tr.get_reminder_callback(callback_key).split("!")
+        reminder_id = int(reminder_data[1])
+        telegram_id = call.from_user.id
+
+        try:
+            response = await api.turn_off_reminder(
+                reminder_id=reminder_id,
+                telegram_id=telegram_id
+            )
+
+            if response.status == 204:
+                await bot.answer_callback_query(
+                    callback_query_id=call.id,
+                    text=f"Напоминание отключено успешно.",
+                    show_alert=True
+                )
+                await bot.delete_message(
+                    chat_id=call.message.chat.id,
+                    message_id=call.message.id
+                )
+                tr.delete_key(callback_key)
+            else:
+                await bot.answer_callback_query(
+                    call.id,
+                    "Что-то пошло не так.",
+                    show_alert=True
+                )
+        except Exception as e:
+            await bot.answer_callback_query(
+                call.id,
+                f"Ошибка соединения: {str(e)}",
+                show_alert=True
+            )

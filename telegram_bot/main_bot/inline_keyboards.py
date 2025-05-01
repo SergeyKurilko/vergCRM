@@ -23,21 +23,22 @@ def create_postpone_keyboard(callback_key):
     return markup
 
 
-def off_reminder_keyboard(reminder_id: int, task_url: str):
+def off_reminder_keyboard(callback_key):
     """
     Клавиатура для подтверждения отключения напоминания.
     """
+
     markup = InlineKeyboardMarkup()
     markup.row(
         InlineKeyboardButton(
             text="Да, отключить напоминание.",
-            callback_data=f"conf-rem-off!{reminder_id}"
+            callback_data=f"conf-rem-off!{callback_key}"
         )
     )
     markup.row(
         InlineKeyboardButton(
             text="Нет, оставить напоминание.",
-            callback_data=f"cancel-rem-off!{reminder_id}!{task_url}"
+            callback_data=f"cancel-rem-off!{callback_key}"
         )
     )
     return markup

@@ -27,12 +27,14 @@ class TelegramRedis:
         """
         return r.get(name=callback_key).decode("utf-8")
 
+    @staticmethod
+    def set_reminder_callback(callback_key, callback_value):
+        """Сохранение данных о задаче в redis"""
+        r.setex(name=callback_key, time=259200, value=callback_value)
 
-    def get_reminder_callback(self):
-        """
-        Получение данных о reminder
-        """
-        pass
+    def get_reminder_callback(self, callback_key):
+        """Получение данных о reminder"""
+        return r.get(name=callback_key).decode("utf-8")
 
     def check_key_exists(self, callback_key):
         """
@@ -40,4 +42,8 @@ class TelegramRedis:
         """
         return r.exists(callback_key)
 
+    @staticmethod
+    def delete_key(callback_key):
+        """Удаление ненужного ключа"""
+        r.delete(callback_key)
 
