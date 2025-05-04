@@ -28,9 +28,9 @@ SECRET_KEY=os.getenv("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG=os.getenv("DEBUG") == 'True'
 
-ALLOWED_HOSTS = ['verg-crm.ru', 'www.verg-crm.ru', '80.87.98.180']
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(',')
 # CSRF_TRUSTED_ORIGINS = [os.getenv("BASE_URL")]
 
 
@@ -109,8 +109,6 @@ DATABASES = {
         'PORT': os.getenv("DB_PORT"),
     }
 }
-
-
 
 
 # Password validation
