@@ -28,7 +28,7 @@ def one_workday_before_deadline_notification(task_id: int):
 
     # Получаем текущий домен
     domain = settings.BASE_URL
-    task_absolute_url = f"{domain}/{task.get_absolute_url()}"
+    task_absolute_url = f"{domain}{task.get_absolute_url()}"
 
     message = (
         f"⏳ Задача: '{task.title}' будет просрочена "
@@ -60,7 +60,7 @@ def one_hour_before_deadline_notification(task_id: int):
 
     # Получаем текущий домен
     domain = settings.BASE_URL
-    task_absolute_url = f"{domain}/{task.get_absolute_url()}"
+    task_absolute_url = f"{domain}{task.get_absolute_url()}"
 
     message = (
         f"⏳ Задача: {task.title} будет просрочена в течение часа.\n"
@@ -90,7 +90,7 @@ def notification_at_expired_task(task_id: int):
 
     # Получаем текущий домен
     domain = settings.BASE_URL
-    task_absolute_url = f"{domain}/{task.get_absolute_url()}"
+    task_absolute_url = f"{domain}{task.get_absolute_url()}"
 
     message = (
         f"🚨 Просрочена задача: {task.title}"
