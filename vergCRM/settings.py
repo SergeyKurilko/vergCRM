@@ -30,8 +30,8 @@ SECRET_KEY=os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '192.168.100.10', '127.0.0.1', os.getenv("BASE_URL")[8:]]
-CSRF_TRUSTED_ORIGINS = [os.getenv("BASE_URL")]
+ALLOWED_HOSTS = ['verg-crm.ru', 'www.verg-crm.ru', '80.87.98.180']
+# CSRF_TRUSTED_ORIGINS = [os.getenv("BASE_URL")]
 
 
 # Application definition
@@ -90,12 +90,27 @@ WSGI_APPLICATION = 'vergCRM.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Настройки для локальной разработки
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# Настройки для деплоя
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASS"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
+
+
 
 
 # Password validation
@@ -133,7 +148,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 
+STATIC_ROOT = BASE_DIR / "static"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type

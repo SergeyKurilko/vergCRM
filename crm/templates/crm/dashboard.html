@@ -42,7 +42,7 @@
                 </tr>
                 <tr>
                     <td>Ожидаемая прибыль</td>
-                    <td>{{ total_expected_profit }} р.</td>
+                    <td>{% if total_expected_profit %}{{ total_expected_profit }}{% else %}0{% endif %} р.</td>
                 </tr>
             </tbody>
         </table>

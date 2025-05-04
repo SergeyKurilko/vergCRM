@@ -34,7 +34,7 @@ class CRMAPIClient:
         """
         Запрос к API для отключения напоминания.
         """
-        endpoint = f"/api/reminders/{reminder_id}/"
+        endpoint = f"/api/reminders/{reminder_id}"
         url = f"{self.base_url}{endpoint}/"
 
         async with aiohttp.ClientSession() as session:

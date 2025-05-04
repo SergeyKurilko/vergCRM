@@ -3,15 +3,17 @@ from dotenv import load_dotenv
 import redis
 import os
 
-load_dotenv(Path('../../.env'))
+# Абсолютный путь к .env
+ENV_PATH = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(ENV_PATH)
+
 r = redis.Redis(db=5)
 
 class BotConfig:
     BOT_TOKEN = os.getenv("BOT_TOKEN")
     API_BASE_URL = os.getenv("BASE_URL")
     API_KEY = os.getenv("X_API_KEY")
-
-
+    
 class TelegramRedis:
     """
     Управление записями в redis для работы бота.
@@ -46,4 +48,4 @@ class TelegramRedis:
     def delete_key(callback_key):
         """Удаление ненужного ключа"""
         r.delete(callback_key)
-
+        

@@ -18,7 +18,7 @@ class UserProfile(models.Model):
     telegram_id = models.CharField(max_length=15, verbose_name="telegram",
                                    blank=True, null=True,
                                    default=None, unique=True)
-    phone_number = models.CharField(max_length=15, verbose_name="телефон", blank=True)
+    phone_number = models.CharField(max_length=16, verbose_name="телефон", blank=True)
     email_notification = models.BooleanField(default=True, verbose_name="Оповещения на почту")
     telegram_notification = models.BooleanField(default=True, verbose_name="Оповещения в телеграм")
     day_off_notification = models.BooleanField(default=False, verbose_name="Оповещения по выходным")
@@ -37,12 +37,12 @@ class Client(models.Model):
     """
     name = models.CharField(max_length=255,
                             verbose_name="ФИО Клиента")
-    phone = models.CharField(max_length=15,
+    phone = models.CharField(max_length=16,
                              verbose_name="Телефон")
-    phone_2 = models.CharField(max_length=15,
+    phone_2 = models.CharField(max_length=16,
                                verbose_name="Второй телефон",
                                blank=True)
-    whatsapp = models.CharField(max_length=15,
+    whatsapp = models.CharField(max_length=16,
                                 verbose_name="Whatsapp",
                                 blank=True)
     telegram = models.CharField(max_length=55,

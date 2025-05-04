@@ -23,8 +23,9 @@ from telegram_bot.main_bot.task_handlers import (handler_get_keyboard_for_postpo
                                                  handler_exit_from_off_reminder_mode,
                                                  handler_confirm_off_reminder)
 
-load_dotenv(Path('../../.env'))
+
 TELEGRAM_BOT_TOKEN=BotConfig.BOT_TOKEN
+
 
 api = CRMAPIClient()
 
