@@ -21,7 +21,7 @@ def send_once_reminder(reminder_id: int):
 
     # Получаем текущий домен
     domain = settings.BASE_URL
-    absolute_url = f"{domain}/{task.get_absolute_url()}"
+    absolute_url = f"{domain}{task.get_absolute_url()}"
 
 
     send_telegram_once_reminder.delay(
@@ -44,7 +44,7 @@ def send_recurring_reminder(reminder_id: int):
 
     # Получаем текущий домен
     domain = settings.BASE_URL
-    absolute_url = f"{domain}/{reminder.task.get_absolute_url()}"
+    absolute_url = f"{domain}{reminder.task.get_absolute_url()}"
 
     send_telegram_recurring_reminder.delay(
         chat_id=telegram_id,
