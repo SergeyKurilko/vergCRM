@@ -13,7 +13,7 @@ __pycache__/
 env/
 build/
 develop-eggs/
-
+static/
 downloads/
 eggs/
 .eggs/
