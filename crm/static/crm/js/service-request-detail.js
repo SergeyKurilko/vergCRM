@@ -607,9 +607,38 @@ $(document).ready(function () {
             }
         });
     })
-
-
-
     //******************************************Возобновление задачи - end*******************************************//
 
+    //******************************************Завершение заявки*******************************************//
+
+    // Получение окна для подтверждения завершения заявки
+    $('#serviceRequestCompleteButton').click(function (e) { 
+        e.preventDefault();
+        var urlForGetConfrmCompleteRequest = $(this).attr("href");
+        var serviceRequestId = $(this).data("service-request-id")
+        
+        showDotsLoader(elForHidden=$('.main_wrapper'))
+
+        $.ajax({
+            type: "GET",
+            url: `${urlForGetConfrmCompleteRequest}?service_request_id=${serviceRequestId}`,
+            dataType: "json",
+            success: function (response) {
+                hideDotsLoader();
+                var modalHtml = response.new_content
+                $('.main_wrapper').append(modalHtml);
+                $('.main_wrapper').css('filter', 'opacity(0.5)')
+                $('#confirmServiceRequestCompleteModal').modal("show");
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                hideDotsLoader();
+                showAlertToast(errorMessage);
+            }
+        });
+    });
+
+    
+
+    //******************************************Завершение заявки - end*******************************************//
 });

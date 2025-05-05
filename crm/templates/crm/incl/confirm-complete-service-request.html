@@ -1,0 +1,28 @@
+{% load static %}
+
+<div class="modal fade" id="confirmServiceRequestCompleteModal" tabindex="-1" aria-labelledby="confirmServiceRequestCompleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmServiceRequestCompleteModalLabel">Завершение заявки</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>Вы действительно хотите завершить заявку?</h5>
+          <hr class="hr">
+          <div class="">
+            <h5>Информация о заявке:</h5>
+            Тут информация о заявке.
+          </div>
+        </div>
+        <form action="" method="post" id="finalCompleteRequestForm">
+            {% csrf_token %}
+            <input type="hidden" name="complete_request_id" value="{{ service_request.id }}">
+            <div class="modal-footer">
+                <button type="submit" class="verg-button-danger border-0">Да, я хочу закрыть заявку<i class="bi bi-check-circle"></i></button>
+                <button type="button" class="verg-button-green border-0" data-bs-dismiss="modal">Отменить<i class="bi bi-x-circle"></i></button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
