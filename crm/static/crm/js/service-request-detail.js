@@ -607,9 +607,65 @@ $(document).ready(function () {
             }
         });
     })
-
-
-
     //******************************************Возобновление задачи - end*******************************************//
 
+    //******************************************Завершение заявки*******************************************//
+
+    // Получение окна для подтверждения завершения заявки
+    $('#serviceRequestCompleteButton').click(function (e) { 
+        e.preventDefault();
+        var urlForGetConfrmCompleteRequest = $(this).attr("href");
+        var serviceRequestId = $(this).data("service-request-id")
+        
+        showDotsLoader(elForHidden=$('.main_wrapper'))
+
+        $.ajax({
+            type: "GET",
+            url: `${urlForGetConfrmCompleteRequest}?service_request_id=${serviceRequestId}`,
+            dataType: "json",
+            success: function (response) {
+                hideDotsLoader();
+                var modalHtml = response.new_content
+                $('.main_wrapper').prepend(modalHtml);
+                $('#confirmServiceRequestCompleteModal').modal("show");
+            },
+            error: function (response) {
+                var errorMessage = response.responseJSON['message'];
+                hideDotsLoader();
+                showAlertToast(errorMessage);
+            }
+        });
+    });
+
+    // При закрытии модального окна с подтверждением завершения заявки удаляем его.
+    $(document).on('hidden.bs.modal', '#confirmServiceRequestCompleteModal', function (e) {
+        $('#confirmServiceRequestCompleteModal').remove();
+    });
+
+    // Подтверждение завершения заявки
+    $(document).on('submit', '#finalCompleteRequestForm', function (e) {
+        e.preventDefault();
+
+        showDotsLoader(elForHidden=$('.main_wrapper'))
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (response) {
+                hideDotsLoader();
+                var errorMessage = response.responseJSON['message'];
+                // $('#confirmServiceRequestCompleteModal').modal('hide');
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+
+
+    //******************************************Завершение заявки - end*******************************************//
 });
