@@ -59,10 +59,8 @@ aria-hidden="true">
                                 </button>
                                 <ul class="dropdown-menu verg-dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                   <li>
-                                    <a class="dropdown-item verg-dropdown-item" href="#">
-                                        {% if service_request.status == "in_progress" %}Закрыть заявку
-                                        {% elif service_request.status == "completed" %}Возобновить заявку
-                                        {% endif %}
+                                    <a class="dropdown-item verg-dropdown-item" href="#" id="serviceRequestCompleteButton" data-service-request-id="{{ service_request.id }}">
+                                        Завершить
                                     </a>
                                   </li>
                                   <li><hr class="dropdown-divider"></li>
