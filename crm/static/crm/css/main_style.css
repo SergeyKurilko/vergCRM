@@ -389,8 +389,11 @@ select option:hover {
 }
 
 .service-select {
-    background-color: var(--ver-g-table-background);
     color: var(--ver-g-text-color)
+}
+
+.form-select:focus {
+    border-color: #dcc8c8ad !important;
 }
 
 /* ========================== /Add Service Requests Section Rules ================================ */
