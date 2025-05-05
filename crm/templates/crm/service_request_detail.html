@@ -5,6 +5,7 @@
 
 {% block content %}
 
+{% if service_request.status != "completed" %}
 
 <!-- Modal for add cost price case -->
 <div class="modal fade" 
@@ -227,6 +228,114 @@ aria-hidden="true">
 
 {% include 'crm/incl/modal_for_add_new_note.html' %}
 
+{% else %}
+
+<div class="container-md container completed-service-request-detail-container mt-3">
+    <div class="card service-request-card">
+        <div class="card-body p-4">
+            <div class="card-title text-center"><h4>Заявка № {{ service_request.id }} ({{ service_request.get_status_display }})</h4></div>
+            <hr class="hr">
+            <!-- Client & properties row start -->
+            <div class="row align-items-center">
+
+                <!-- Client col-->
+                <div class="col-md-9 col-12">
+                    <h5 class="card-title">Клиент:</h5>
+                    <div class="service_request-client">
+                        <div class="service-request-client-placeholder mb-1">{{ service_request.client.name }}</div>
+                    </div>
+                </div>
+                <!-- / Client col end-->
+
+                <div class="d-md-none d-block">
+                    <hr class="hr my-3 px-1">
+                </div>
+                
+            </div>
+            <!-- /Client & properties row end -->
+            
+            <hr class="hr">
+
+            <h5 class="card-title">Детали заказа:</h5>
+            <div class="service_request-description">
+                {{ service_request.description }}
+            </div>
+            <div class="files-gallery mt-3">
+                <a type="button" href="{% url 'crm:files_gallery' service_request_id=service_request.id %}" target="_blank" class="verg-button-1 border-0">Файлы &nbsp;<i class="bi bi-folder"></i></a>
+            </div>
+
+            <hr class="hr">
+
+            <!-- Start Row -->
+            <div class="row">
+
+                <!-- Адрес col-->
+                <div class="col-md-9 col-12">
+                <h5 class="card-title">Адрес <i class="bi bi-geo-alt"></i>:</h5>
+                <div class="service_request-address">
+                    {% if service_request.address %}
+                    <div class="service-request-adress-placeholder mb-1">{{ service_request.address }}</div>
+                    <a href="" id="RequestDetailAddAdressButton" class="change-address-button">Изменить адрес</a>
+                    {% else %}
+                    <span class="address-missing-alert-placeholder" style="color: red">Адрес не указан</span> 
+                    <div class="service-request-adress-placeholder mb-1"></div>
+                    {% endif %}
+                </div>
+                </div>
+                <!-- / Адрес col-->
+
+                <div class="d-md-none d-block">
+                    <hr class="hr my-3 px-1">
+                </div>
+            </div>
+            <!-- End Row -->
+            
+            <hr class="hr">
+
+            <!-- Финансы -->
+            <h5 class="card-title">Расчет стоимости <i class="bi bi-cash-stack"></i>:</h5>
+            <div class="coast-price-container">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>Себестоимость</td>
+                        <td><div class="request-current-cost">{{ service_request.cost_price }} ₽</div></td>
+                    </tr>
+                    <tr>
+                        <td>Стоимость</td>
+                        <td><span class="current-total-price-placeholder">{{ service_request.total_price }} ₽</span></td>
+                    </tr>
+                    <tr>
+                        <td>Прибыль</td>
+                        <td><span class="request-profit-placeholder">{{ profit }}</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- /Финансы -->
+
+            <hr class="hr">
+            <h5 class="card-title">Заметки <i class="bi bi-pen"></i>:</h5>
+            <div class="notes-container mt-3">
+                {% for note in service_request.notes.all %}
+                    <div id="note_{{ note.id }}" class="note-for-service-request">
+                        <span class="text-muted">{{ note.created_at }}</span> <hr class="hr mt-1 mb-2">
+                        {{ note.text}} 
+                        
+                    </div>
+                {% empty %}
+                    <div class="no-notes">
+                        <span class="mt-2 d-block">У этой заявки нет заметок.</span>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
 
 {% endblock %}
 
@@ -236,3 +345,5 @@ aria-hidden="true">
 </script>
 <script src="{% static 'crm/js/service-request-detail.js' %}"></script>
 {% endblock %}
+
+
