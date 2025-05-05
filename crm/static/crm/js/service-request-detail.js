@@ -626,8 +626,7 @@ $(document).ready(function () {
             success: function (response) {
                 hideDotsLoader();
                 var modalHtml = response.new_content
-                $('.main_wrapper').append(modalHtml);
-                $('.main_wrapper').css('filter', 'opacity(0.5)')
+                $('.main_wrapper').prepend(modalHtml);
                 $('#confirmServiceRequestCompleteModal').modal("show");
             },
             error: function (response) {
@@ -638,7 +637,35 @@ $(document).ready(function () {
         });
     });
 
-    
+    // При закрытии модального окна с подтверждением завершения заявки удаляем его.
+    $(document).on('hidden.bs.modal', '#confirmServiceRequestCompleteModal', function (e) {
+        $('#confirmServiceRequestCompleteModal').remove();
+    });
+
+    // Подтверждение завершения заявки
+    $(document).on('submit', '#finalCompleteRequestForm', function (e) {
+        e.preventDefault();
+
+        showDotsLoader(elForHidden=$('.main_wrapper'))
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (response) {
+                hideDotsLoader();
+                var errorMessage = response.responseJSON['message'];
+                // $('#confirmServiceRequestCompleteModal').modal('hide');
+                showAlertToast(errorMessage);
+            }
+        });
+    })
+
+
 
     //******************************************Завершение заявки - end*******************************************//
 });

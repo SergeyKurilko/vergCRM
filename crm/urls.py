@@ -1,4 +1,6 @@
 from django.urls import path
+
+from crm.service_request_views import ServiceRequestCompleteView
 from crm.views import (CrmLoginView, DashboardView, test,
                        user_logout_view, ServiceRequestsListView,
                        ServiceRequestCreateView, ServiceRequestDetailView)
@@ -169,7 +171,10 @@ ajax_urlpatterns = [
          name="get_display_notification"),
     path("ajax/make-display-notification-as-read",
          MarkNotificationAsRead.as_view(),
-         name="make_display_notification_as_read")
+         name="make_display_notification_as_read"),
+    path("ajax/service-request-complete",
+         ServiceRequestCompleteView.as_view(),
+         name="service_request_complete")
 ]
 
 urlpatterns += ajax_urlpatterns
