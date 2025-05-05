@@ -11,14 +11,21 @@
       <h3 class="card-title text-center">Файлы для заявки №{{ service_request.id }}"</h3>
 
       <div class="docs-for-request">
+        <a href="{{ service_request.get_absolute_url }}"><h4><i class="bi bi-arrow-left"></i> Назад к заявке</h4></a>
+        <hr class="hr">
+
         <a class="btn-for-collapse-request-docs" data-bs-toggle="collapse" href="#collapseRequestDocsList" role="button" aria-expanded="false" aria-controls="collapseRequestDocsList">
           <h4 class="docs-list-title">Скрыть документы <i class="bi bi-arrow-up-circle"></i></h4>
         </a>
+
+        {% if service_request.status != 'completed' %}
         <div class="add-docs mb-2">
           <button class="add-files-button verg-button-1 border-0" data-service_req_id="{{ service_request.id}}" data-url-for-add-item="{% url 'crm:service_request_add_files' %}" data-add-item-type="documents">
             Добавить документы <i class="bi bi-plus"></i> <i class="bi bi-file-text"></i>
           </button>
         </div>
+        {% endif %}
+
         <div class="collapse show" id="collapseRequestDocsList">
           {% for document in documents %}
             {% with ext=document.file.url|get_file_extension %}
@@ -47,6 +54,9 @@
                 </button>
               </div>
             {% endwith %}
+          
+          {% empty %}
+          <h5 class="request-images-title">У заявки нет документов</h5>  
           {% endfor %}
         </div>
       </div>
@@ -56,11 +66,15 @@
 
 
       <h4 class="request-images-title">Изображения</h4>
+
+      {% if service_request.status != 'completed' %}
       <div class="add-docs mb-2">
         <button class="add-files-button verg-button-1 border-0" data-service_req_id="{{ service_request.id}}" data-url-for-add-item="{% url 'crm:service_request_add_files' %}" data-add-item-type="images">
           Добавить изображения <i class="bi bi-plus"></i> <i class="bi bi-images"></i>
         </button>
       </div>
+      {% endif %}
+
       <div class="row images-collection">
 
         {% for image in images %}
@@ -79,6 +93,8 @@
             </button>
           </div>
         </div>
+        {% empty %}
+        <h5 class="request-images-title">У заявки нет изображений</h4>
         {% endfor %}
         
 
