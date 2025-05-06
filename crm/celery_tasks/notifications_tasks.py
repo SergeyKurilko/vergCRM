@@ -66,7 +66,7 @@ def one_hour_before_deadline_notification(task_id: int):
     task_absolute_url = f"{domain}{task.get_absolute_url()}"
 
     message = (
-        f"⏳ Задача: {task.title} будет просрочена в течение часа.\n"
+        f'⏳ Задача: "{task.title}" будет просрочена в течение часа.\n'
     )
 
     # Задача на создание DisplayNotification
