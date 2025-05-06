@@ -150,7 +150,7 @@ class CostPriceCase(models.Model):
     class Meta:
         verbose_name = "Кейс себестоимости"
         verbose_name_plural = "Кейс себестоимости"
-
+        ordering = ['sum']
 
 class PartOfCostPriceCase(models.Model):
     """
