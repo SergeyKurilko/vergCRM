@@ -1,5 +1,6 @@
 from celery import shared_task
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from crm.models import DisplayNotification, Task, Reminder
 
@@ -22,13 +23,16 @@ def one_workday_before_deadline_display_notification(task_id: int):
     task = get_object_or_404(
         Task, id=task_id
     )
+
+    local_must_be_completed_by = timezone.localtime(task.must_be_completed_by)
+
     DisplayNotification.objects.create(
         user=task.manager,
         type=notification_type,
         message=
         f'⏳ Задача: "{task.title}" будет просрочена '
-        f"{task.must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
-        f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}).\n",
+        f"{local_must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
+        f"({weekdays_mapping.get(local_must_be_completed_by.weekday())}).\n",
         link_text="Открыть задачу",
         link_url=task.get_absolute_url()
     )

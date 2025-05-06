@@ -89,7 +89,7 @@ def one_workday_before_task_expired():
     ) # находим все задачи, которые нужно оповестить
 
     for task in tasks: # Перебираем их
-        deadline_date = task.must_be_completed_by.date() # день/месяц/год
+        deadline_date = timezone.localtime(task.must_be_completed_by).date() # год/месяц/число
         previous_workday = get_previous_workday(deadline_date) # находим предыдущий рабочий день у задачи
 
         # если сегодня не предыдущий рабочий день относительно срока задачи, то пропускаем

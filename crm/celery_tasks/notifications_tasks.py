@@ -1,5 +1,6 @@
 from celery import shared_task
 from django.conf import settings
+from django.utils import timezone
 
 from crm.models import Task
 from telegram_bot.sender_bot.task_notifications_senders import (send_telegram_notification_before_expire_task,
@@ -30,10 +31,12 @@ def one_workday_before_deadline_notification(task_id: int):
     domain = settings.BASE_URL
     task_absolute_url = f"{domain}{task.get_absolute_url()}"
 
+    local_must_be_completed_by = timezone.localtime(task.must_be_completed_by)
+
     message = (
         f"⏳ Задача: '{task.title}' будет просрочена "
-        f"{task.must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
-        f"({weekdays_mapping.get(task.must_be_completed_by.weekday())}).\n"
+        f"{local_must_be_completed_by.strftime('%d.%m.%Yг. в %H:%M')} "
+        f"({weekdays_mapping.get(local_must_be_completed_by.weekday())}).\n"
     )
 
     # Постановка задачи на создание DisplayNotification
