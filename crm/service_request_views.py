@@ -59,7 +59,8 @@ class ServiceRequestCompleteView(ServiceRequestBaseView, View):
             return service_request
 
         context = {
-            "service_request": service_request
+            "service_request": service_request,
+            "profit": service_request.total_price - service_request.cost_price
         }
 
         new_content = render_to_string(

@@ -12,8 +12,15 @@
           <hr class="hr">
           <div class="">
             <h5>Информация о заявке:</h5>
-            Тут информация о заявке.
+              <ul>
+                  <li><h6>Заявка № {{ service_request.id }}</h6></li>
+                  <li><h6>Заказчик: {{ service_request.client.name }}</h6></li>
+                  <li><h6>Прибыль: {{ profit }} ₽</h6></li>
+              </ul>
           </div>
+            <hr class="hr">
+            <p class="mb-1">Внимание!</p>
+            Все задачи, созданные в этой заявке, будут удалены.
         </div>
         <form action="{% url 'crm:service_request_complete' %}" method="post" id="finalCompleteRequestForm">
             {% csrf_token %}
